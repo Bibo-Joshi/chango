@@ -1,28 +1,31 @@
 ci:
-    autofix_commit_msg: |
-        [pre-commit.ci] auto fixes from pre-commit.com hooks
-
-        for more information, see https://pre-commit.ci
     autoupdate_commit_msg: 'Bump `pre-commit` Dependency Versions'
     autoupdate_schedule: quarterly
 
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: 'v0.5.1'
+    rev: v0.5.1
     hooks:
       # Run the linter.
       - id: ruff
         args: [ --fix ]
       # Run the formatter.
       - id: ruff-format
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.10.1
+# Does not have support for PEP 695 generics yet
+#  - repo: https://github.com/pre-commit/mirrors-mypy
+#    rev: v1.10.1
+#    hooks:
+#      - id: mypy
+#        name: mypy
+#        files: ^(?!(tests)).*\.py$
+#        args:
+#          - --install-types
+  - repo: https://github.com/RobertCraigie/pyright-python
+    rev: v1.1.371
     hooks:
-      - id: mypy
-        name: mypy
-        files: ^(?!(tests)).*\.py$
-        args:
-          - --install-types
+    - id: pyright
+      name: pyright
+      files: ^(?!(tests)).*\.py$
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.16.0
     hooks:

@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 
-__all__ = ["__version__"]
+__all__ = ["__version__", "abc", "errors"]
 
+from . import abc, errors
 from .__about__ import __version__
