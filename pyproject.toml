@@ -1,0 +1,89 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "chango"
+dynamic = ["version"]
+description = 'Changelog Governor for your project'
+readme = "README.rst"
+requires-python = ">=3.12"
+license = "MIT"
+keywords = ["releasenotes", "changelog", "development", "versioning"]
+authors = [
+  { name = "Hinrich Mahler", email = "chango@mahlerhome.de" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.12",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "License :: OSI Approved :: MIT License",
+  "Topic :: Software Development :: Documentation",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = []
+
+[project.urls]
+Documentation = "https://chango.readthedocs.io/"
+Issues = "https://github.com/Bibo-Joshi/chango/issues"
+Source = "https://github.com/Bibo-Joshi/chango"
+
+# HATCH:
+[tool.hatch.version]
+path = "chango/__about__.py"
+
+[tool.hatch.build]
+packages = ["chango"]
+
+# RUFF:
+[tool.ruff]
+line-length = 99
+show-fixes = true
+
+[tool.ruff.lint]
+preview = true
+explicit-preview-rules = true
+select = ["E", "F", "I", "PL", "UP", "RUF", "PTH", "C4", "B", "PIE", "SIM", "RET", "RSE",
+          "G", "ISC", "PT", "ASYNC", "TCH", "SLOT", "PERF", "PYI", "FLY", "AIR", "RUF022",
+          "RUF023", "Q", "INP", "W", "YTT", "DTZ", "ARG"]
+ignore = ["ISC001"]
+
+[tool.ruff.lint.isort]
+split-on-trailing-comma = false
+
+[tool.ruff.lint.per-file-ignores]
+"docs/**.py" = ["INP001"]
+
+[tool.ruff.format]
+docstring-code-format = true
+skip-magic-trailing-comma = true
+
+# MYPY:
+[tool.mypy]
+warn_unused_ignores = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_untyped_decorators = true
+show_error_codes = true
+python_version = "3.12"
+
+# PYTEST:
+[tool.pytest.ini_options]
+pythonpath= ["src", "tests"]
+
+# COVERAGE:
+[tool.coverage.run]
+source_pkgs = ["chango"]
+branch = true
+parallel = true
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "@overload",
+  "@abstractmethod",
+  "if TYPE_CHECKING:"
+]

@@ -1,0 +1,4 @@
+pre-commit
+coverage~=7.5
+build
+-r docs/requirements-docs.txt

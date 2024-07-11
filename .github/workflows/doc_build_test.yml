@@ -1,0 +1,26 @@
+name: Test Documentation Build
+on:
+  pull_request:
+    paths:
+      - chango/**
+      - '**.rst'
+  push:
+    branches:
+      - main
+
+jobs:
+  test-sphinx-build:
+    name: test-sphinx-build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+      - name: Install dependencies
+        run: |
+          python -W ignore -m pip install --upgrade pip
+          python -W ignore -m pip install -r requirements-dev.txt
+      - name: Build docs
+        run: sphinx-build docs/source docs/build/html -W --keep-going -j auto

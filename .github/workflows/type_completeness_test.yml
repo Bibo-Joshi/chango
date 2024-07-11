@@ -1,0 +1,20 @@
+name: Check Type Completeness
+on:
+  pull_request:
+    paths:
+      - chango/**
+      - pyproject.toml
+      - .github/workflows/type_completeness_test.yml
+  push:
+    branches:
+      - main
+
+jobs:
+  test-type-completeness:
+    name:   test-type-completeness
+    runs-on: ubuntu-latest
+    steps:
+      - uses: Bibo-Joshi/pyright-type-completeness@1.0.0
+        with:
+          package-name: chango
+          python-version: 3.12
