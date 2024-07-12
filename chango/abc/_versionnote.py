@@ -8,6 +8,7 @@ from collections.abc import Iterator, MutableMapping
 from dataclasses import dataclass, field
 
 from chango._utils.filename import FileName
+from chango._utils.files import UTF8
 from chango.abc._changenote import ChangeNote
 
 
@@ -84,14 +85,14 @@ class VersionNote[CNT: ChangeNote](MutableMapping[str, CNT], abc.ABC):
         del self[change_note.uid]
 
     @abc.abstractmethod
-    def render(self, markup: str, encoding: str | None) -> str:
+    def render(self, markup: str, encoding: str = UTF8) -> str:
         """Render the version note as a string.
 
         Args:
             markup (:obj:`str`): The markup language to use for rendering. If the markup language
                 is not supported, an :exc:`~chango.errors.UnsupportedMarkupError` should be raised.
-            encoding (:obj:`str` | :obj:`None`, optional): The encoding to use for rendering.
-                Defaults to :obj:`None`.
+            encoding (:obj:`str`, optional): The encoding to use for rendering.
+                Defaults to ``"utf-8"``.
 
         Returns:
             :obj:`str`: The rendered version note.
