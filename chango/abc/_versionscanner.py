@@ -57,8 +57,8 @@ class VersionScanner(Collection[str]):
         """
 
     @abc.abstractmethod
-    def get_changes(self, uid: VersionUID) -> tuple[str]:
-        """Get the changes for a given version identifier.
+    def get_changes(self, uid: VersionUID | None = None) -> tuple[str]:
+        """Get the changes either for a given version identifier or all available.
 
         Hint:
             To easily extract the UIDs from the change files,
@@ -70,6 +70,7 @@ class VersionScanner(Collection[str]):
         Args:
             uid: The version identifier to get the change files for. If
                 :attr:`~chango.constants.UNRELEASED`, get the change files for the latest version.
+                If :obj:`None`, get all available change files.
 
         Returns:
             UIDs of the changes corresponding to the version identifier.
