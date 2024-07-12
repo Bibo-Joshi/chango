@@ -16,8 +16,9 @@ class VersionHistory[VNT: VersionNote](MutableMapping[str, VNT], abc.ABC):
     several versions.
 
     Hint:
-        Objects of this class can be used as mutable mappings, where the keys are the unique
-        identifiers of the versions and the values are the version notes themselves.
+        Objects of this class can be used as :class:`~collections.abc.MutableMapping`, where the
+        keys are the unique identifiers of the versions and the values are the version notes
+        themselves.
     """
 
     _version_notes: dict[str, VNT] = field(default_factory=dict, init=False)

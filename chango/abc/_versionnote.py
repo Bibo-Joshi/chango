@@ -18,9 +18,9 @@ class VersionNote[CNT: ChangeNote](MutableMapping[str, CNT], abc.ABC):
     for a single version.
 
     Hint:
-        Objects of this class can be used as mutable mappings, where the keys are the unique
-        identifiers (or file names) of the change notes and the values are the change notes
-        themselves.
+        Objects of this class can be used as :class:`~collections.abc.MutableMapping`, where the
+        keys are the unique identifiers (or file names) of the change notes and the values are the
+        change notes themselves.
 
     Warning:
         To ensure that the changes in this version are displayed in the correct order, the change
