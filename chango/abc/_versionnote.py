@@ -28,13 +28,12 @@ class VersionNote[CNT: ChangeNote](MutableMapping[str, CNT], abc.ABC):
         may interfere with the order in which they are displayed.
 
     Args:
-        uid (:obj:`str`): The version identifier of the software project this note is for.
-        date (:obj:`datetime.date`, optional): The date of the version release. Defaults to
-            :obj:`None`.
+        uid: The version identifier of the software project this note is for.
+        date: The date of the version release.
 
     Attributes:
-        uid (:obj:`str`): The version identifier of the software project this note is for.
-        date (:obj:`datetime.date` | :obj:`None`): The date of the version release.
+        uid: The version identifier of the software project this note is for.
+        date: The date of the version release.
     """
 
     uid: str
@@ -72,7 +71,7 @@ class VersionNote[CNT: ChangeNote](MutableMapping[str, CNT], abc.ABC):
         """Add a change note to the version note.
 
         Args:
-            change_note (:class:`ChangeNote`): The change note to add.
+            change_note: The change note to add.
         """
         self[change_note.uid] = change_note
 
@@ -80,7 +79,7 @@ class VersionNote[CNT: ChangeNote](MutableMapping[str, CNT], abc.ABC):
         """Remove a change note from the version note.
 
         Args:
-            change_note (:class:`ChangeNote`): The change note to remove.
+            change_note: The change note to remove.
         """
         del self[change_note.uid]
 
@@ -89,10 +88,9 @@ class VersionNote[CNT: ChangeNote](MutableMapping[str, CNT], abc.ABC):
         """Render the version note as a string.
 
         Args:
-            markup (:obj:`str`): The markup language to use for rendering. If the markup language
+            markup: The markup language to use for rendering. If the markup language
                 is not supported, an :exc:`~chango.errors.UnsupportedMarkupError` should be raised.
-            encoding (:obj:`str`, optional): The encoding to use for rendering.
-                Defaults to ``"utf-8"``.
+            encoding: The encoding to use for rendering.
 
         Returns:
             :obj:`str`: The rendered version note.

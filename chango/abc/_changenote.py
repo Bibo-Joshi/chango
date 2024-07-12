@@ -13,8 +13,8 @@ class ChangeNote(abc.ABC):
     """Abstract base class for a change note describing a single change in a software project.
 
     Args:
-        slug (:obj:`str`): A short, human-readable identifier for the change note.
-        uid (:obj:`str`, optional): A unique identifier for the change note. If not provided, a
+        slug: A short, human-readable identifier for the change note.
+        uid: A unique identifier for the change note. If not provided, a
             random identifier will be generated. Should be 8 characters long and consist of
             lowercase letters and digits.
     """
@@ -53,9 +53,8 @@ class ChangeNote(abc.ABC):
             This convenience method calls :meth:`from_bytes` internally.
 
         Args:
-            file_path (:obj:`str` | :class:`pathlib.Path)`: The path to the file to read from.
-            encoding (:obj:`str`, optional): The encoding to use for reading.
-                Defaults to ``"utf-8"``.
+            file_path: The path to the file to read from.
+            encoding: The encoding to use for reading.
 
         Returns:
             The :class:`ChangeNote` object.
@@ -75,9 +74,8 @@ class ChangeNote(abc.ABC):
             This convenience method calls :meth:`from_string` internally.
 
         Args:
-            data (:obj:`bytes`): The bytes to read from.
-            encoding (:obj:`str`, optional): The encoding to use for reading.
-                Defaults to ``"utf-8"``.
+            data: The bytes to read from.
+            encoding: The encoding to use for reading.
 
         Returns:
             The :class:`ChangeNote` object.
@@ -95,7 +93,7 @@ class ChangeNote(abc.ABC):
         :exc:`~chango.errors.ValidationError` in that case.
 
         Args:
-            string (:obj:`str`): The string to read from.
+            string: The string to read from.
 
         Returns:
             The :class:`ChangeNote` object.
@@ -113,8 +111,7 @@ class ChangeNote(abc.ABC):
             This convenience method calls :meth:`to_string` internally.
 
         Args:
-            encoding (:obj:`str`, optional): The encoding to use for writing.
-                Defaults to ``"utf-8"``.
+            encoding: The encoding to use for writing.
 
         Returns:
             The bytes data.
@@ -127,8 +124,7 @@ class ChangeNote(abc.ABC):
         and reading back in with :meth:`from_string`.
 
         Args:
-            encoding (:obj:`str`, optional): The encoding to use for writing.
-                Defaults to ``"utf-8"``.
+            encoding: The encoding to use for writing.
 
         Returns:
             The string data.
@@ -138,10 +134,8 @@ class ChangeNote(abc.ABC):
         """Write the change note to the specified file.
 
         Args:
-            file_path (:obj:`str` | :class:`pathlib.Path)`: Optional. The path to the file to write
-                to. Defaults to :attr:`file_name`.
-            encoding (:obj:`str`, optional): The encoding to use for writing.
-                Defaults to ``"utf-8"``.
+            file_path: Optional. The path to the file to write to.
+            encoding: The encoding to use for writing.
 
         Returns:
             :class:`pathlib.Path`: The path to the file that was written.

@@ -3,7 +3,7 @@
 #  SPDX-License-Identifier: MIT
 
 
-__all__ = ["ChanGoError", "ValidationError"]
+__all__ = ["ChanGoError", "UnsupportedMarkupError", "ValidationError"]
 
 
 class ChanGoError(Exception):

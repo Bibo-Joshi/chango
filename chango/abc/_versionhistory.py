@@ -47,7 +47,7 @@ class VersionHistory[VNT: VersionNote](MutableMapping[str, VNT], abc.ABC):
         """Add a version note to the version note.
 
         Args:
-            version_note (:class:`versionNote`): The version note to add.
+            version_note: The version note to add.
         """
         self[version_note.uid] = version_note
 
@@ -55,7 +55,7 @@ class VersionHistory[VNT: VersionNote](MutableMapping[str, VNT], abc.ABC):
         """Remove a version note from the version note.
 
         Args:
-            version_note (:class:`versionNote`): The version note to remove.
+            version_note: The version note to remove.
         """
         del self[version_note.uid]
 
@@ -65,17 +65,16 @@ class VersionHistory[VNT: VersionNote](MutableMapping[str, VNT], abc.ABC):
         contained in the version note.
 
         Hint:
-            * Make use of :meth:`chango.abc.ChangeNote.render` to render the change notes.
+            * Make use of :meth:`chango.abc.VersionNote.render` to render the change notes.
             * The change notes should be rendered in reverse chronological order. This needs to be
               handled by the implementation and can be achieved either by applying appropriate
               sorting the :attr:`~chango.abc.VersionNote.uid` or by sorting by
               :attr:`~chango.abc.VersionNote.date` if available.
 
         Args:
-            markup (:obj:`str`): The markup language to use for rendering. If the markup language
+            markup: The markup language to use for rendering. If the markup language
                 is not supported, an :exc:`~chango.errors.UnsupportedMarkupError` should be raised.
-            encoding (:obj:`str`, optional): The encoding to use for rendering.
-                Defaults to ``"utf-8"``.
+            encoding: The encoding to use for rendering.
 
         Returns:
             :obj:`str`: The rendered version note.
