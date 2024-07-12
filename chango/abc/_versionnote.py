@@ -28,16 +28,16 @@ class VersionNote[CNT: ChangeNote](MutableMapping[str, CNT], abc.ABC):
         may interfere with the order in which they are displayed.
 
     Args:
-        version (:obj:`str`): The version of the software project this note is for.
+        uid (:obj:`str`): The version identifier of the software project this note is for.
         date (:obj:`datetime.date`, optional): The date of the version release. Defaults to
             :obj:`None`.
 
     Attributes:
-        version (:obj:`str`): The version of the software project this note is for.
+        uid (:obj:`str`): The version identifier of the software project this note is for.
         date (:obj:`datetime.date` | :obj:`None`): The date of the version release.
     """
 
-    version: str
+    uid: str
     date: dtm.date | None = None
     _change_notes: dict[str, CNT] = field(default_factory=dict, init=False)
 
