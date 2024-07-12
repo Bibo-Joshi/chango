@@ -12,6 +12,13 @@ chango.abc
     :members:
     :show-inheritance:
 
+chango.concrete
+---------------
+
+.. automodule:: chango.concrete
+    :members:
+    :show-inheritance:
+
 chango.constants
 ----------------
 

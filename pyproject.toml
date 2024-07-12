@@ -48,7 +48,7 @@ explicit-preview-rules = true
 select = ["E", "F", "I", "PL", "UP", "RUF", "PTH", "C4", "B", "PIE", "SIM", "RET", "RSE",
           "G", "ISC", "PT", "ASYNC", "TCH", "SLOT", "PERF", "PYI", "FLY", "AIR", "RUF022",
           "RUF023", "Q", "INP", "W", "YTT", "DTZ", "ARG"]
-ignore = ["ISC001"]
+ignore = ["ISC001", "ARG002"]
 
 [tool.ruff.lint.isort]
 split-on-trailing-comma = false

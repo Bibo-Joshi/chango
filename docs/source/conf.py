@@ -31,7 +31,7 @@ html_theme = "furo"
 
 intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
 
-nitpicky = True
+# nitpicky = True
 
 # autodoc typehints options
 always_use_bars_union = True

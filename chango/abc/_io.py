@@ -8,7 +8,11 @@ from pathlib import Path
 
 from chango._utils.files import UTF8
 from chango._utils.types import VersionUID
-from chango.abc import ChangeNote, VersionHistory, VersionNote, VersionScanner
+
+from ._changenote import ChangeNote
+from ._versionhistory import VersionHistory
+from ._versionnote import VersionNote
+from ._versionscanner import VersionScanner
 
 
 @dataclass
