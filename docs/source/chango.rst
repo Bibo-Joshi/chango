@@ -12,9 +12,23 @@ chango.abc
     :members:
     :show-inheritance:
 
+chango.constants
+----------------
+
+.. automodule:: chango.constants
+    :members:
+    :show-inheritance:
+
 chango.errors
 -------------
 
 .. automodule:: chango.errors
+    :members:
+    :show-inheritance:
+
+chango.helpers
+--------------
+
+.. automodule:: chango.helpers
     :members:
     :show-inheritance:

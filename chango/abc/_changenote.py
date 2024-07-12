@@ -130,16 +130,20 @@ class ChangeNote(abc.ABC):
             The string data.
         """
 
-    def to_file(self, file_path: str | Path | None = None, encoding: str = UTF8) -> Path:
-        """Write the change note to the specified file.
+    def to_file(self, directory: str | Path | None = None, encoding: str = UTF8) -> Path:
+        """Write the change note to the directory.
+
+        Hint:
+            The file name will always be the :attr:`~chango.abc.ChangeNote.file_name`.
 
         Args:
-            file_path: Optional. The path to the file to write to.
+            directory: Optional. The directory to write the file to. If not provided, the file
+                will be written to the current working directory.
             encoding: The encoding to use for writing.
 
         Returns:
             :class:`pathlib.Path`: The path to the file that was written.
         """
-        path = Path(file_path or self.file_name)
-        path.write_bytes(self.to_bytes(encoding=encoding))
+        path = Path(directory) if directory else Path.cwd()
+        (path / self.file_name).write_bytes(self.to_bytes(encoding=encoding))
         return path

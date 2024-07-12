@@ -9,6 +9,7 @@ from dataclasses import dataclass, field
 
 from chango._utils.filename import FileName
 from chango._utils.files import UTF8
+from chango._utils.types import VersionUID
 from chango.abc._changenote import ChangeNote
 
 
@@ -29,14 +30,16 @@ class VersionNote[CNT: ChangeNote](MutableMapping[str, CNT], abc.ABC):
 
     Args:
         uid: The version identifier of the software project this note is for.
+            May be :attr:`chango.constants.UNRELEASED` if the version is not yet released.
         date: The date of the version release.
 
     Attributes:
         uid: The version identifier of the software project this note is for.
+            May be :attr:`chango.constants.UNRELEASED` if the version is not yet released.
         date: The date of the version release.
     """
 
-    uid: str
+    uid: VersionUID
     date: dtm.date | None = None
     _change_notes: dict[str, CNT] = field(default_factory=dict, init=False)
 
