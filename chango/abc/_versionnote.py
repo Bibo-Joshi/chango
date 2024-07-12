@@ -30,12 +30,12 @@ class VersionNote[CNT: ChangeNote](MutableMapping[str, CNT], abc.ABC):
 
     Args:
         uid: The version identifier of the software project this note is for.
-            May be :attr:`chango.constants.UNRELEASED` if the version is not yet released.
+            May be :obj:`None` if the version is not yet released.
         date: The date of the version release.
 
     Attributes:
         uid: The version identifier of the software project this note is for.
-            May be :attr:`chango.constants.UNRELEASED` if the version is not yet released.
+            May be :obj:`None` if the version is not yet released.
         date: The date of the version release.
     """
 

@@ -2,19 +2,11 @@
 #
 #  SPDX-License-Identifier: MIT
 
-__all__ = ["UNRELEASED", "UNRELEASED_TYPE", "MarkupLanguage"]
+__all__ = ["MarkupLanguage"]
 
 import contextlib
 from collections.abc import Mapping
 from enum import StrEnum
-from typing import Literal
-
-UNRELEASED = "unreleased-fx7cogka"
-# we include a random suffix to avoid conflicts with other version names
-"""A special object to indicate that a version has not been released yet."""
-
-UNRELEASED_TYPE = Literal["unreleased-fx7cogka"]
-"""A type hint for the :attr:`UNRELEASED` constant."""
 
 
 class MarkupLanguage(StrEnum):

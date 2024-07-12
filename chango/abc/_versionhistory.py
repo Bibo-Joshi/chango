@@ -11,7 +11,7 @@ from chango.abc._versionnote import VersionNote
 
 
 @dataclass
-class VersionHistory[VNT: VersionNote](MutableMapping[str, VNT], abc.ABC):
+class VersionHistory[VNT: VersionNote](MutableMapping[str | None, VNT], abc.ABC):
     """Abstract base class for a version history describing the versions in a software project over
     several versions.
 
@@ -21,21 +21,21 @@ class VersionHistory[VNT: VersionNote](MutableMapping[str, VNT], abc.ABC):
         themselves.
     """
 
-    _version_notes: dict[str, VNT] = field(default_factory=dict, init=False)
+    _version_notes: dict[str | None, VNT] = field(default_factory=dict, init=False)
 
-    def __delitem__(self, __key: str) -> None:
+    def __delitem__(self, __key: str | None) -> None:
         del self._version_notes[__key]
 
-    def __getitem__(self, __key: str) -> VNT:
+    def __getitem__(self, __key: str | None) -> VNT:
         return self._version_notes[__key]
 
-    def __iter__(self) -> Iterator[str]:
+    def __iter__(self) -> Iterator[str | None]:
         return iter(self._version_notes)
 
     def __len__(self) -> int:
         return len(self._version_notes)
 
-    def __setitem__(self, __key: str, __value: VNT) -> None:
+    def __setitem__(self, __key: str | None, __value: VNT) -> None:
         if __key != __value.uid:
             warnings.warn(
                 f"Key {__key!r} does not match version note UID {__value.uid!r}. "

@@ -37,7 +37,7 @@ class IO[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Change
 
         Args:
             uid: The version identifier of the software project this note is for.
-                May be :attr:`~chango.constants.UNRELEASED` if the version is not yet released.
+                May be :obj:`None` if the version is not yet released.
             date: The date of the version release.
         """
 
@@ -64,7 +64,7 @@ class IO[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Change
         Args:
             change_note: The change note to write.
             version_uid: The identifier of the version the change note belongs to. Maybe be
-                :attr:`~chango.constants.UNRELEASED` if the change note is not yet released.
+                :obj:`None` if the change note is not yet released.
         """
 
     def write_change_note(
@@ -75,7 +75,7 @@ class IO[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Change
         Args:
             change_note: The change note to write.
             version_uid: The identifier of the version the change note belongs to. Maybe be
-                :attr:`~chango.constants.UNRELEASED` if the change note is not yet released.
+                :obj:`None` if the change note is not yet released.
             encoding: The encoding to use for writing.
 
         Returns:

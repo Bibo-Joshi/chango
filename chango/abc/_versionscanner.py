@@ -69,7 +69,7 @@ class VersionScanner(Collection[str]):
 
         Args:
             uid: The version identifier to get the change files for. If
-                :attr:`~chango.constants.UNRELEASED`, get the change files for the latest version.
+                :obj:`None`, get the change files for the latest version.
                 If :obj:`None`, get all available change files.
 
         Returns:
@@ -82,5 +82,5 @@ class VersionScanner(Collection[str]):
 
         Args:
             uid: The version identifier to get the release date for. If
-                :attr:`~chango.constants.UNRELEASED`, get the release date for the latest version.
+                :obj:`None`, get the release date for the latest version.
         """
