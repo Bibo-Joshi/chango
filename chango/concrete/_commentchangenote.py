@@ -2,7 +2,7 @@
 #
 #  SPDX-License-Identifier: MIT
 from dataclasses import dataclass
-from typing import ClassVar, Self
+from typing import ClassVar, Self, override
 
 from chango._utils.files import UTF8
 from chango.abc import ChangeNote
@@ -36,5 +36,6 @@ class CommentChangeNote(ChangeNote):
     def to_bytes(self, encoding: str = UTF8) -> bytes:
         return self.comment.encode(encoding)
 
+    @override
     def to_string(self, encoding: str = UTF8) -> str:
         return self.comment
