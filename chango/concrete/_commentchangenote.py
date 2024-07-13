@@ -10,7 +10,7 @@ from chango.abc import ChangeNote
 
 @dataclass
 class CommentChangeNote(ChangeNote):
-    """A simple change note that consists of a single comment.
+    """A simple change note that consists of a single comment. May be multi-line.
 
     Args:
         comment: The comment text.

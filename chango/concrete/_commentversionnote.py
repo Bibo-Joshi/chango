@@ -10,6 +10,13 @@ from chango.constants import MarkupLanguage
 from chango.errors import UnsupportedMarkupError
 
 
+def _indent_multiline(text: str, indent: int = 2) -> str:
+    """Indent all lines of a multi-line string except the first one."""
+    return "\n".join(
+        line if i == 0 else " " * indent + line for i, line in enumerate(text.splitlines())
+    )
+
+
 class CommentVersionNote(VersionNote[CommentChangeNote]):
     """A simple version note implementation that works with
     :class:`~chango.concrete.CommentChangeNote`.
@@ -36,7 +43,7 @@ class CommentVersionNote(VersionNote[CommentChangeNote]):
 
         match MarkupLanguage.from_string(markup):
             case MarkupLanguage.MARKDOWN:
-                return "\n".join(f"- {note.comment}" for note in self.values())
+                return "\n".join(f"- {_indent_multiline(note.comment)}" for note in self.values())
             case MarkupLanguage.HTML:
                 return (
                     "<ul>\n"
@@ -44,6 +51,6 @@ class CommentVersionNote(VersionNote[CommentChangeNote]):
                     + "\n</ul>"
                 )
             case MarkupLanguage.RESTRUCTUREDTEXT:
-                return "\n".join(f"- {note.comment}" for note in self.values())
+                return "\n".join(f"- {_indent_multiline(note.comment)}" for note in self.values())
             case _:
                 return "\n".join(note.comment for note in self.values())
