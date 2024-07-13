@@ -7,6 +7,7 @@ from typing import Self
 
 from chango._utils.filename import FileName
 from chango._utils.files import UTF8
+from chango._utils.types import PathLike, VersionUID
 
 
 class ChangeNote(abc.ABC):
@@ -19,7 +20,7 @@ class ChangeNote(abc.ABC):
             lowercase letters and digits.
     """
 
-    def __init__(self, slug: str, uid: str | None = None):
+    def __init__(self, slug: str, uid: VersionUID = None):
         self._file_name = FileName(slug=slug, uid=uid) if uid else FileName(slug=slug)
 
     @property
@@ -45,7 +46,7 @@ class ChangeNote(abc.ABC):
         return self._file_name.to_string(self.file_extension)
 
     @classmethod
-    def from_file(cls, file_path: str | Path, encoding: str = UTF8) -> Self:
+    def from_file(cls, file_path: PathLike, encoding: str = UTF8) -> Self:
         """
         Read a change note from the specified file.
 
@@ -130,7 +131,7 @@ class ChangeNote(abc.ABC):
             The string data.
         """
 
-    def to_file(self, directory: str | Path | None = None, encoding: str = UTF8) -> Path:
+    def to_file(self, directory: PathLike | None = None, encoding: str = UTF8) -> Path:
         """Write the change note to the directory.
 
         Hint:

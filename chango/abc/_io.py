@@ -3,7 +3,6 @@
 #  SPDX-License-Identifier: MIT
 import abc
 import datetime as dtm
-from dataclasses import dataclass
 from pathlib import Path
 
 from chango._utils.files import UTF8
@@ -15,20 +14,16 @@ from ._versionnote import VersionNote
 from ._versionscanner import VersionScanner
 
 
-@dataclass
 class IO[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](abc.ABC):
     """Abstract base class for loading :class:`~chango.abc.ChangeNote`,
     :class:`~chango.abc.VersionNote` and :class:`~chango.abc.VersionHistory` objects as well
     as writing :class:`~chango.abc.ChangeNote` objects.
-
-    Args:
-        scanner: The :class:`~chango.abc.VersionScanner` to use.
-
-    Attributes:
-        scanner: The used :class:`~chango.abc.VersionScanner`.
     """
 
-    scanner: VST
+    @property
+    @abc.abstractmethod
+    def scanner(self) -> VST:
+        """The used :class:`~chango.abc.VersionScanner`."""
 
     @classmethod
     @abc.abstractmethod
@@ -92,7 +87,7 @@ class IO[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Change
             uid: The unique identifier or file name of the version note to load.
         """
         changes = self.scanner.get_changes(uid)
-        release_date = self.scanner.get_release_date(uid)
+        release_date = self.scanner.get_release_date(uid) if uid else None
         version_note = self.build_version_note(uid=uid, date=release_date)
         for change in changes:
             version_note.add_change_note(self.load_change_note(change))
@@ -100,15 +95,18 @@ class IO[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Change
         return version_note
 
     def load_version_history(
-        self, start_from: str | None = None, end_at: str | None = None
+        self, start_from: VersionUID = None, end_at: VersionUID = None
     ) -> VersionHistory:
         """Load the version history.
+
+        Important:
+            Unreleased changes must be included in the returned version history, if available.
 
         Args:
             start_from: The version identifier to start from. If :obj:`None`, start from the
                 earliest available version.
             end_at: The version identifier to end at. If :obj:`None`, end at the latest available
-                version, including unreleased changes.
+                version, *including* unreleased changes.
 
         Returns:
             The loaded version history.

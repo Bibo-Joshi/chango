@@ -45,19 +45,25 @@ class VersionScanner(Collection[str]):
 
     @abc.abstractmethod
     def get_available_versions(
-        self, start_from: str | None = None, end_at: str | None = None
-    ) -> tuple[str]:
+        self, start_from: VersionUID = None, end_at: VersionUID = None
+    ) -> tuple[str, ...]:
         """Get the available version identifiers.
+
+        Important:
+            Unreleased changes must *not* be included in the returned version identifiers.
 
         Args:
             start_from: The version identifier to start from. If :obj:`None`, start from the
                 earliest available version.
             end_at: The version identifier to end at. If :obj:`None`, end at the latest available
-                version, including unreleased changes.
+                version, *excluding* unreleased changes.
+
+        Returns:
+            The available version identifiers.
         """
 
     @abc.abstractmethod
-    def get_changes(self, uid: VersionUID | None = None) -> tuple[str]:
+    def get_changes(self, uid: VersionUID = None) -> tuple[str, ...]:
         """Get the changes either for a given version identifier or all available.
 
         Hint:
@@ -77,10 +83,9 @@ class VersionScanner(Collection[str]):
         """
 
     @abc.abstractmethod
-    def get_release_date(self, uid: VersionUID) -> dtm.date | None:
+    def get_release_date(self, uid: str) -> dtm.date | None:
         """Get the release date of a given version
 
         Args:
-            uid: The version identifier to get the release date for. If
-                :obj:`None`, get the release date for the latest version.
+            uid: The version identifier to get the release date for.
         """

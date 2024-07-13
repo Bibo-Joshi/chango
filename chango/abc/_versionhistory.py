@@ -7,11 +7,12 @@ from collections.abc import Iterator, MutableMapping
 from dataclasses import dataclass, field
 
 from chango._utils.files import UTF8
+from chango._utils.types import VersionUID
 from chango.abc._versionnote import VersionNote
 
 
 @dataclass
-class VersionHistory[VNT: VersionNote](MutableMapping[str | None, VNT], abc.ABC):
+class VersionHistory[VNT: VersionNote](MutableMapping[VersionUID, VNT], abc.ABC):
     """Abstract base class for a version history describing the versions in a software project over
     several versions.
 
@@ -21,21 +22,21 @@ class VersionHistory[VNT: VersionNote](MutableMapping[str | None, VNT], abc.ABC)
         themselves.
     """
 
-    _version_notes: dict[str | None, VNT] = field(default_factory=dict, init=False)
+    _version_notes: dict[VersionUID, VNT] = field(default_factory=dict, init=False)
 
-    def __delitem__(self, __key: str | None) -> None:
+    def __delitem__(self, __key: VersionUID) -> None:
         del self._version_notes[__key]
 
-    def __getitem__(self, __key: str | None) -> VNT:
+    def __getitem__(self, __key: VersionUID) -> VNT:
         return self._version_notes[__key]
 
-    def __iter__(self) -> Iterator[str | None]:
+    def __iter__(self) -> Iterator[VersionUID]:
         return iter(self._version_notes)
 
     def __len__(self) -> int:
         return len(self._version_notes)
 
-    def __setitem__(self, __key: str | None, __value: VNT) -> None:
+    def __setitem__(self, __key: VersionUID, __value: VNT) -> None:
         if __key != __value.uid:
             warnings.warn(
                 f"Key {__key!r} does not match version note UID {__value.uid!r}. "

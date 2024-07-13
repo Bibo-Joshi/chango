@@ -2,11 +2,13 @@
 #
 #  SPDX-License-Identifier: MIT
 import string
+from typing import override
 
 from chango._utils.files import UTF8
 from chango.abc import VersionHistory, VersionNote
 from chango.constants import MarkupLanguage
 from chango.errors import UnsupportedMarkupError
+from chango.helpers import filter_released
 
 
 class HeaderVersionHistory[VNT: VersionNote](VersionHistory[VNT]):
@@ -14,6 +16,7 @@ class HeaderVersionHistory[VNT: VersionNote](VersionHistory[VNT]):
     the version UID as header, followed by the release date if available.
     """
 
+    @override
     def render(self, markup: str, encoding: str = UTF8) -> str:
         """Does the rendering.
 
@@ -25,10 +28,11 @@ class HeaderVersionHistory[VNT: VersionNote](VersionHistory[VNT]):
             in the order they were added to the version history.
 
         """
-        has_dates = all(note.date for note in self.values())
+        released_notes = list(filter_released(self.values()))
+        has_dates = all(note.date for note in released_notes)
         if has_dates:
             changes = sorted(
-                self.values(),
+                released_notes,
                 key=lambda note: note.date,  # type: ignore[reportArgumentType]
             )
             match markup:
@@ -44,7 +48,7 @@ class HeaderVersionHistory[VNT: VersionNote](VersionHistory[VNT]):
                         f"and reStructuredText"
                     )
         else:
-            changes = self.values()
+            changes = released_notes
             match markup:
                 case MarkupLanguage.MARKDOWN:
                     tpl_str = "#$uid\n\n$comment"
@@ -58,10 +62,13 @@ class HeaderVersionHistory[VNT: VersionNote](VersionHistory[VNT]):
                         f"and reStructuredText"
                     )
 
+        if None in self:
+            changes.insert(0, self[None])
+
         template = string.Template(tpl_str)
         return "\n\n".join(
             template.substitute(
-                uid=note.uid,
+                uid=note.uid or "Unreleased",
                 date=note.date.isoformat() if note.date else "",
                 comment=note.render(markup, encoding),
             )

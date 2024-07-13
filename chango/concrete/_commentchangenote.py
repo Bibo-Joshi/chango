@@ -26,13 +26,16 @@ class CommentChangeNote(ChangeNote):
     """
 
     @property
+    @override
     def file_extension(self) -> str:
         return self.MARKUP
 
     @classmethod
+    @override
     def from_string(cls, string: str) -> Self:
         return cls(string)
 
+    @override
     def to_bytes(self, encoding: str = UTF8) -> bytes:
         return self.comment.encode(encoding)
 
