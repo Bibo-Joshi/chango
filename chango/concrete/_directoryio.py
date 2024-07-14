@@ -6,7 +6,6 @@ from typing import override
 
 from chango.abc import IO, ChangeNote, VersionHistory, VersionNote
 
-from .._utils.filename import FileName
 from .._utils.types import VUIDInput
 from ._directoryversionscanner import DirectoryVersionScanner
 
@@ -67,13 +66,7 @@ class DirectoryIO[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
 
     @override
     def load_change_note(self, uid: str) -> CNT:
-        version = self.scanner.get_version_for_change_note(uid)
-        file = next(
-            file
-            for file in self.get_write_directory(change_note=uid, version=version).iterdir()
-            if FileName.from_string(file.name).uid == uid
-        )
-        return self.change_note_type.from_file(file)
+        return self.change_note_type.from_file(self.scanner.locate_change_note(uid))
 
     @override
     def get_write_directory(self, change_note: CNT | str, version: VUIDInput) -> Path:

@@ -36,8 +36,7 @@ def new(slug: str, edit: bool = True):
     """
     change_note = CommentChangeNote(slug=slug, comment="comment")
     path = IO.write_change_note(change_note, version=None)
-    typer.echo(f"Created new change note with {change_note.file_name}")
-    typer.echo(path.as_posix())
+    typer.echo(f"Created new change note {change_note.file_name}")
     if edit:
         typer.launch(path.as_posix())
 

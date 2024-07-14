@@ -139,6 +139,15 @@ class DirectoryVersionScanner(VersionScanner):
             if (start is None or uid >= start) and (end is None or uid <= end)
         )
 
+    def _get_file_names(self, uid: VUIDInput) -> tuple[str, ...]:
+        directory = (
+            self._available_versions[ensure_uid(uid)].directory
+            if uid
+            else self.unreleased_directory
+        )
+
+        return tuple(change.name for change in directory.iterdir() if change.is_file())
+
     def _locate_change_note(self, change_note: CNUIDInput) -> tuple[VersionIO, Path]:
         uid = ensure_uid(change_note)
 
@@ -166,15 +175,6 @@ class DirectoryVersionScanner(VersionScanner):
     @override
     def get_version(self, uid: str) -> Version:
         return self._get_available_version(uid)
-
-    def _get_file_names(self, uid: VUIDInput) -> tuple[str, ...]:
-        directory = (
-            self._available_versions[ensure_uid(uid)].directory
-            if uid
-            else self.unreleased_directory
-        )
-
-        return tuple(change.name for change in directory.iterdir() if change.is_file())
 
     @override
     def get_changes(self, uid: VUIDInput = None) -> tuple[str, ...]:
