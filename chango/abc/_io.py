@@ -46,7 +46,7 @@ class IO[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Change
         """
 
     @abc.abstractmethod
-    def get_directory(self, change_note: CNT | str, version: VUIDInput) -> Path:
+    def get_write_directory(self, change_note: CNT | str, version: VUIDInput) -> Path:
         """Determine the directory to write a change note to.
 
         Hint:
@@ -73,7 +73,7 @@ class IO[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Change
             The file path the change note was written to.
         """
         return change_note.to_file(
-            self.get_directory(change_note=change_note, version=version), encoding=encoding
+            self.get_write_directory(change_note=change_note, version=version), encoding=encoding
         )
 
     def load_version_note(self, version: VUIDInput) -> VersionNote:
@@ -108,6 +108,10 @@ class IO[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Change
             The loaded version history.
         """
         version_history = self.build_version_history()
+
+        if self.scanner.has_unreleased_changes():
+            version_history.add_version_note(self.load_version_note(None))
+
         for version in self.scanner.get_available_versions(start_from=start_from, end_at=end_at):
             version_history.add_version_note(self.load_version_note(version))
 

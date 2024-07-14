@@ -70,13 +70,13 @@ class DirectoryIO[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
         version = self.scanner.get_version_for_change_note(uid)
         file = next(
             file
-            for file in self.get_directory(change_note=uid, version=version).iterdir()
+            for file in self.get_write_directory(change_note=uid, version=version).iterdir()
             if FileName.from_string(file.name).uid == uid
         )
         return self.change_note_type.from_file(file)
 
     @override
-    def get_directory(self, change_note: CNT | str, version: VUIDInput) -> Path:
+    def get_write_directory(self, change_note: CNT | str, version: VUIDInput) -> Path:
         if version is None:
             directory = self.scanner.unreleased_directory
         else:

@@ -63,10 +63,14 @@ class ChangeNote(abc.ABC):
         Raises:
             :class:`chango.errors.ValidationError`: If the data is not a valid change note file.
         """
-        return cls.from_bytes(Path(file_path).read_bytes(), encoding=encoding)
+        path = Path(file_path)
+        file_name = FileName.from_string(path.name)
+        return cls.from_bytes(
+            slug=file_name.slug, uid=file_name.uid, data=path.read_bytes(), encoding=encoding
+        )
 
     @classmethod
-    def from_bytes(cls, data: bytes, encoding: str = UTF8) -> Self:
+    def from_bytes(cls, slug: str, uid: str, data: bytes, encoding: str = UTF8) -> Self:
         """
         Read a change note from the specified byte data. The data will be the raw binary content
         of a change note file.
@@ -75,6 +79,8 @@ class ChangeNote(abc.ABC):
             This convenience method calls :meth:`from_string` internally.
 
         Args:
+            slug: The slug of the change note.
+            uid: The UID of the change note.
             data: The bytes to read from.
             encoding: The encoding to use for reading.
 
@@ -84,16 +90,18 @@ class ChangeNote(abc.ABC):
         Raises:
             :class:`chango.errors.ValidationError`: If the data is not a valid change note file.
         """
-        return cls.from_string(data.decode(encoding))
+        return cls.from_string(slug=slug, uid=uid, string=data.decode(encoding))
 
     @classmethod
     @abc.abstractmethod
-    def from_string(cls, string: str) -> Self:
+    def from_string(cls, slug: str, uid: str, string: str) -> Self:
         """Read a change note from the specified string data. The implementation must be able to
         handle the case where the string is not a valid change note and raise an
         :exc:`~chango.errors.ValidationError` in that case.
 
         Args:
+            slug: The slug of the change note.
+            uid: The UID of the change note.
             string: The string to read from.
 
         Returns:
@@ -146,5 +154,6 @@ class ChangeNote(abc.ABC):
             :class:`pathlib.Path`: The path to the file that was written.
         """
         path = Path(directory) if directory else Path.cwd()
-        (path / self.file_name).write_bytes(self.to_bytes(encoding=encoding))
-        return path
+        write_path = path / self.file_name
+        write_path.write_bytes(self.to_bytes(encoding=encoding))
+        return write_path

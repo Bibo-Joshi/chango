@@ -2,6 +2,7 @@
 #
 #  SPDX-License-Identifier: MIT
 import datetime as dtm
+import itertools
 import re
 from pathlib import Path
 from typing import NamedTuple, override
@@ -11,7 +12,7 @@ from chango._utils.types import CNUIDInput, PathLike, VersionIO, VUIDInput
 from chango.abc import Version, VersionScanner
 from chango.helpers import ensure_uid
 
-_DEFAULT_PATTERN = re.compile(r"(?P<uid>[^_]+)(_(?P<date>[\d-]+))?")
+_DEFAULT_PATTERN = re.compile(r"(?P<uid>[^_]+)_(?P<date>[\d-]+)")
 
 
 class _VersionInfo(NamedTuple):
@@ -55,8 +56,6 @@ class DirectoryVersionScanner(VersionScanner):
             self.unreleased_directory: Path = path
         else:
             self.unreleased_directory: Path = self.base_directory / unreleased_directory
-        if not self.unreleased_directory.is_dir():
-            raise ValueError(f"Unreleased directory '{self.unreleased_directory}' does not exist.")
 
         self.__available_versions: dict[str, _VersionInfo] | None = None
 
@@ -140,36 +139,47 @@ class DirectoryVersionScanner(VersionScanner):
             if (start is None or uid >= start) and (end is None or uid <= end)
         )
 
+    def _locate_change_note(self, change_note: CNUIDInput) -> tuple[VersionIO, Path]:
+        uid = ensure_uid(change_note)
+
+        try:
+            version, file_name = next(
+                (self._get_available_version(version_uid) if version_uid else None, name)
+                for version_uid in itertools.chain(self._available_versions, (None,))
+                for name in self._get_file_names(version_uid)
+                if uid == FileName.from_string(name).uid
+            )
+            directory = (
+                self._available_versions[version.uid].directory
+                if version
+                else self.unreleased_directory
+            )
+        except StopIteration as exc:
+            raise ValueError(f"Change note '{uid}' not found in any version.") from exc
+
+        return version, directory / file_name
+
+    @override
+    def locate_change_note(self, change_note: CNUIDInput) -> Path:
+        return self._locate_change_note(change_note)[1]
+
     @override
     def get_version(self, uid: str) -> Version:
         return self._get_available_version(uid)
 
-    @override
-    def get_changes(self, uid: VUIDInput = None) -> tuple[str, ...]:
+    def _get_file_names(self, uid: VUIDInput) -> tuple[str, ...]:
         directory = (
             self._available_versions[ensure_uid(uid)].directory
             if uid
             else self.unreleased_directory
         )
 
-        return tuple(
-            FileName.from_string(change.name).uid
-            for change in directory.iterdir()
-            if change.is_file()
-        )
+        return tuple(change.name for change in directory.iterdir() if change.is_file())
+
+    @override
+    def get_changes(self, uid: VUIDInput = None) -> tuple[str, ...]:
+        return tuple(FileName.from_string(name).uid for name in self._get_file_names(uid))
 
     @override
     def get_version_for_change_note(self, change_note: CNUIDInput) -> VersionIO:
-        uid = ensure_uid(change_note)
-
-        if uid in self.get_changes(None):
-            return None
-
-        try:
-            return next(
-                self._get_available_version(version_uid)
-                for version_uid, info in self._available_versions.items()
-                if uid in self.get_changes(version_uid)
-            )
-        except StopIteration as exc:
-            raise ValueError(f"Change note '{uid}' not found in any version.") from exc
+        return self._locate_change_note(change_note)[0]

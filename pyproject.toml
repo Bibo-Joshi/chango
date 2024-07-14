@@ -23,7 +23,9 @@ classifiers = [
   "Topic :: Software Development :: Documentation",
   "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-dependencies = []
+dependencies = [
+  "typer~=0.12",
+]
 
 [project.urls]
 Documentation = "https://chango.readthedocs.io/"

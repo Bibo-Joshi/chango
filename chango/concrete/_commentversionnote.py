@@ -8,7 +8,6 @@ from chango._utils.types import VersionIO
 from chango.abc import VersionNote
 from chango.concrete import CommentChangeNote
 from chango.constants import MarkupLanguage
-from chango.errors import UnsupportedMarkupError
 
 
 def _indent_multiline(text: str, indent: int = 2) -> str:
@@ -37,11 +36,6 @@ class CommentVersionNote[V: VersionIO](VersionNote[CommentChangeNote, V]):
             :exc:`~chango.error.UnsupportedMarkupError`: If the ``markup`` parameter does not
                 coincide with :attr:`chango.concrete.CommentChangeNote.MARKUP`
         """
-        if markup != CommentChangeNote.MARKUP:
-            raise UnsupportedMarkupError(
-                f"Got unsupported markup '{markup}', can only render '{CommentChangeNote.MARKUP}'"
-            )
-
         match MarkupLanguage.from_string(markup):
             case MarkupLanguage.MARKDOWN:
                 return "\n".join(f"- {_indent_multiline(note.comment)}" for note in self.values())

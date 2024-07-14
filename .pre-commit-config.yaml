@@ -30,6 +30,7 @@ repos:
         files: ^(?!(tests)).*\.py$
         additional_dependencies:
           - sphinx~=7.3
+          - typer~=0.12
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.16.0
     hooks:
