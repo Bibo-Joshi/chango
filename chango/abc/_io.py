@@ -2,11 +2,10 @@
 #
 #  SPDX-License-Identifier: MIT
 import abc
-import datetime as dtm
 from pathlib import Path
 
 from chango._utils.files import UTF8
-from chango._utils.types import VersionUID
+from chango._utils.types import VUIDInput
 
 from ._changenote import ChangeNote
 from ._versionhistory import VersionHistory
@@ -25,20 +24,17 @@ class IO[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Change
     def scanner(self) -> VST:
         """The used :class:`~chango.abc.VersionScanner`."""
 
-    @classmethod
     @abc.abstractmethod
-    def build_version_note(cls, uid: VersionUID, date: dtm.date | None = None) -> VNT:
+    def build_version_note(self, version: VUIDInput) -> VNT:
         """Build a new empty version note.
 
         Args:
-            uid: The version identifier of the software project this note is for.
+            version: The version of the software project this note is for.
                 May be :obj:`None` if the version is not yet released.
-            date: The date of the version release.
         """
 
-    @classmethod
     @abc.abstractmethod
-    def build_version_history(cls) -> VHT:
+    def build_version_history(self) -> VHT:
         """Build a new empty version history."""
 
     @abc.abstractmethod
@@ -50,26 +46,26 @@ class IO[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Change
         """
 
     @abc.abstractmethod
-    def get_directory(self, change_note: CNT, version_uid: VersionUID) -> Path:
+    def get_directory(self, change_note: CNT | str, version: VUIDInput) -> Path:
         """Determine the directory to write a change note to.
 
         Hint:
             Ideally, it should be ensured that the directory exists.
 
         Args:
-            change_note: The change note to write.
-            version_uid: The identifier of the version the change note belongs to. Maybe be
+            change_note: The change note to write or its UID.
+            version: The version the change note belongs to. Maybe be
                 :obj:`None` if the change note is not yet released.
         """
 
     def write_change_note(
-        self, change_note: CNT, version_uid: VersionUID, encoding: str = UTF8
+        self, change_note: CNT, version: VUIDInput, encoding: str = UTF8
     ) -> Path:
         """Write a change note to disk.
 
         Args:
             change_note: The change note to write.
-            version_uid: The identifier of the version the change note belongs to. Maybe be
+            version: The version the change note belongs to. Maybe be
                 :obj:`None` if the change note is not yet released.
             encoding: The encoding to use for writing.
 
@@ -77,25 +73,25 @@ class IO[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Change
             The file path the change note was written to.
         """
         return change_note.to_file(
-            self.get_directory(change_note=change_note, version_uid=version_uid), encoding=encoding
+            self.get_directory(change_note=change_note, version=version), encoding=encoding
         )
 
-    def load_version_note(self, uid: VersionUID) -> VersionNote:
-        """Load a version note with the given identifier.
+    def load_version_note(self, version: VUIDInput) -> VersionNote:
+        """Load a version note.
 
         Args:
-            uid: The unique identifier or file name of the version note to load.
+            version: The version of the version note to load. May be :obj:`None` if the version is
+                not yet released.
         """
-        changes = self.scanner.get_changes(uid)
-        release_date = self.scanner.get_release_date(uid) if uid else None
-        version_note = self.build_version_note(uid=uid, date=release_date)
+        changes = self.scanner.get_changes(version)
+        version_note = self.build_version_note(version=version)
         for change in changes:
             version_note.add_change_note(self.load_change_note(change))
 
         return version_note
 
     def load_version_history(
-        self, start_from: VersionUID = None, end_at: VersionUID = None
+        self, start_from: VUIDInput = None, end_at: VUIDInput = None
     ) -> VersionHistory:
         """Load the version history.
 
@@ -103,9 +99,9 @@ class IO[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Change
             Unreleased changes must be included in the returned version history, if available.
 
         Args:
-            start_from: The version identifier to start from. If :obj:`None`, start from the
+            start_from: The version to start from. If :obj:`None`, start from the
                 earliest available version.
-            end_at: The version identifier to end at. If :obj:`None`, end at the latest available
+            end_at: The version to end at. If :obj:`None`, end at the latest available
                 version, *including* unreleased changes.
 
         Returns:

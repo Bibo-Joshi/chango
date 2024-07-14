@@ -6,15 +6,19 @@ import datetime as dtm
 import warnings
 from collections.abc import Iterator, MutableMapping
 from dataclasses import dataclass, field
+from typing import TYPE_CHECKING, overload
 
 from chango._utils.filename import FileName
 from chango._utils.files import UTF8
-from chango._utils.types import VersionUID
+from chango._utils.types import VersionIO
 from chango.abc._changenote import ChangeNote
+
+if TYPE_CHECKING:
+    from chango.abc._version import Version
 
 
 @dataclass
-class VersionNote[CNT: ChangeNote](MutableMapping[str, CNT], abc.ABC):
+class VersionNote[CNT: ChangeNote, V: VersionIO](MutableMapping[str, CNT], abc.ABC):
     """Abstract base class for a version note describing the set of changes in a software project
     for a single version.
 
@@ -29,18 +33,15 @@ class VersionNote[CNT: ChangeNote](MutableMapping[str, CNT], abc.ABC):
         may interfere with the order in which they are displayed.
 
     Args:
-        uid: The version identifier of the software project this note is for.
+        version: The version of the software project this note is for.
             May be :obj:`None` if the version is not yet released.
-        date: The date of the version release.
 
     Attributes:
-        uid: The version identifier of the software project this note is for.
+        version: The version of the software project this note is for.
             May be :obj:`None` if the version is not yet released.
-        date: The date of the version release.
     """
 
-    uid: VersionUID
-    date: dtm.date | None = None
+    version: V
     _change_notes: dict[str, CNT] = field(default_factory=dict, init=False)
 
     def __delitem__(self, __key: str) -> None:
@@ -69,6 +70,42 @@ class VersionNote[CNT: ChangeNote](MutableMapping[str, CNT], abc.ABC):
                 stacklevel=2,
             )
         self._change_notes[__value.uid] = __value
+
+    @overload
+    def uid(self: "VersionNote[CNT, Version]") -> str: ...
+
+    @overload
+    def uid(self: "VersionNote[CNT, None]") -> None: ...
+
+    @property
+    def uid(self) -> str | None:
+        """Convenience property for the version UID.
+
+        Returns:
+            :obj:`str` | :obj:`None`: The UID of :attr:`version` if available, :obj:`None`
+                otherwise.
+        """
+        if self.version is None:
+            return None
+        return self.version.uid
+
+    @overload
+    def date(self: "VersionNote[CNT, Version]") -> dtm.date: ...
+
+    @overload
+    def date(self: "VersionNote[CNT, None]") -> None: ...
+
+    @property
+    def date(self) -> dtm.date | None:
+        """Convenience property for the version UID.
+
+        Returns:
+            :class:`datetime.date` | :obj:`None`: The release date of :attr:`version` if available,
+                :obj:`None` otherwise.
+        """
+        if self.version is None:
+            return None
+        return self.version.date
 
     def add_change_note(self, change_note: CNT) -> None:
         """Add a change note to the version note.

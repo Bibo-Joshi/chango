@@ -1,12 +1,11 @@
 #  SPDX-FileCopyrightText: 2024-present Hinrich Mahler <chango@mahlerhome.de>
 #
 #  SPDX-License-Identifier: MIT
-from collections.abc import Iterable
 from pathlib import Path
 from typing import Protocol, overload
 
 from chango._utils.filename import FileName
-from chango._utils.types import PathLike, VersionUID
+from chango._utils.types import PathLike
 
 
 def change_uid_from_file(file: PathLike) -> str:
@@ -24,29 +23,42 @@ def change_uid_from_file(file: PathLike) -> str:
 
 
 class _UIDProtocol(Protocol):
-    uid: VersionUID
+    uid: str
+
+
+class _UIDPropProtocol(Protocol):
+    @property
+    def uid(self) -> str: ...
 
 
 @overload
-def filter_released(sequence: Iterable[VersionUID], /) -> Iterable[str]: ...
+def ensure_uid(obj: _UIDProtocol | _UIDPropProtocol) -> str: ...
 
 
 @overload
-def filter_released[T: _UIDProtocol](sequence: Iterable[T], /) -> Iterable[T]: ...
+def ensure_uid(obj: None) -> None: ...
 
 
-def filter_released[T: _UIDProtocol | VersionUID](sequence: Iterable[T], /) -> Iterable[T]:
-    """Filter a sequence of objects to only contain released versions.
+@overload
+def ensure_uid(obj: str) -> str: ...
+
+
+def ensure_uid(obj: _UIDProtocol | _UIDPropProtocol | str | None) -> str | None:
+    """Extract the unique identifier of an object. Input of type :obj:`str` and :obj:`None`
+    is returned unchanged.
 
     Args:
-        sequence: The sequence of objects to filter. The objects must either all have a
-            :attr:`~chango.abc.VersionNote.uid` or be of type :obj:`str`/:obj:`None`, representing
-            the version identifier.
+        obj: An object that either
+            * has a string attribute ``uid``, e.g. :class:`~chango.abc.ChangeNote`
+              or :class:`~chango.abc.Version`
+            * is a :obj:`str`
+            * is :obj:`None` (supported for convenience)
 
     Returns:
-        A list of objects that have/represent a released version identifier.
+        :obj:`str` | :obj:`None`: The extracted UID if available and :obj:`None` else.
     """
-    try:
-        return filter(lambda obj: obj.uid is not None, sequence)  # type: ignore
-    except AttributeError:
-        return filter(lambda obj: obj is not None, sequence)
+    if obj is None:
+        return None
+    if isinstance(obj, str):
+        return obj
+    return obj.uid

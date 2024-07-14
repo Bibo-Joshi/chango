@@ -8,7 +8,6 @@ from chango._utils.files import UTF8
 from chango.abc import VersionHistory, VersionNote
 from chango.constants import MarkupLanguage
 from chango.errors import UnsupportedMarkupError
-from chango.helpers import filter_released
 
 
 class HeaderVersionHistory[VNT: VersionNote](VersionHistory[VNT]):
@@ -28,7 +27,7 @@ class HeaderVersionHistory[VNT: VersionNote](VersionHistory[VNT]):
             in the order they were added to the version history.
 
         """
-        released_notes = list(filter_released(self.values()))
+        released_notes = list(filter(lambda note: note.version, self.values()))
         has_dates = all(note.date for note in released_notes)
         if has_dates:
             changes = sorted(

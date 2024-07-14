@@ -7,15 +7,15 @@ from pathlib import Path
 from typing import NamedTuple, override
 
 from chango._utils.filename import FileName
-from chango._utils.types import PathLike, VersionUID
-from chango.abc import VersionScanner
-from chango.helpers import filter_released
+from chango._utils.types import CNUIDInput, PathLike, VersionIO, VUIDInput
+from chango.abc import Version, VersionScanner
+from chango.helpers import ensure_uid
 
 _DEFAULT_PATTERN = re.compile(r"(?P<uid>[^_]+)(_(?P<date>[\d-]+))?")
 
 
 class _VersionInfo(NamedTuple):
-    date: dtm.date | None
+    date: dtm.date
     directory: Path
 
 
@@ -28,9 +28,9 @@ class DirectoryVersionScanner(VersionScanner):
         unreleased_directory: The directory that contains unreleased changes. If
             :meth:`path.Path.is_dir` returns :obj:`False` for this directory, it will be assumed
             to be a subdirectory of the base directory.
-        directory_pattern: The pattern to match version directories against. Must contain at least
-            one named group ``uid`` for the version identifier and optionally a second named group
-            for the ``date`` for the date of the version release in ISO format.
+        directory_pattern: The pattern to match version directories against. Must contain one named
+            group ``uid`` for the version identifier and a second named group for the ``date`` for
+            the date of the version release in ISO format.
 
     Attributes:
         base_directory: The base directory to scan for version directories.
@@ -58,32 +58,35 @@ class DirectoryVersionScanner(VersionScanner):
         if not self.unreleased_directory.is_dir():
             raise ValueError(f"Unreleased directory '{self.unreleased_directory}' does not exist.")
 
-        self.__available_versions: dict[VersionUID, _VersionInfo] | None = None
+        self.__available_versions: dict[str, _VersionInfo] | None = None
 
     @property
-    def _available_versions(self) -> dict[VersionUID, _VersionInfo]:
+    def _available_versions(self) -> dict[str, _VersionInfo]:
         # Simple Cache for the available versions
-        if self.__available_versions is None:
-            self.__available_versions = {}
-            for directory in self.base_directory.iterdir():
-                if not directory.is_dir() or not (
-                    match := self.directory_pattern.match(directory.name)
-                ):
-                    continue
+        if self.__available_versions is not None:
+            return self.__available_versions
 
-                uid = match.group("uid")
-                try:
-                    date = dtm.date.fromisoformat(match.group("date"))
-                except IndexError:
-                    date = None
-                self.__available_versions[uid] = _VersionInfo(date, directory)
+        self.__available_versions = {}
+        for directory in self.base_directory.iterdir():
+            if not directory.is_dir() or not (
+                match := self.directory_pattern.match(directory.name)
+            ):
+                continue
 
-            self.__available_versions[None] = _VersionInfo(None, self.unreleased_directory)
+            uid = match.group("uid")
+            date = dtm.date.fromisoformat(match.group("date"))
+            self.__available_versions[uid] = _VersionInfo(date, directory)
+
         return self.__available_versions
 
+    def _get_available_version(self, uid: str) -> Version:
+        return Version(uid=uid, date=self._available_versions[uid].date)
+
     @override
-    def is_available(self, uid: str) -> bool:
-        return uid in self._available_versions
+    def is_available(self, uid: VUIDInput) -> bool:
+        if uid is None:
+            return self.has_unreleased_changes()
+        return ensure_uid(uid) in self._available_versions
 
     @override
     def has_unreleased_changes(self) -> bool:
@@ -97,7 +100,7 @@ class DirectoryVersionScanner(VersionScanner):
             return False
 
     @override
-    def get_latest_version(self) -> str:
+    def get_latest_version(self) -> Version:
         """Implementation of :meth:`chango.abc.VersionScanner.get_latest_version`.
 
         Important:
@@ -106,33 +109,44 @@ class DirectoryVersionScanner(VersionScanner):
             lexicographical comparison of the version identifiers is employed.
 
         """
-        uids = filter_released(self._available_versions)
         if all(vi.date is not None or uid is None for uid, vi in self._available_versions.items()):
-            return max(uids, key=lambda uid: (self._available_versions[uid].date, uid))
-        return max(uids)
+            uid: str = max(
+                self._available_versions, key=lambda uid: (self._available_versions[uid].date, uid)
+            )
+        else:
+            uid = max(self._available_versions)
+
+        return self._get_available_version(uid)
 
     @override
     def get_available_versions(
-        self, start_from: VersionUID = None, end_at: VersionUID = None
-    ) -> tuple[str, ...]:
+        self, start_from: VUIDInput = None, end_at: VUIDInput = None
+    ) -> tuple[Version, ...]:
         """Implementation of :meth:`chango.abc.VersionScanner.get_available_versions`.
 
         Important:
             Limiting the version range by ``start_from`` and ``end_at`` is based on
             lexicographical comparison of the version identifiers.
         """
+        start = ensure_uid(start_from)
+        end = ensure_uid(end_at)
         return tuple(
-            uid
+            self._get_available_version(uid)
             for uid in self._available_versions
-            # None check is needed for handling the unreleased version
-            if uid
-            and (start_from is None or uid >= start_from)
-            and (end_at is None or uid <= end_at)
+            if (start is None or uid >= start) and (end is None or uid <= end)
         )
 
     @override
-    def get_changes(self, uid: VersionUID = None) -> tuple[str, ...]:
-        directory = self._available_versions[uid].directory
+    def get_version(self, uid: str) -> Version:
+        return self._get_available_version(uid)
+
+    @override
+    def get_changes(self, uid: VUIDInput = None) -> tuple[str, ...]:
+        directory = (
+            self._available_versions[ensure_uid(uid)].directory
+            if uid
+            else self.unreleased_directory
+        )
 
         return tuple(
             FileName.from_string(change.name).uid
@@ -141,5 +155,17 @@ class DirectoryVersionScanner(VersionScanner):
         )
 
     @override
-    def get_release_date(self, uid: str) -> dtm.date | None:
-        return self._available_versions[uid].date
+    def get_version_for_change_note(self, change_note: CNUIDInput) -> VersionIO:
+        uid = ensure_uid(change_note)
+
+        if uid in self.get_changes(None):
+            return None
+
+        try:
+            return next(
+                self._get_available_version(version_uid)
+                for version_uid, info in self._available_versions.items()
+                if uid in self.get_changes(version_uid)
+            )
+        except StopIteration as exc:
+            raise ValueError(f"Change note '{uid}' not found in any version.") from exc

@@ -50,6 +50,10 @@ select = ["E", "F", "I", "PL", "UP", "RUF", "PTH", "C4", "B", "PIE", "SIM", "RET
           "RUF023", "Q", "INP", "W", "YTT", "DTZ", "ARG"]
 ignore = ["ISC001"]
 
+[tool.ruff.lint.pylint]
+# 6 = 5 + 1 due to https://github.com/astral-sh/ruff/issues/12320
+max-args = 6
+
 [tool.ruff.lint.isort]
 split-on-trailing-comma = false
 

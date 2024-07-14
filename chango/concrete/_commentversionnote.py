@@ -4,6 +4,7 @@
 from typing import override
 
 from chango._utils.files import UTF8
+from chango._utils.types import VersionIO
 from chango.abc import VersionNote
 from chango.concrete import CommentChangeNote
 from chango.constants import MarkupLanguage
@@ -17,7 +18,7 @@ def _indent_multiline(text: str, indent: int = 2) -> str:
     )
 
 
-class CommentVersionNote(VersionNote[CommentChangeNote]):
+class CommentVersionNote[V: VersionIO](VersionNote[CommentChangeNote, V]):
     """A simple version note implementation that works with
     :class:`~chango.concrete.CommentChangeNote`.
     """

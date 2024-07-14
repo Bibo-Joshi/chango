@@ -7,8 +7,9 @@ from collections.abc import Iterator, MutableMapping
 from dataclasses import dataclass, field
 
 from chango._utils.files import UTF8
-from chango._utils.types import VersionUID
+from chango._utils.types import VersionUID, VUIDInput
 from chango.abc._versionnote import VersionNote
+from chango.helpers import ensure_uid
 
 
 @dataclass
@@ -24,11 +25,11 @@ class VersionHistory[VNT: VersionNote](MutableMapping[VersionUID, VNT], abc.ABC)
 
     _version_notes: dict[VersionUID, VNT] = field(default_factory=dict, init=False)
 
-    def __delitem__(self, __key: VersionUID) -> None:
-        del self._version_notes[__key]
+    def __delitem__(self, __key: VUIDInput) -> None:
+        del self._version_notes[ensure_uid(__key)]
 
-    def __getitem__(self, __key: VersionUID) -> VNT:
-        return self._version_notes[__key]
+    def __getitem__(self, __key: VUIDInput) -> VNT:
+        return self._version_notes[ensure_uid(__key)]
 
     def __iter__(self) -> Iterator[VersionUID]:
         return iter(self._version_notes)
@@ -36,8 +37,8 @@ class VersionHistory[VNT: VersionNote](MutableMapping[VersionUID, VNT], abc.ABC)
     def __len__(self) -> int:
         return len(self._version_notes)
 
-    def __setitem__(self, __key: VersionUID, __value: VNT) -> None:
-        if __key != __value.uid:
+    def __setitem__(self, __key: VUIDInput, __value: VNT) -> None:
+        if ensure_uid(__key) != __value.uid:
             warnings.warn(
                 f"Key {__key!r} does not match version note UID {__value.uid!r}. "
                 "Using value the version UID as key.",

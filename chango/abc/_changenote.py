@@ -7,7 +7,7 @@ from typing import Self
 
 from chango._utils.filename import FileName
 from chango._utils.files import UTF8
-from chango._utils.types import PathLike, VersionUID
+from chango._utils.types import PathLike
 
 
 class ChangeNote(abc.ABC):
@@ -20,7 +20,7 @@ class ChangeNote(abc.ABC):
             lowercase letters and digits.
     """
 
-    def __init__(self, slug: str, uid: VersionUID = None):
+    def __init__(self, slug: str, uid: str | None = None):
         self._file_name = FileName(slug=slug, uid=uid) if uid else FileName(slug=slug)
 
     @property
