@@ -107,7 +107,6 @@ class DirectoryVersionScanner(VersionScanner):
             If the release date is available for all versions, the latest version is determined
             based on the release date. Otherwise, and in case of multiple releases on the same day,
             lexicographical comparison of the version identifiers is employed.
-
         """
         if all(vi.date is not None or uid is None for uid, vi in self._available_versions.items()):
             uid: str = max(
@@ -125,8 +124,13 @@ class DirectoryVersionScanner(VersionScanner):
         """Implementation of :meth:`chango.abc.VersionScanner.get_available_versions`.
 
         Important:
-            Limiting the version range by ``start_from`` and ``end_at`` is based on
+            Limiting the version range by
+            :paramref:`~chango.abc.VersionScanner.get_available_versions.start_from` and
+            :paramref:`~chango.abc.VersionScanner.get_available_versions.end_at` is based on
             lexicographical comparison of the version identifiers.
+
+        Returns:
+            The available versions within the specified range.
         """
         start = ensure_uid(start_from)
         end = ensure_uid(end_at)

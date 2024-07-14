@@ -19,12 +19,13 @@ copyright = "2024, Hinrich Mahler"
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
-    "sphinx_copybutton",
     "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
     "sphinx.ext.napoleon",
     # must come *after* napoleon
     "sphinx_autodoc_typehints",
+    "sphinx_copybutton",
+    "sphinx_paramlinks",
 ]
 
 html_theme = "furo"
@@ -37,3 +38,6 @@ intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
 always_use_bars_union = True
 typehints_document_rtype = True
 typehints_defaults = "braces-after"
+
+# paramlinks options
+paramlinks_hyperlink_param = "name"

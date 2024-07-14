@@ -26,11 +26,13 @@ class DirectoryIO[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
         version_history_type: The type of version histories to load. Must be a subclass of
             :class:`~chango.abc.VersionHistory`.
         scanner: The version scanner to use.
-        directory_format: Reverse of ``directory_pattern``. Must be a string that can be used
+        directory_format: Reverse of
+            :paramref:`~chango.concrete.DirectoryVersionScannerdirectory_pattern`.
+            Must be a string that can be used
             with :meth:`str.format` and contain at least one named field ``uid`` for the version
             identifier and optionally a second named field ``date`` for the date of the version
             release in ISO format. The default value is compatible with the default value of
-            ``directory_pattern``.
+            :paramref:`~chango.concrete.DirectoryVersionScannerdirectory_pattern`.
 
     Attributes:
         directory_format: The format string used to create version directories.

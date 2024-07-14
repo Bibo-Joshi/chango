@@ -2,12 +2,14 @@
 #
 #  SPDX-License-Identifier: MIT
 from pathlib import Path
+from typing import TYPE_CHECKING, Union
 
-from chango.abc._changenote import ChangeNote
-from chango.abc._version import Version
+if TYPE_CHECKING:
+    from chango.abc._changenote import ChangeNote
+    from chango.abc._version import Version
 
 VersionUID = str | None
-VUIDInput = Version | str | None
-VersionIO = Version | None
-CNUIDInput = ChangeNote | str
+VUIDInput = Union["Version", str] | None
+VersionIO = Union["Version", None]
+CNUIDInput = Union["ChangeNote", str]
 PathLike = str | Path

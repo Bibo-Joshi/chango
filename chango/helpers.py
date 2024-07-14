@@ -48,11 +48,9 @@ def ensure_uid(obj: _UIDProtocol | _UIDPropProtocol | str | None) -> str | None:
     is returned unchanged.
 
     Args:
-        obj: An object that either
-            * has a string attribute ``uid``, e.g. :class:`~chango.abc.ChangeNote`
-              or :class:`~chango.abc.Version`
-            * is a :obj:`str`
-            * is :obj:`None` (supported for convenience)
+        obj: An object that either has a string attribute ``uid`` (e.g.
+            :class:`~chango.abc.ChangeNote` or :class:`~chango.abc.Version`), is a :obj:`str` or
+            is :obj:`None`.
 
     Returns:
         :obj:`str` | :obj:`None`: The extracted UID if available and :obj:`None` else.
