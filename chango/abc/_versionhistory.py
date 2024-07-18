@@ -6,10 +6,10 @@ import warnings
 from collections.abc import Iterator, MutableMapping
 from dataclasses import dataclass, field
 
-from chango._utils.files import UTF8
-from chango._utils.types import VersionUID, VUIDInput
-from chango.abc._versionnote import VersionNote
-from chango.helpers import ensure_uid
+from .._utils.files import UTF8
+from .._utils.types import VersionUID, VUIDInput
+from ..abc._versionnote import VersionNote
+from ..helpers import ensure_uid
 
 
 @dataclass

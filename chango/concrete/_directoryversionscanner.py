@@ -7,10 +7,12 @@ import re
 from pathlib import Path
 from typing import NamedTuple, override
 
-from chango._utils.filename import FileName
-from chango._utils.types import CNUIDInput, PathLike, VersionIO, VUIDInput
-from chango.abc import Version, VersionScanner
-from chango.helpers import ensure_uid
+from .._changenoteinfo import ChangeNoteInfo
+from .._utils.filename import FileName
+from .._utils.types import PathLike, VUIDInput
+from .._version import Version
+from ..abc import VersionScanner
+from ..helpers import ensure_uid
 
 _DEFAULT_PATTERN = re.compile(r"(?P<uid>[^_]+)_(?P<date>[\d-]+)")
 
@@ -148,9 +150,8 @@ class DirectoryVersionScanner(VersionScanner):
 
         return tuple(change.name for change in directory.iterdir() if change.is_file())
 
-    def _locate_change_note(self, change_note: CNUIDInput) -> tuple[VersionIO, Path]:
-        uid = ensure_uid(change_note)
-
+    @override
+    def lookup_change_note(self, uid: str) -> ChangeNoteInfo:
         try:
             version, file_name = next(
                 (self._get_available_version(version_uid) if version_uid else None, name)
@@ -166,11 +167,7 @@ class DirectoryVersionScanner(VersionScanner):
         except StopIteration as exc:
             raise ValueError(f"Change note '{uid}' not found in any version.") from exc
 
-        return version, directory / file_name
-
-    @override
-    def locate_change_note(self, change_note: CNUIDInput) -> Path:
-        return self._locate_change_note(change_note)[1]
+        return ChangeNoteInfo(uid, version, directory / file_name)
 
     @override
     def get_version(self, uid: str) -> Version:
@@ -179,7 +176,3 @@ class DirectoryVersionScanner(VersionScanner):
     @override
     def get_changes(self, uid: VUIDInput = None) -> tuple[str, ...]:
         return tuple(FileName.from_string(name).uid for name in self._get_file_names(uid))
-
-    @override
-    def get_version_for_change_note(self, change_note: CNUIDInput) -> VersionIO:
-        return self._locate_change_note(change_note)[0]

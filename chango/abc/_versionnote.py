@@ -8,13 +8,13 @@ from collections.abc import Iterator, MutableMapping
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, overload
 
-from chango._utils.filename import FileName
-from chango._utils.files import UTF8
-from chango._utils.types import VersionIO
-from chango.abc._changenote import ChangeNote
+from .._utils.filename import FileName
+from .._utils.files import UTF8
+from .._utils.types import VersionIO
+from ..abc._changenote import ChangeNote
 
 if TYPE_CHECKING:
-    from chango.abc._version import Version
+    from chango import Version
 
 
 @dataclass

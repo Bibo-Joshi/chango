@@ -3,11 +3,11 @@
 #  SPDX-License-Identifier: MIT
 from typing import override
 
-from chango._utils.files import UTF8
-from chango._utils.types import VersionIO
-from chango.abc import VersionNote
-from chango.concrete import CommentChangeNote
-from chango.constants import MarkupLanguage
+from .._utils.files import UTF8
+from .._utils.types import VersionIO
+from ..abc import VersionNote
+from ..concrete import CommentChangeNote
+from ..constants import MarkupLanguage
 
 
 def _indent_multiline(text: str, indent: int = 2) -> str:

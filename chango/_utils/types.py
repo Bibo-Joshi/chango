@@ -5,8 +5,9 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Union
 
 if TYPE_CHECKING:
-    from chango.abc._changenote import ChangeNote
-    from chango.abc._version import Version
+    from chango import Version
+
+    from ..abc._changenote import ChangeNote
 
 VersionUID = str | None
 VUIDInput = Union["Version", str] | None

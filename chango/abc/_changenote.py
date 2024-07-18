@@ -5,9 +5,9 @@ import abc
 from pathlib import Path
 from typing import Self
 
-from chango._utils.filename import FileName
-from chango._utils.files import UTF8
-from chango._utils.types import PathLike
+from .._utils.filename import FileName
+from .._utils.files import UTF8
+from .._utils.types import PathLike
 
 
 class ChangeNote(abc.ABC):

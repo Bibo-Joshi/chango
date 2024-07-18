@@ -3,10 +3,10 @@
 #  SPDX-License-Identifier: MIT
 import abc
 from collections.abc import Collection, Iterator
-from pathlib import Path
 
-from chango._utils.types import CNUIDInput, VersionIO, VUIDInput
-from chango.abc._version import Version
+from .._changenoteinfo import ChangeNoteInfo
+from .._utils.types import VUIDInput
+from .._version import Version
 
 
 class VersionScanner(Collection[Version]):
@@ -68,14 +68,15 @@ class VersionScanner(Collection[Version]):
         """
 
     @abc.abstractmethod
-    def locate_change_note(self, change_note: CNUIDInput) -> Path:
-        """Locate the change note file.
+    def lookup_change_note(self, uid: str) -> ChangeNoteInfo:
+        """Lookup a change note with the given identifier.
 
         Args:
-            change_note: The change note to locate or its UID.
+            uid: The unique identifier or file name of the change note to lookup
 
-        Raises:
-            ValueError: If the change note is not found.
+        Returns:
+            The metadata about the change note specifying the file path and version it
+            belongs to.
         """
 
     def get_version(self, uid: str) -> Version:
@@ -110,16 +111,4 @@ class VersionScanner(Collection[Version]):
 
         Returns:
             UIDs of the changes corresponding to the version identifier.
-        """
-
-    @abc.abstractmethod
-    def get_version_for_change_note(self, change_note: CNUIDInput) -> VersionIO:
-        """Get the version identifier of the version that includes the specified change note.
-
-        Args:
-            change_note: The change note to get the version identifier for or the corresponding
-                UID.
-
-        Raises:
-            ValueError: If the change note is not included in any known version.
         """

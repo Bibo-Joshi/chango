@@ -6,7 +6,7 @@ import string as std_string
 from dataclasses import dataclass, field
 from typing import ClassVar, Self
 
-from chango.errors import ValidationError
+from ..errors import ValidationError
 
 _alphabet = std_string.ascii_lowercase + std_string.digits
 

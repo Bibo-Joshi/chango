@@ -5,14 +5,14 @@ from pathlib import Path
 
 import typer
 
-from chango.concrete import (
+from ..concrete import (
     CommentChangeNote,
     CommentVersionNote,
     DirectoryIO,
     DirectoryVersionScanner,
     HeaderVersionHistory,
 )
-from chango.constants import MarkupLanguage
+from ..constants import MarkupLanguage
 
 app = typer.Typer()
 report_app = typer.Typer()
@@ -48,7 +48,7 @@ def edit(uid: str):
     Args:
         uid: The unique identifier of the change note to edit.
     """
-    typer.launch(IO.scanner.locate_change_note(uid).as_posix())
+    typer.launch(IO.scanner.lookup_change_note(uid).path.as_posix())
 
 
 @report_app.command()

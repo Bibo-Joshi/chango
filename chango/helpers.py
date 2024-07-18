@@ -4,8 +4,8 @@
 from pathlib import Path
 from typing import Protocol, overload
 
-from chango._utils.filename import FileName
-from chango._utils.types import PathLike
+from ._utils.filename import FileName
+from ._utils.types import PathLike
 
 
 def change_uid_from_file(file: PathLike) -> str:

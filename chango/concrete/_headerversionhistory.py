@@ -4,10 +4,10 @@
 import string
 from typing import override
 
-from chango._utils.files import UTF8
-from chango.abc import VersionHistory, VersionNote
-from chango.constants import MarkupLanguage
-from chango.errors import UnsupportedMarkupError
+from .._utils.files import UTF8
+from ..abc import VersionHistory, VersionNote
+from ..constants import MarkupLanguage
+from ..errors import UnsupportedMarkupError
 
 
 class HeaderVersionHistory[VNT: VersionNote](VersionHistory[VNT]):

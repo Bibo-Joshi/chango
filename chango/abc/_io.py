@@ -4,9 +4,8 @@
 import abc
 from pathlib import Path
 
-from chango._utils.files import UTF8
-from chango._utils.types import VUIDInput
-
+from .._utils.files import UTF8
+from .._utils.types import VUIDInput
 from ._changenote import ChangeNote
 from ._versionhistory import VersionHistory
 from ._versionnote import VersionNote
