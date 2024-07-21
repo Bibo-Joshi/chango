@@ -40,6 +40,22 @@ class ChangeNote(abc.ABC):
         *not* include the leading dot.
         """
 
+    @classmethod
+    @abc.abstractmethod
+    def build_template(cls, slug: str, uid: str | None = None) -> Self:
+        """Build a template change note for the concrete change note type.
+
+        Tip:
+            This will be used to create a new change note in the CLI.
+
+        Args:
+            slug: The slug to use for the change note.
+            uid: The unique identifier for the change note or :obj:`None` to generate a random one.
+
+        Returns:
+            The :class:`ChangeNote` object.
+        """
+
     @property
     def file_name(self) -> str:
         """The file name to use when writing the change note to a file."""

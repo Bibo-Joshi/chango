@@ -1,10 +1,13 @@
 #  SPDX-FileCopyrightText: 2024-present Hinrich Mahler <chango@mahlerhome.de>
 #
 #  SPDX-License-Identifier: MIT
+import tomllib
 from pathlib import Path
+from typing import Annotated
 
 import typer
 
+from .. import __version__
 from ..concrete import (
     CommentChangeNote,
     CommentVersionNote,
@@ -14,7 +17,11 @@ from ..concrete import (
 )
 from ..constants import MarkupLanguage
 
-app = typer.Typer()
+# get project description from pyproject.toml
+root = Path(__file__).parent.parent.parent.resolve().absolute()
+description = tomllib.load((root / "pyproject.toml").open("rb"))["project"]["description"]
+
+app = typer.Typer(help=f"CLI for chango - {description}")
 report_app = typer.Typer()
 
 root = Path(r"C:\Users\hinri\PycharmProjects\chango\data")
@@ -26,15 +33,43 @@ IO = DirectoryIO(
 )
 
 
-@app.command()
-def new(slug: str, edit: bool = True):
-    """Create a new change note.
+def markup_callback(value: str) -> MarkupLanguage:
+    try:
+        return MarkupLanguage.from_string(value)
+    except ValueError as exc:
+        raise typer.BadParameter(str(exc)) from exc
 
-    Args:
-        slug: The slug of the change note.
-        edit: Whether to open the change note in the default editor.
-    """
-    change_note = CommentChangeNote(slug=slug, comment="comment")
+
+MARKUP_ANNOTATION = Annotated[
+    str, typer.Option(help="The markup language to use for the report.", callback=markup_callback)
+]
+
+
+def version_callback(value: bool):
+    if value:
+        typer.echo(__version__)
+        raise typer.Exit
+
+
+@app.callback()
+def main(
+    _version: Annotated[
+        bool,
+        typer.Option("--version", callback=version_callback, help="Show the version and exit."),
+    ] = False,
+):
+    pass
+
+
+@app.command()
+def new(
+    slug: Annotated[str, typer.Argument(help="The slug of the change note.", show_default=False)],
+    edit: Annotated[
+        bool, typer.Option(help="Whether to open the change note in the default editor.")
+    ] = True,
+):
+    """Create a new change note."""
+    change_note = CommentChangeNote.build_template(slug=slug)
     path = IO.write_change_note(change_note, version=None)
     typer.echo(f"Created new change note {change_note.file_name}")
     if edit:
@@ -42,35 +77,39 @@ def new(slug: str, edit: bool = True):
 
 
 @app.command()
-def edit(uid: str):
-    """Edit an existing change note in the default editor.
-
-    Args:
-        uid: The unique identifier of the change note to edit.
-    """
+def edit(
+    uid: Annotated[
+        str,
+        typer.Argument(
+            help="The unique identifier of the change note to edit.", show_default=False
+        ),
+    ],
+):
+    """Edit an existing change note in the default editor."""
     typer.launch(IO.scanner.lookup_change_note(uid).path.as_posix())
 
 
 @report_app.command()
-def version(uid: str = "unreleased", markup: MarkupLanguage = MarkupLanguage.MARKDOWN):
-    """Print a report of the change notes for a specific version.
-
-    Args:
-        uid: The unique identifier of the version to report on. Leave empty for unreleased
-            changes.
-        markup: The markup language to use for the report.
-    """
+def version(
+    uid: Annotated[
+        str,
+        typer.Option(
+            help=(
+                "The unique identifier of the version to report on. Leave empty for unreleased "
+                "changes."
+            )
+        ),
+    ] = "unreleased",
+    markup: MARKUP_ANNOTATION = MarkupLanguage.MARKDOWN,
+):
+    """Print a report of the change notes for a specific version."""
     version_note = IO.load_version_note(None if uid == "unreleased" else uid)
     typer.echo(version_note.render(markup=markup))
 
 
 @report_app.command()
-def history(markup: MarkupLanguage = MarkupLanguage.MARKDOWN):
-    """Print a report of the version history.
-
-    Args:
-        markup: The markup language to use for the report.
-    """
+def history(markup: MARKUP_ANNOTATION = MarkupLanguage.MARKDOWN):
+    """Print a report of the version history."""
     version_history = IO.load_version_history()
     typer.echo(version_history.render(markup=markup))
 

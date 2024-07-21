@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "chango"
 dynamic = ["version"]
-description = 'Changelog Governor for your project'
+description = 'CHANgelog GOvernor for Your Project'
 readme = "README.rst"
 requires-python = ">=3.12"
 license = "MIT"
@@ -24,6 +24,7 @@ classifiers = [
   "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
+  "shortuuid~=1.0",
   "typer~=0.12",
 ]
 
@@ -31,6 +32,9 @@ dependencies = [
 Documentation = "https://chango.readthedocs.io/"
 Issues = "https://github.com/Bibo-Joshi/chango/issues"
 Source = "https://github.com/Bibo-Joshi/chango"
+
+[project.scripts]
+chango = "chango.cli:app"
 
 # HATCH:
 [tool.hatch.version]

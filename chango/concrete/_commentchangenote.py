@@ -44,3 +44,8 @@ class CommentChangeNote(ChangeNote):
     @override
     def to_string(self, encoding: str = UTF8) -> str:
         return self.comment
+
+    @classmethod
+    @override
+    def build_template(cls, slug: str, uid: str | None = None) -> Self:
+        return cls(slug=slug, comment="example comment", uid=uid)

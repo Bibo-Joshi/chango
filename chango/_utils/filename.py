@@ -1,18 +1,18 @@
 #  SPDX-FileCopyrightText: 2024-present Hinrich Mahler <chango@mahlerhome.de>
 #
 #  SPDX-License-Identifier: MIT
-import random
-import string as std_string
 from dataclasses import dataclass, field
 from typing import ClassVar, Self
 
+import shortuuid
+
 from ..errors import ValidationError
 
-_alphabet = std_string.ascii_lowercase + std_string.digits
+_short_uuid = shortuuid.ShortUUID()
 
 
 def random_uid() -> str:
-    return "".join(random.choices(_alphabet, k=8))
+    return _short_uuid.uuid()
 
 
 @dataclass
