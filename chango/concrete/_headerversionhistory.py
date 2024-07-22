@@ -36,11 +36,11 @@ class HeaderVersionHistory[VNT: VersionNote](VersionHistory[VNT]):
             )
             match markup:
                 case MarkupLanguage.MARKDOWN:
-                    tpl_str = "#$uid\n*$date*\n\n$comment"
+                    tpl_str = "# $uid\n*$date*\n\n$comment"
                 case MarkupLanguage.HTML:
                     tpl_str = "<h1>$uid</h1>\n<i>$date</i>\n\n$comment"
                 case MarkupLanguage.RESTRUCTUREDTEXT:
-                    tpl_str = "$uid\n=====\n$date\n\n$comment"
+                    tpl_str = "$uid\n=====\n*$date*\n\n$comment"
                 case _:
                     raise UnsupportedMarkupError(
                         f"Got unsupported markup '{markup}', can only render Markdown, HTML, "
@@ -68,7 +68,7 @@ class HeaderVersionHistory[VNT: VersionNote](VersionHistory[VNT]):
         return "\n\n".join(
             template.substitute(
                 uid=note.uid or "Unreleased",
-                date=note.date.isoformat() if note.date else "",
+                date=note.date.isoformat() if note.date else "unknown",
                 comment=note.render(markup, encoding),
             )
             for note in changes
