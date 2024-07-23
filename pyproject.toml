@@ -34,7 +34,8 @@ Issues = "https://github.com/Bibo-Joshi/chango/issues"
 Source = "https://github.com/Bibo-Joshi/chango"
 
 [project.scripts]
-chango = "chango._cli:app"
+chango = "chango._cli.main:app"
+gun = "chango:app"
 
 # HATCH:
 [tool.hatch.version]

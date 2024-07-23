@@ -3,6 +3,7 @@
 #  SPDX-License-Identifier: MIT
 import abc
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from .._utils.files import UTF8
 from .._utils.types import VUIDInput
@@ -10,6 +11,9 @@ from ._changenote import ChangeNote
 from ._versionhistory import VersionHistory
 from ._versionnote import VersionNote
 from ._versionscanner import VersionScanner
+
+if TYPE_CHECKING:
+    from .. import Version
 
 
 class IO[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](abc.ABC):
@@ -48,8 +52,10 @@ class IO[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Change
     def get_write_directory(self, change_note: CNT | str, version: VUIDInput) -> Path:
         """Determine the directory to write a change note to.
 
-        Hint:
-            Ideally, it should be ensured that the directory exists.
+        Important:
+            * It should be ensured that the directory exists.
+            * The :paramref:`version` does *not* need to be already available. In that case, it's
+              expected that :paramref:`version` is of type :class:`~chango.Version`.
 
         Args:
             change_note: The change note to write or its UID.
@@ -115,3 +121,25 @@ class IO[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Change
             version_history.add_version_note(self.load_version_note(version))
 
         return version_history
+
+    def release(self, version: "Version") -> bool:
+        """Release a version.
+        This calls :meth:`get_write_directory` for all unreleased change notes and moves the file
+        if necessary.
+
+        Args:
+            version: The version to release.
+
+        Returns:
+            Whether a release was performed. If no unreleased changes are available, this method
+            returns :obj:`False`.
+        """
+        if not self.scanner.has_unreleased_changes():
+            return False
+        for uid in self.scanner.get_changes(None):
+            change_info = self.scanner.lookup_change_note(uid)
+            write_dir = self.get_write_directory(uid, version)
+            if change_info.path.parent != write_dir:
+                change_info.path.rename(write_dir / change_info.path.name)
+
+        return True

@@ -1,6 +1,8 @@
 #  SPDX-FileCopyrightText: 2024-present Hinrich Mahler <chango@mahlerhome.de>
 #
 #  SPDX-License-Identifier: MIT
+#
+#  SPDX-License-Identifier: MIT
 
 __all__ = ["app"]
 
@@ -23,7 +25,8 @@ def version(
             help=(
                 "The unique identifier of the version to report on. Leave empty for unreleased "
                 "changes."
-            )
+            ),
+            show_default=False,
         ),
     ],
     markup: MARKUP = MarkupLanguage.MARKDOWN,

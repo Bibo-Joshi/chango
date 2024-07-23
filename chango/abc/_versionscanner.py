@@ -95,7 +95,7 @@ class VersionScanner(Collection[Version]):
         return next(version for version in self if version.uid == uid)
 
     @abc.abstractmethod
-    def get_changes(self, uid: VUIDInput = None) -> tuple[str, ...]:
+    def get_changes(self, uid: VUIDInput) -> tuple[str, ...]:
         """Get the changes either for a given version identifier or all available.
 
         Hint:
@@ -107,7 +107,8 @@ class VersionScanner(Collection[Version]):
 
         Args:
             uid: The version identifier to get the change files for. If
-                :obj:`None`, get the change files for the latest version.
+                :obj:`None`, get the change files for unreleased changes must be
+                returned.
 
         Returns:
             UIDs of the changes corresponding to the version identifier.

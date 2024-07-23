@@ -174,5 +174,5 @@ class DirectoryVersionScanner(VersionScanner):
         return self._get_available_version(uid)
 
     @override
-    def get_changes(self, uid: VUIDInput = None) -> tuple[str, ...]:
+    def get_changes(self, uid: VUIDInput) -> tuple[str, ...]:
         return tuple(FileName.from_string(name).uid for name in self._get_file_names(uid))
