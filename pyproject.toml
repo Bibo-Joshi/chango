@@ -39,10 +39,10 @@ gun = "chango:app"
 
 # HATCH:
 [tool.hatch.version]
-path = "chango/__about__.py"
+path = "src/chango/__about__.py"
 
 [tool.hatch.build]
-packages = ["chango"]
+packages = ["src/chango"]
 
 # RUFF:
 [tool.ruff]
