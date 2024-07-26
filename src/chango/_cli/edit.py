@@ -10,7 +10,7 @@ from typing import Annotated
 
 import typer
 
-from chango._cli.utils.common import IO
+from .config import USER_CONFIG
 
 
 def edit(
@@ -22,4 +22,4 @@ def edit(
     ],
 ):
     """Edit an existing change note in the default editor."""
-    typer.launch(IO.scanner.lookup_change_note(uid).path.as_posix())
+    typer.launch(USER_CONFIG.io_instance.scanner.lookup_change_note(uid).path.as_posix())

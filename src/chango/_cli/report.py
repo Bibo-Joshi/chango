@@ -10,9 +10,9 @@ from typing import Annotated
 
 import typer
 
-from chango._cli.utils.common import IO
-from chango._cli.utils.types import MARKUP, OUTPUT_FILE
-from chango.constants import MarkupLanguage
+from ..constants import MarkupLanguage
+from .config import USER_CONFIG
+from .utils.types import MARKUP, OUTPUT_FILE
 
 app = typer.Typer(help="Generate reports for one or multiple versions.")
 
@@ -33,7 +33,7 @@ def version(
     output: OUTPUT_FILE = None,
 ):
     """Print a report of the change notes for a specific version."""
-    version_note = IO.load_version_note(uid)
+    version_note = USER_CONFIG.io_instance.load_version_note(uid)
     text = version_note.render(markup=markup)
     if output:
         output.write_text(text)
@@ -45,7 +45,7 @@ def version(
 @app.command()
 def history(markup: MARKUP = MarkupLanguage.MARKDOWN, output: OUTPUT_FILE = None):
     """Print a report of the version history."""
-    version_history = IO.load_version_history()
+    version_history = USER_CONFIG.io_instance.load_version_history()
     text = version_history.render(markup=markup)
     if output:
         output.write_text(text)

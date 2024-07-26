@@ -12,18 +12,19 @@ from typing import Annotated
 import typer
 
 from chango import Version
-from chango._cli.utils.common import IO
-from chango._cli.utils.types import date as date_callback
+
+from .config import USER_CONFIG
+from .utils.types import date as date_callback
 
 
 def release(
-    uid: Annotated[str, typer.Argument(help=("The unique identifier of the version release."))],
+    uid: Annotated[str, typer.Argument(help="The unique identifier of the version release.")],
     date: Annotated[
-        dtm.date, typer.Argument(help=("The date of the version release."), parser=date_callback)
+        dtm.date, typer.Argument(help="The date of the version release.", parser=date_callback)
     ],
 ):
     """Release the unreleased changes to a new version."""
-    if IO.release(Version(uid, date)):
+    if USER_CONFIG.io_instance.release(Version(uid, date)):
         typer.echo(f"Released version {uid} on {date}")
     else:
         typer.echo("No unreleased changes found.")

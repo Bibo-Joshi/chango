@@ -10,8 +10,7 @@ from typing import Annotated
 
 import typer
 
-from chango._cli.utils.common import IO
-from chango.concrete import CommentChangeNote
+from .config import USER_CONFIG
 
 
 def new(
@@ -21,8 +20,8 @@ def new(
     ] = True,
 ):
     """Create a new change note."""
-    change_note = CommentChangeNote.build_template(slug=slug)
-    path = IO.write_change_note(change_note, version=None)
+    change_note = USER_CONFIG.change_note_type.build_template(slug=slug)
+    path = USER_CONFIG.io_instance.write_change_note(change_note, version=None)
     typer.echo(f"Created new change note {change_note.file_name}")
     if edit:
         typer.launch(path.as_posix())

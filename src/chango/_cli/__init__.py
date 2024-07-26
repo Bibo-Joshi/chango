@@ -7,15 +7,13 @@ from typing import Annotated
 
 import typer
 
-from chango._cli.utils.common import description
-
 from .. import __version__
 from .edit import edit
 from .new import new
 from .release import release
 from .report import app as report_app
 
-app = typer.Typer(help=f"CLI for chango - {description}")
+app = typer.Typer(help="CLI for chango - CHANgelog GOvernor for Your Project")
 
 
 def version_callback(value: bool):
