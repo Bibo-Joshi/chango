@@ -13,7 +13,7 @@ import typer
 
 from chango import Version
 
-from .config import USER_CONFIG
+from .config_module import get_user_config
 from .utils.types import date as date_callback
 
 
@@ -24,7 +24,7 @@ def release(
     ],
 ):
     """Release the unreleased changes to a new version."""
-    if USER_CONFIG.io_instance.release(Version(uid, date)):
+    if get_user_config().io_instance.release(Version(uid, date)):
         typer.echo(f"Released version {uid} on {date}")
     else:
         typer.echo("No unreleased changes found.")

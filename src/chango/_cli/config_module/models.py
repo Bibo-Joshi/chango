@@ -21,11 +21,14 @@ def _add_sys_path(path: Path | None) -> Iterator[None]:
         yield
         return
 
+    if not path.is_absolute():
+        path = Path.cwd() / path
+
     try:
-        sys.path.insert(0, path.as_posix())
+        sys.path.insert(0, str(path))
         yield
     finally:
-        sys.path.remove(path.as_posix())
+        sys.path.remove(str(path))
 
 
 class ObjectConfig(FrozenModel):

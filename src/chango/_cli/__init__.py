@@ -8,6 +8,7 @@ from typing import Annotated
 import typer
 
 from .. import __version__
+from .config import app as config_app
 from .edit import edit
 from .new import new
 from .release import release
@@ -32,6 +33,7 @@ def main(
     pass
 
 
+app.add_typer(config_app, name="config")
 app.command()(edit)
 app.command()(new)
 app.command()(release)

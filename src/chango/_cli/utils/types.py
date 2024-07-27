@@ -42,7 +42,7 @@ OUTPUT_FILE = Annotated[
         ...,
         "-o",
         "--output",
-        help=("The file to write to. If not specified, the output is printed to the console."),
+        help="The file to write to. If not specified, the output is printed to the console.",
         dir_okay=False,
         writable=True,
     ),
