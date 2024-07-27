@@ -60,7 +60,9 @@ class CLIConfig(FrozenModel, TomlSettings):
         evaluate the security implications of this before setting it.
     """
 
-    model_config = SettingsConfigDict(pyproject_toml_table_header=("tool", "chango"))
+    model_config = SettingsConfigDict(
+        pyproject_toml_table_header=("tool", "chango"), extra="ignore"
+    )
 
     sys_path: Path | None = None
     """The path to *temporarily* add to the system path before importing the module. If the path
