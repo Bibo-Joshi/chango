@@ -14,7 +14,7 @@ from pydantic_settings import (
 class FrozenModel(BaseModel):
     """A frozen Pydantic model."""
 
-    model_config = ConfigDict(frozen=True, arbitrary_types_allowed=True)
+    model_config = ConfigDict(frozen=True, arbitrary_types_allowed=True, extra="forbid")
 
 
 class TomlSettings(BaseSettings):

@@ -7,13 +7,13 @@
 __all__ = [
     "CommentChangeNote",
     "CommentVersionNote",
-    "DirectoryIO",
+    "DirectoryChanGo",
     "DirectoryVersionScanner",
     "HeaderVersionHistory",
 ]
 
 from ._commentchangenote import CommentChangeNote
 from ._commentversionnote import CommentVersionNote
-from ._directoryio import DirectoryIO
+from ._directorychango import DirectoryChanGo
 from ._directoryversionscanner import DirectoryVersionScanner
 from ._headerversionhistory import HeaderVersionHistory

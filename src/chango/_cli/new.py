@@ -10,7 +10,7 @@ from typing import Annotated
 
 import typer
 
-from .config_module import get_user_config
+from .config_module import get_chango_instance
 
 
 def new(
@@ -20,8 +20,8 @@ def new(
     ] = True,
 ):
     """Create a new change note."""
-    change_note = get_user_config().change_note_type.build_template(slug=slug)
-    path = get_user_config().io_instance.write_change_note(change_note, version=None)
+    change_note = get_chango_instance().build_template_change_note(slug=slug)
+    path = get_chango_instance().write_change_note(change_note, version=None)
     typer.echo(f"Created new change note {change_note.file_name}")
     if edit:
         typer.launch(path.as_posix())

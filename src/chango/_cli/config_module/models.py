@@ -6,12 +6,15 @@ import importlib
 import sys
 from collections.abc import Iterator
 from pathlib import Path
-from typing import Self, cast
+from typing import Annotated, cast
 
+from pydantic import Field
 from pydantic_settings import SettingsConfigDict
 
-from ...abc import IO, ChangeNote
+from ...abc import ChanGo
 from .pydantic import FrozenModel, TomlSettings
+
+__all__ = ["CLIConfig", "import_chango_instance_from_config"]
 
 
 @contextlib.contextmanager
@@ -36,13 +39,13 @@ class ObjectConfig(FrozenModel):
 
     name: str
     """The name of the object to import."""
-    module: str | None = None
-    """The module to import the object from. If not passed, defaults to
-    :attr:`CLIConfig.module`.
+    module: Annotated[str, Field(examples=["my_config_module"])]
+    """The module to import the object from as passed to
+    :meth:`importlib.import_module`.
     """
     package: str | None = None
-    """The module to import the object from. If not passed, defaults to
-    :attr:`CLIConfig.package`.
+    """The module to import the object from as passed to
+    :meth:`importlib.import_module`.
     """
 
 
@@ -59,14 +62,6 @@ class CLIConfig(FrozenModel, TomlSettings):
 
     model_config = SettingsConfigDict(pyproject_toml_table_header=("tool", "chango"))
 
-    module: str
-    """The module to import the user defined objects from as passed to
-    :meth:`importlib.import_module`.
-    """
-    package: str | None = None
-    """The module to import :paramref:`~CLIConfig.module` from as passed to
-    :meth:`importlib.import_module`.
-    """
     sys_path: Path | None = None
     """The path to *temporarily* add to the system path before importing the module. If the path
     is not absolute, it will considered as relative to the current working directory.
@@ -75,41 +70,26 @@ class CLIConfig(FrozenModel, TomlSettings):
         To add the current working directory to the system path, set this to ``.``.
 
     """
-    io_instance: str | ObjectConfig
-    """The instance of :class:`~chango.abc.IO` to use."""
-    change_note_type: str | ObjectConfig
-    """The type of :class:`~chango.abc.ChangeNote` to use."""
+    chango_instance: Annotated[
+        ObjectConfig,
+        Field(examples=[ObjectConfig(name="chango_instance", module="my_config_module")]),
+    ]
+    """The instance of :class:`~chango.abc.ChanGo` to use in the CLI."""
 
 
-class ParsedCLIConfig(FrozenModel):
-    """Load the configuration for the chango command line interface."""
+def import_chango_instance_from_config(config: CLIConfig) -> ChanGo:
+    """Parses the TOML configuration and load the ChanGo object.
 
-    io_instance: IO
-    change_note_type: type[ChangeNote]
-
-    @classmethod
-    def from_config(cls, config: CLIConfig) -> Self:
-        io_instance, change_note_type = cls._do_import(config)
-        return cls(io_instance=io_instance, change_note_type=change_note_type)  # type: ignore
-
-    @staticmethod
-    def _do_import(config: CLIConfig) -> tuple[IO, type[ChangeNote]]:
-        """Import the object from the module."""
-
-        def _do_import(obj_config: ObjectConfig | str) -> object | type:
-            if isinstance(obj_config, str):
-                module = config.module
-                package = config.package
-                name = obj_config
-            else:
-                module = obj_config.module or config.module
-                package = obj_config.package or config.package
-                name = obj_config.name
-
-            return getattr(importlib.import_module(module, package), name)
-
-        with _add_sys_path(config.sys_path):
-            io_instance = cast(IO, _do_import(config.io_instance))
-            change_note = cast(type[ChangeNote], _do_import(config.change_note_type))
-
-        return io_instance, change_note
+    Args:
+        config: The CLIConfig as specified in the pyproject.toml
+    """
+    with _add_sys_path(config.sys_path):
+        return cast(
+            ChanGo,
+            getattr(
+                importlib.import_module(
+                    config.chango_instance.module, config.chango_instance.package
+                ),
+                config.chango_instance.name,
+            ),
+        )

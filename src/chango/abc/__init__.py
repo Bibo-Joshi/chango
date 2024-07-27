@@ -5,10 +5,10 @@
 is build on.
 """
 
-__all__ = ["IO", "ChangeNote", "VersionHistory", "VersionNote", "VersionScanner"]
+__all__ = ["ChanGo", "ChangeNote", "VersionHistory", "VersionNote", "VersionScanner"]
 
 from ._changenote import ChangeNote
-from ._io import IO
+from ._chango import ChanGo
 from ._versionhistory import VersionHistory
 from ._versionnote import VersionNote
 from ._versionscanner import VersionScanner

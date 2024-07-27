@@ -10,7 +10,7 @@ from typing import Annotated
 
 import typer
 
-from .config_module import get_user_config
+from .config_module import get_chango_instance
 
 
 def edit(
@@ -22,4 +22,4 @@ def edit(
     ],
 ):
     """Edit an existing change note in the default editor."""
-    typer.launch(get_user_config().io_instance.scanner.lookup_change_note(uid).path.as_posix())
+    typer.launch(get_chango_instance().scanner.lookup_change_note(uid).path.as_posix())

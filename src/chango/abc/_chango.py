@@ -16,16 +16,32 @@ if TYPE_CHECKING:
     from .. import Version
 
 
-class IO[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](abc.ABC):
+class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](abc.ABC):
     """Abstract base class for loading :class:`~chango.abc.ChangeNote`,
     :class:`~chango.abc.VersionNote` and :class:`~chango.abc.VersionHistory` objects as well
     as writing :class:`~chango.abc.ChangeNote` objects.
+    This class holds the main interface for interacting with the version history and change notes.
     """
 
     @property
     @abc.abstractmethod
     def scanner(self) -> VST:
         """The used :class:`~chango.abc.VersionScanner`."""
+
+    @abc.abstractmethod
+    def build_template_change_note(self, slug: str, uid: str | None = None) -> CNT:
+        """Build a template change note for the concrete change note type.
+
+        Tip:
+            This will be used to create a new change note in the CLI.
+
+        Args:
+            slug: The slug to use for the change note.
+            uid: The unique identifier for the change note or :obj:`None` to generate a random one.
+
+        Returns:
+            The :class:`ChangeNote` object.
+        """
 
     @abc.abstractmethod
     def build_version_note(self, version: VUIDInput) -> VNT:

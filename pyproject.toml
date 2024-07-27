@@ -103,6 +103,4 @@ exclude_lines = [
 # CHANGO
 [tool.chango]
 sys_path = "."
-module = "myconfig"
-io_instance = "IO"
-change_note_type = { name = "CommentChangeNote", module = "chango.concrete" }
+chango_instance = { name= "chango_instance", module = "myconfig" }

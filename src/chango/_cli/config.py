@@ -6,6 +6,7 @@
 
 __all__ = ["app"]
 
+import json
 from pathlib import Path
 from typing import Annotated, Optional
 
@@ -14,7 +15,7 @@ import typer
 from rich import print as rprint
 from rich.markdown import Markdown
 
-from chango._cli.config_module import CLIConfig, ParsedCLIConfig
+from chango._cli.config_module import CLIConfig, import_chango_instance_from_config
 
 app = typer.Typer(help="Show or verify the configuration of the chango CLI.")
 
@@ -67,6 +68,12 @@ Showing the configuration of the chango CLIas configured in {context.obj['path']
 
 
 @app.command()
+def schema():
+    """Show the JSON schema of the configuration."""
+    rprint(Markdown(f"```json\n{json.dumps(CLIConfig.model_json_schema(), indent=2)}\n```"))
+
+
+@app.command()
 def validate(context: typer.Context):
     """Validate the configuration."""
     try:
@@ -77,7 +84,7 @@ def validate(context: typer.Context):
         ) from exc
 
     try:
-        ParsedCLIConfig.from_config(config)
+        import_chango_instance_from_config(config)
     except ImportError as exc:
         raise typer.BadParameter(
             f"Config file at {context.obj['path']} is valid "

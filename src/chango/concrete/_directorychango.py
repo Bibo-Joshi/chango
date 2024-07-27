@@ -5,14 +5,14 @@ from pathlib import Path
 from typing import override
 
 from .._utils.types import VUIDInput
-from ..abc import IO, ChangeNote, VersionHistory, VersionNote
+from ..abc import ChangeNote, ChanGo, VersionHistory, VersionNote
 from ._directoryversionscanner import DirectoryVersionScanner
 
 
-class DirectoryIO[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
-    IO[DirectoryVersionScanner, VHT, VNT, CNT]
+class DirectoryChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
+    ChanGo[DirectoryVersionScanner, VHT, VNT, CNT]
 ):
-    """Implementation of the :class:`~chango.abc.IO` interface that works with
+    """Implementation of the :class:`~chango.abc.ChanGo` interface that works with
     :class:`~chango.concrete.DirectoryVersionScanner` and assumes that change notes are stored in
     subdirectories named after the version identifier.
 
@@ -37,7 +37,7 @@ class DirectoryIO[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
     """
 
     def __init__(
-        self: "DirectoryIO[VHT, VNT, CNT]",
+        self: "DirectoryChanGo[VHT, VNT, CNT]",
         change_note_type: type[CNT],
         version_note_type: type[VNT],
         version_history_type: type[VHT],
@@ -54,6 +54,10 @@ class DirectoryIO[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
     @override
     def scanner(self) -> DirectoryVersionScanner:
         return self._scanner
+
+    @override
+    def build_template_change_note(self, slug: str, uid: str | None = None) -> CNT:
+        return self.change_note_type.build_template(slug=slug, uid=uid)
 
     @override
     def build_version_note(self, version: VUIDInput) -> VNT:

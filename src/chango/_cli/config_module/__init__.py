@@ -2,21 +2,24 @@
 #
 #  SPDX-License-Identifier: MIT
 
-__all__ = ["CLIConfig", "ParsedCLIConfig", "get_user_config"]
+__all__ = ["CLIConfig", "get_chango_instance", "import_chango_instance_from_config"]
 
-from .models import CLIConfig, ParsedCLIConfig
+from collections.abc import Callable
+
+from ...abc import ChanGo
+from .models import CLIConfig, import_chango_instance_from_config
 
 
 class _UserConfigManager:
     def __init__(self):
-        self._user_config: ParsedCLIConfig | None = None
+        self._chango_instance: ChanGo | None = None
 
-    def get_user_config(self) -> ParsedCLIConfig:
-        if self._user_config is None:
-            self._user_config = ParsedCLIConfig.from_config(
+    def get_chango_instance(self) -> ChanGo:
+        if self._chango_instance is None:
+            self._chango_instance = import_chango_instance_from_config(
                 CLIConfig()  # type: ignore[reportCallIssue]
             )
-        return self._user_config
+        return self._chango_instance
 
 
-get_user_config = _UserConfigManager().get_user_config
+get_chango_instance: Callable[[], ChanGo] = _UserConfigManager().get_chango_instance

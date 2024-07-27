@@ -11,7 +11,7 @@ from typing import Annotated
 import typer
 
 from ..constants import MarkupLanguage
-from .config_module import get_user_config
+from .config_module import get_chango_instance
 from .utils.types import MARKUP, OUTPUT_FILE
 
 app = typer.Typer(help="Generate reports for one or multiple versions.")
@@ -33,7 +33,7 @@ def version(
     output: OUTPUT_FILE = None,
 ):
     """Print a report of the change notes for a specific version."""
-    version_note = get_user_config().io_instance.load_version_note(uid)
+    version_note = get_chango_instance().load_version_note(uid)
     text = version_note.render(markup=markup)
     if output:
         output.write_text(text)
@@ -45,7 +45,7 @@ def version(
 @app.command()
 def history(markup: MARKUP = MarkupLanguage.MARKDOWN, output: OUTPUT_FILE = None):
     """Print a report of the version history."""
-    version_history = get_user_config().io_instance.load_version_history()
+    version_history = get_chango_instance().load_version_history()
     text = version_history.render(markup=markup)
     if output:
         output.write_text(text)
