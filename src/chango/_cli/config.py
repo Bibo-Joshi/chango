@@ -14,7 +14,7 @@ import typer
 from rich import print as rprint
 from rich.markdown import Markdown
 
-from chango._cli.config_module import CLIConfig
+from chango._cli.config_module import CLIConfig, ParsedCLIConfig
 
 app = typer.Typer(help="Show or verify the configuration of the chango CLI.")
 
@@ -70,10 +70,18 @@ Showing the configuration of the chango CLIas configured in {context.obj['path']
 def validate(context: typer.Context):
     """Validate the configuration."""
     try:
-        CLIConfig.model_validate(dict(context.obj["data"]))
+        config = CLIConfig.model_validate(dict(context.obj["data"]))
     except ValueError as exc:
         raise typer.BadParameter(
             f"Validation of config file at {context.obj['path']} failed:\n{exc}"
+        ) from exc
+
+    try:
+        ParsedCLIConfig.from_config(config)
+    except ImportError as exc:
+        raise typer.BadParameter(
+            f"Config file at {context.obj['path']} is valid "
+            f"but importing the objects failed:\n{exc}"
         ) from exc
 
     typer.echo("The configuration is valid.")
