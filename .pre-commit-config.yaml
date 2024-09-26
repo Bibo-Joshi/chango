@@ -4,7 +4,7 @@ ci:
 
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.5.1
+    rev: v0.6.8
     hooks:
       # Run the formatter.
       - id: ruff-format
@@ -23,7 +23,7 @@ repos:
   #        args:
   #          - --install-types
   - repo: https://github.com/RobertCraigie/pyright-python
-    rev: v1.1.372
+    rev: v1.1.382.post0
     hooks:
       - id: pyright
         name: pyright
@@ -35,7 +35,7 @@ repos:
           - tomlkit~=0.13
           - typer~=0.12
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.16.0
+    rev: v3.17.0
     hooks:
       - id: pyupgrade
         args:

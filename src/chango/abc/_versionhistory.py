@@ -38,13 +38,13 @@ class VersionHistory[VNT: VersionNote](MutableMapping[VersionUID, VNT], abc.ABC)
         return len(self._version_notes)
 
     def __setitem__(self, __key: VUIDInput, __value: VNT) -> None:
-        if ensure_uid(__key) != __value.uid:
+        if (uid := ensure_uid(__key)) != __value.uid:
             warnings.warn(
                 f"Key {__key!r} does not match version note UID {__value.uid!r}. "
                 "Using value the version UID as key.",
                 stacklevel=2,
             )
-        self._version_notes[__value.uid] = __value
+        self._version_notes[uid] = __value
 
     def add_version_note(self, version_note: VNT) -> None:
         """Add a version note to the version note.
@@ -52,7 +52,7 @@ class VersionHistory[VNT: VersionNote](MutableMapping[VersionUID, VNT], abc.ABC)
         Args:
             version_note: The version note to add.
         """
-        self[version_note.uid] = version_note
+        self[version_note.uid] = version_note  # type: ignore[reportArgumentType]
 
     def remove_version_note(self, version_note: VNT) -> None:
         """Remove a version note from the version note.
@@ -60,7 +60,7 @@ class VersionHistory[VNT: VersionNote](MutableMapping[VersionUID, VNT], abc.ABC)
         Args:
             version_note: The version note to remove.
         """
-        del self[version_note.uid]
+        del self[version_note.uid]  # type: ignore[reportArgumentType]
 
     @abc.abstractmethod
     def render(self, markup: str, encoding: str = UTF8) -> str:
