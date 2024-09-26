@@ -22,8 +22,6 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
     "sphinx.ext.napoleon",
-    # must come *after* napoleon
-    "sphinx_autodoc_typehints",
     "sphinx_copybutton",
     "sphinx_paramlinks",
 ]
