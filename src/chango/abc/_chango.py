@@ -117,7 +117,7 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
         """Load the version history.
 
         Important:
-            Unreleased changes must be included in the returned version history, if available.
+            Unreleased changes are included in the returned version history, if available.
 
         Args:
             start_from: The version to start from. If :obj:`None`, start from the
