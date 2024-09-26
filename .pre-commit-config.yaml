@@ -29,6 +29,8 @@ repos:
         name: pyright
         files: ^(?!(tests)).*\.py$
         additional_dependencies:
+          # https://github.com/RobertCraigie/pyright-python/issues/164
+          - pyright[nodejs]
           - pydantic-settings~=2.3
           - shortuuid~=1.0
           - sphinx~=7.3
