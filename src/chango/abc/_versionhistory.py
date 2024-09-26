@@ -6,7 +6,6 @@ import warnings
 from collections.abc import Iterator, MutableMapping
 from dataclasses import dataclass, field
 
-from .._utils.files import UTF8
 from .._utils.types import VersionUID, VUIDInput
 from ..abc._versionnote import VersionNote
 from ..helpers import ensure_uid
@@ -63,7 +62,7 @@ class VersionHistory[VNT: VersionNote](MutableMapping[VersionUID, VNT], abc.ABC)
         del self[version_note.uid]  # type: ignore[reportArgumentType]
 
     @abc.abstractmethod
-    def render(self, markup: str, encoding: str = UTF8) -> str:
+    def render(self, markup: str) -> str:
         """Render the version note as a string. Must include information about all change notes
         contained in the version note.
 
@@ -77,7 +76,6 @@ class VersionHistory[VNT: VersionNote](MutableMapping[VersionUID, VNT], abc.ABC)
         Args:
             markup: The markup language to use for rendering. If the markup language
                 is not supported, an :exc:`~chango.errors.UnsupportedMarkupError` should be raised.
-            encoding: The encoding to use for rendering.
 
         Returns:
             :obj:`str`: The rendered version note.

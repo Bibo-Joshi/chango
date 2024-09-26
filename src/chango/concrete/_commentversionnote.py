@@ -3,7 +3,6 @@
 #  SPDX-License-Identifier: MIT
 from typing import override
 
-from .._utils.files import UTF8
 from .._utils.types import VersionIO
 from ..abc import VersionNote
 from ..concrete import CommentChangeNote
@@ -23,14 +22,11 @@ class CommentVersionNote[V: VersionIO](VersionNote[CommentChangeNote, V]):
     """
 
     @override
-    def render(self, markup: str, encoding: str = UTF8) -> str:
+    def render(self, markup: str) -> str:
         """Render the version note to a string by listing all contained change notes separated
         by a newline.
         For markup languages Markdown, HTML and reStructuredText, the change notes will be
         rendered as unordered lists.
-
-        Caution:
-            The ``encoding`` parameter is currently ignored.
 
         Raises:
             :exc:`~chango.error.UnsupportedMarkupError`: If the ``markup`` parameter does not

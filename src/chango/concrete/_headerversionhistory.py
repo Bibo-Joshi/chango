@@ -4,7 +4,6 @@
 import string
 from typing import override
 
-from .._utils.files import UTF8
 from ..abc import VersionHistory, VersionNote
 from ..constants import MarkupLanguage
 from ..errors import UnsupportedMarkupError
@@ -16,7 +15,7 @@ class HeaderVersionHistory[VNT: VersionNote](VersionHistory[VNT]):
     """
 
     @override
-    def render(self, markup: str, encoding: str = UTF8) -> str:
+    def render(self, markup: str) -> str:
         """Does the rendering.
 
         Important:
@@ -69,7 +68,7 @@ class HeaderVersionHistory[VNT: VersionNote](VersionHistory[VNT]):
             template.substitute(
                 uid=note.uid or "Unreleased",
                 date=note.date.isoformat() if note.date else "unknown",
-                comment=note.render(markup, encoding),
+                comment=note.render(markup),
             )
             for note in changes
         )

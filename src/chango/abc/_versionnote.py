@@ -9,7 +9,6 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, overload
 
 from .._utils.filename import FileName
-from .._utils.files import UTF8
 from .._utils.types import VersionIO
 from ..abc._changenote import ChangeNote
 
@@ -124,13 +123,12 @@ class VersionNote[CNT: ChangeNote, V: VersionIO](MutableMapping[str, CNT], abc.A
         del self[change_note.uid]
 
     @abc.abstractmethod
-    def render(self, markup: str, encoding: str = UTF8) -> str:
+    def render(self, markup: str) -> str:
         """Render the version note as a string.
 
         Args:
             markup: The markup language to use for rendering. If the markup language
                 is not supported, an :exc:`~chango.errors.UnsupportedMarkupError` should be raised.
-            encoding: The encoding to use for rendering.
 
         Returns:
             :obj:`str`: The rendered version note.
