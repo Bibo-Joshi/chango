@@ -15,7 +15,7 @@ def random_uid() -> str:
     return _short_uuid.uuid()
 
 
-@dataclass
+@dataclass(frozen=True)
 class FileName:
     slug: str
     uid: str = field(default_factory=random_uid)

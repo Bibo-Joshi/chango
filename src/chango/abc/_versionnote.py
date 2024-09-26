@@ -5,7 +5,6 @@ import abc
 import datetime as dtm
 import warnings
 from collections.abc import Iterator, MutableMapping
-from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, overload
 
 from .._utils.filename import FileName
@@ -16,7 +15,6 @@ if TYPE_CHECKING:
     from chango import Version
 
 
-@dataclass
 class VersionNote[CNT: ChangeNote, V: VersionIO](MutableMapping[str, CNT], abc.ABC):
     """Abstract base class for a version note describing the set of changes in a software project
     for a single version.
@@ -40,8 +38,9 @@ class VersionNote[CNT: ChangeNote, V: VersionIO](MutableMapping[str, CNT], abc.A
             May be :obj:`None` if the version is not yet released.
     """
 
-    version: V
-    _change_notes: dict[str, CNT] = field(default_factory=dict, init=False)
+    def __init__(self, version: V) -> None:
+        self.version: V = version
+        self._change_notes: dict[str, CNT] = {}
 
     def __delitem__(self, __key: str) -> None:
         try:

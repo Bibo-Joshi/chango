@@ -4,14 +4,12 @@
 import abc
 import warnings
 from collections.abc import Iterator, MutableMapping
-from dataclasses import dataclass, field
 
 from .._utils.types import VersionUID, VUIDInput
 from ..abc._versionnote import VersionNote
 from ..helpers import ensure_uid
 
 
-@dataclass
 class VersionHistory[VNT: VersionNote](MutableMapping[VersionUID, VNT], abc.ABC):
     """Abstract base class for a version history describing the versions in a software project over
     several versions.
@@ -22,7 +20,8 @@ class VersionHistory[VNT: VersionNote](MutableMapping[VersionUID, VNT], abc.ABC)
         themselves.
     """
 
-    _version_notes: dict[VersionUID, VNT] = field(default_factory=dict, init=False)
+    def __init__(self):
+        self._version_notes: dict[VersionUID, VNT] = {}
 
     def __delitem__(self, __key: VUIDInput) -> None:
         del self._version_notes[ensure_uid(__key)]

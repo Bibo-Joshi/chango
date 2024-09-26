@@ -9,7 +9,7 @@ from pathlib import Path
 from ._version import Version
 
 
-@dataclass
+@dataclass(frozen=True)
 class ChangeNoteInfo:
     """Objects of this type represents metadata about a change note.
 

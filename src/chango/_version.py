@@ -5,7 +5,7 @@ import datetime as dtm
 from dataclasses import dataclass
 
 
-@dataclass
+@dataclass(frozen=True)
 class Version:
     """Objects of this type represent a released version of a software project.
 
