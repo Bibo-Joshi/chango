@@ -97,7 +97,7 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
             self.get_write_directory(change_note=change_note, version=version), encoding=encoding
         )
 
-    def load_version_note(self, version: VUIDInput) -> VersionNote:
+    def load_version_note(self, version: VUIDInput) -> VNT:
         """Load a version note.
 
         Args:
@@ -111,9 +111,7 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
 
         return version_note
 
-    def load_version_history(
-        self, start_from: VUIDInput = None, end_at: VUIDInput = None
-    ) -> VersionHistory:
+    def load_version_history(self, start_from: VUIDInput = None, end_at: VUIDInput = None) -> VHT:
         """Load the version history.
 
         Important:
