@@ -4,7 +4,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path("../..").resolve().absolute()))
 
-from chango import __version__  # type: ignore[import-not-found]
+from chango import __version__
 
 pyproject_toml = tomllib.loads(Path("../../pyproject.toml").read_text())
 
