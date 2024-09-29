@@ -69,7 +69,7 @@ class DirectoryChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
 
     @override
     def load_change_note(self, uid: str) -> CNT:
-        return self.change_note_type.from_file(self.scanner.lookup_change_note(uid).path)
+        return self.change_note_type.from_file(self.scanner.lookup_change_note(uid).file_path)
 
     @override
     def get_write_directory(self, change_note: CNT | str, version: VUIDInput) -> Path:

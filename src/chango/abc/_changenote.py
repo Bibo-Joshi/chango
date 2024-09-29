@@ -14,8 +14,8 @@ class ChangeNote(abc.ABC):
     """Abstract base class for a change note describing a single change in a software project.
 
     Args:
-        slug: A short, human-readable identifier for the change note.
-        uid: A unique identifier for the change note. If not provided, a
+        slug (:obj:`str`): A short, human-readable identifier for the change note.
+        uid (:obj:`str`): A unique identifier for the change note. If not provided, a
             random identifier will be generated. Should be 8 characters long and consist of
             lowercase letters and digits.
     """
@@ -25,19 +25,19 @@ class ChangeNote(abc.ABC):
 
     @property
     def slug(self) -> str:
-        """The short, human-readable identifier for the change note."""
+        """:obj:`str`: The short, human-readable identifier for the change note."""
         return self._file_name.slug
 
     @property
     def uid(self) -> str:
-        """The unique identifier for the change note."""
+        """:obj:`str`: The unique identifier for the change note."""
         return self._file_name.uid
 
     @property
     @abc.abstractmethod
     def file_extension(self) -> str:
-        """The file extension to use when writing the change note to a file. The extension must
-        *not* include the leading dot.
+        """:obj:`str`: The file extension to use when writing the change note to a file. The
+        extension must *not* include the leading dot.
         """
 
     @classmethod
@@ -49,8 +49,9 @@ class ChangeNote(abc.ABC):
             This will be used to create a new change note in the CLI.
 
         Args:
-            slug: The slug to use for the change note.
-            uid: The unique identifier for the change note or :obj:`None` to generate a random one.
+            slug (:obj:`str`): The slug to use for the change note.
+            uid (:obj:`str`): The unique identifier for the change note or :obj:`None` to generate
+                a random one.
 
         Returns:
             The :class:`ChangeNote` object.
@@ -70,11 +71,11 @@ class ChangeNote(abc.ABC):
             This convenience method calls :meth:`from_bytes` internally.
 
         Args:
-            file_path: The path to the file to read from.
-            encoding: The encoding to use for reading.
+            file_path (:class:`pathlib.Path | :obj:`str`): The path to the file to read from.
+            encoding (:obj:`str`): The encoding to use for reading.
 
         Returns:
-            The :class:`ChangeNote` object.
+            :class:`ChangeNote`: The :class:`ChangeNote` object.
 
         Raises:
             :class:`chango.error.ValidationError`: If the data is not a valid change note file.
@@ -95,13 +96,13 @@ class ChangeNote(abc.ABC):
             This convenience method calls :meth:`from_string` internally.
 
         Args:
-            slug: The slug of the change note.
-            uid: The UID of the change note.
-            data: The bytes to read from.
-            encoding: The encoding to use for reading.
+            slug (:obj:`str`): The slug of the change note.
+            uid (:obj:`str`): The UID of the change note.
+            data (:obj:`bytes`): The bytes to read from.
+            encoding (:obj:`str`): The encoding to use for reading.
 
         Returns:
-            The :class:`ChangeNote` object.
+            :class:`ChangeNote`: The :class:`ChangeNote` object.
 
         Raises:
             :class:`chango.error.ValidationError`: If the data is not a valid change note file.
@@ -116,12 +117,12 @@ class ChangeNote(abc.ABC):
         :exc:`~chango.error.ValidationError` in that case.
 
         Args:
-            slug: The slug of the change note.
-            uid: The UID of the change note.
-            string: The string to read from.
+            slug (:obj:`str`): The slug of the change note.
+            uid (:obj:`str`): The UID of the change note.
+            string (:obj`str`): The string to read from.
 
         Returns:
-            The :class:`ChangeNote` object.
+            :class:`ChangeNote`: The :class:`ChangeNote` object.
 
         Raises:
             :class:`chango.error.ValidationError`: If the string is not a valid change note.
@@ -136,10 +137,10 @@ class ChangeNote(abc.ABC):
             This convenience method calls :meth:`to_string` internally.
 
         Args:
-            encoding: The encoding to use for writing.
+            encoding (:obj:`str`): The encoding to use for writing.
 
         Returns:
-            The bytes data.
+            :obj:`bytes`: The bytes data.
         """
         return self.to_string().encode(encoding)
 
@@ -149,10 +150,10 @@ class ChangeNote(abc.ABC):
         and reading back in with :meth:`from_string`.
 
         Args:
-            encoding: The encoding to use for writing.
+            encoding (:obj:`str`): The encoding to use for writing.
 
         Returns:
-            The string data.
+            :obj:`str`: The string data.
         """
 
     def to_file(self, directory: PathLike | None = None, encoding: str = UTF8) -> Path:
@@ -164,7 +165,7 @@ class ChangeNote(abc.ABC):
         Args:
             directory: Optional. The directory to write the file to. If not provided, the file
                 will be written to the current working directory.
-            encoding: The encoding to use for writing.
+            encoding (:obj:`str`): The encoding to use for writing.
 
         Returns:
             :class:`pathlib.Path`: The path to the file that was written.

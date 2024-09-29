@@ -36,8 +36,9 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
             This will be used to create a new change note in the CLI.
 
         Args:
-            slug: The slug to use for the change note.
-            uid: The unique identifier for the change note or :obj:`None` to generate a random one.
+            slug (:obj:`str`): The slug to use for the change note.
+            uid (:obj:`str`, optional): The unique identifier for the change note or :obj:`None`
+                to generate a random one.
 
         Returns:
             The :class:`~chango.abc.ChangeNote` object.
@@ -61,7 +62,7 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
         """Load a change note with the given identifier.
 
         Args:
-            uid: The unique identifier or file name of the change note to load.
+            uid (:obj:`str`): The unique identifier or file name of the change note to load.
         """
 
     @abc.abstractmethod
@@ -88,7 +89,7 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
             change_note: The change note to write.
             version: The version the change note belongs to. Maybe be
                 :obj:`None` if the change note is not yet released.
-            encoding: The encoding to use for writing.
+            encoding (:obj:`str`): The encoding to use for writing.
 
         Returns:
             The file path the change note was written to.
@@ -153,7 +154,7 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
         for uid in self.scanner.get_changes(None):
             change_info = self.scanner.lookup_change_note(uid)
             write_dir = self.get_write_directory(uid, version)
-            if change_info.path.parent != write_dir:
-                change_info.path.rename(write_dir / change_info.path.name)
+            if change_info.file_path.parent != write_dir:
+                change_info.file_path.rename(write_dir / change_info.file_path.name)
 
         return True

@@ -72,7 +72,7 @@ class VersionScanner(Collection[Version]):
         """Lookup a change note with the given identifier.
 
         Args:
-            uid: The unique identifier or file name of the change note to lookup
+            uid (:obj:`str`): The unique identifier or file name of the change note to lookup
 
         Returns:
             The metadata about the change note specifying the file path and version it
@@ -87,7 +87,7 @@ class VersionScanner(Collection[Version]):
             override this method to provide a more efficient way to get the version.
 
         Args:
-            uid: The version identifier to get the version for.
+            uid (:obj:`str`): The version identifier to get the version for.
 
         Returns:
             The version.

@@ -1,6 +1,7 @@
 #  SPDX-FileCopyrightText: 2024-present Hinrich Mahler <chango@mahlerhome.de>
 #
 #  SPDX-License-Identifier: MIT
+"""This module contains constants used throughout the :mod:`chango` package."""
 
 __all__ = ["MarkupLanguage"]
 
@@ -44,9 +45,13 @@ class MarkupLanguage(StrEnum):
         ignored.
 
         Args:
-            string: The string to look up.
-            mapping: A mapping of file extensions to markup languages. If not provided, the
-                default mapping will be used.
+            string (:obj:`str`): The string to look up.
+            mapping (:class:`~collections.abc.Mapping` [:obj:`str`, :class:`MarkupLanguage`] | \
+                :obj:`None`): A mapping of file extensions to markup languages. If not provided,
+                the default mapping will be used.
+
+        Returns:
+            :class:`MarkupLanguage`: The markup language enum member.
 
         Raises:
             ValueError: If the file extension can not be resolved to a markup language.

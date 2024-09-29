@@ -14,10 +14,11 @@ def change_uid_from_file(file: PathLike) -> str:
     """Get the change note identifier from a file name or path.
 
     Args:
-        file: The file name or path to get the identifier from.
+        file (:obj:`str` | :class:`pathlib.Path`): The file name or path to get the identifier
+            from.
 
     Returns:
-        The :attr:`~chango.abc.ChangeNote.uid` of the change note.
+        :obj:`str`: The :attr:`~chango.abc.ChangeNote.uid` of the change note.
     """
     if isinstance(file, Path):
         return change_uid_from_file(file.name)
@@ -50,9 +51,9 @@ def ensure_uid(obj: _UIDProtocol | _UIDPropProtocol | str | None) -> str | None:
     is returned unchanged.
 
     Args:
-        obj: An object that either has a string attribute ``uid`` (e.g.
-            :class:`~chango.abc.ChangeNote` or :class:`~chango.Version`), is a :obj:`str` or
-            is :obj:`None`.
+        obj (:obj:`str` | :obj:`None` | has ``uid``): An object that either has a string attribute
+            ``uid`` (e.g. :class:`~chango.abc.ChangeNote` or :class:`~chango.Version`), is a
+            :obj:`str` or is :obj:`None`.
 
     Returns:
         :obj:`str` | :obj:`None`: The extracted UID if available and :obj:`None` else.
