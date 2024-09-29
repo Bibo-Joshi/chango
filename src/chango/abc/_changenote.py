@@ -71,7 +71,7 @@ class ChangeNote(abc.ABC):
             This convenience method calls :meth:`from_bytes` internally.
 
         Args:
-            file_path (:class:`pathlib.Path | :obj:`str`): The path to the file to read from.
+            file_path (:class:`pathlib.Path` | :obj:`str`): The path to the file to read from.
             encoding (:obj:`str`): The encoding to use for reading.
 
         Returns:
@@ -119,7 +119,7 @@ class ChangeNote(abc.ABC):
         Args:
             slug (:obj:`str`): The slug of the change note.
             uid (:obj:`str`): The UID of the change note.
-            string (:obj`str`): The string to read from.
+            string (:obj:`str`): The string to read from.
 
         Returns:
             :class:`ChangeNote`: The :class:`ChangeNote` object.
