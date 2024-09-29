@@ -1,12 +1,14 @@
 #  SPDX-FileCopyrightText: 2024-present Hinrich Mahler <chango@mahlerhome.de>
 #
 #  SPDX-License-Identifier: MIT
-from typing import override
+from typing import TYPE_CHECKING, override
 
-from .. import Version
 from ..abc import VersionNote
 from ..concrete import CommentChangeNote
 from ..constants import MarkupLanguage
+
+if TYPE_CHECKING:
+    from chango import Version
 
 
 def _indent_multiline(text: str, indent: int = 2) -> str:

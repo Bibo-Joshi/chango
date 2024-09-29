@@ -126,7 +126,7 @@ class VersionNote[CNT: ChangeNote, V: (Version, None)](MutableMapping[str, CNT],
 
         Args:
             markup: The markup language to use for rendering. If the markup language
-                is not supported, an :exc:`~chango.errors.UnsupportedMarkupError` should be raised.
+                is not supported, an :exc:`~chango.error.UnsupportedMarkupError` should be raised.
 
         Returns:
             :obj:`str`: The rendered version note.

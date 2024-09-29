@@ -6,7 +6,7 @@ from typing import override
 
 from ..abc import VersionHistory, VersionNote
 from ..constants import MarkupLanguage
-from ..errors import UnsupportedMarkupError
+from ..error import UnsupportedMarkupError
 
 
 class HeaderVersionHistory[VNT: VersionNote](VersionHistory[VNT]):

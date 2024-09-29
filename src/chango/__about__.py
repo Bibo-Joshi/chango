@@ -2,4 +2,5 @@
 #
 # SPDX-License-Identifier: MIT
 
-__version__ = "0.0.1"
+#: :obj:`str`: The version of the ``chango`` library as string
+__version__: str = "0.0.1"
