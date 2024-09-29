@@ -1,8 +1,6 @@
 #  SPDX-FileCopyrightText: 2024-present Hinrich Mahler <chango@mahlerhome.de>
 #
 #  SPDX-License-Identifier: MIT
-#
-#  SPDX-License-Identifier: MIT
 import datetime as dtm
 from pathlib import Path
 from typing import Annotated, Optional
