@@ -29,7 +29,7 @@ class DirectoryVersionScanner(VersionScanner):
     Args:
         base_directory: The base directory to scan for version directories.
         unreleased_directory: The directory that contains unreleased changes. If
-            :meth:`path.Path.is_dir` returns :obj:`False` for this directory, it will be assumed
+            :meth:`pathlib.Path.is_dir` returns :obj:`False` for this directory, it will be assumed
             to be a subdirectory of the base directory.
         directory_pattern: The pattern to match version directories against. Must contain one named
             group ``uid`` for the version identifier and a second named group for the ``date`` for

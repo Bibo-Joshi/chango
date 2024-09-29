@@ -6,7 +6,7 @@ from typing import ClassVar, Self
 
 import shortuuid
 
-from ..errors import ValidationError
+from ..error import ValidationError
 
 _short_uuid = shortuuid.ShortUUID()
 

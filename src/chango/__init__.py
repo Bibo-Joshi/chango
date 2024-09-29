@@ -2,9 +2,20 @@
 #
 # SPDX-License-Identifier: MIT
 
-__all__ = ["ChangeNoteInfo", "Version", "__version__", "abc", "constants", "errors"]
+__all__ = [
+    "ChangeNoteInfo",
+    "Version",
+    "__version__",
+    "abc",
+    "concrete",
+    "constants",
+    "error",
+    "helpers",
+]
 
-from . import abc, constants, errors
-from .__about__ import __version__
+from . import __about__, abc, concrete, constants, error, helpers
 from ._changenoteinfo import ChangeNoteInfo
 from ._version import Version
+
+#: :obj:`str`: The version of the ``chango`` library as string
+__version__ = __about__.__version__

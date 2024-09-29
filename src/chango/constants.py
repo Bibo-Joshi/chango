@@ -44,7 +44,7 @@ class MarkupLanguage(StrEnum):
         ignored.
 
         Args:
-            string: The string to loop up.
+            string: The string to look up.
             mapping: A mapping of file extensions to markup languages. If not provided, the
                 default mapping will be used.
 

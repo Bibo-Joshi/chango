@@ -1,6 +1,13 @@
+import re
 import sys
 import tomllib
+import typing
 from pathlib import Path
+
+from docutils.nodes import Node, reference
+from sphinx.addnodes import pending_xref
+from sphinx.application import Sphinx
+from sphinx.environment import BuildEnvironment
 
 sys.path.insert(0, str(Path("../..").resolve().absolute()))
 
@@ -30,12 +37,82 @@ html_theme = "furo"
 
 intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
 
-# nitpicky = True
-
-# autodoc typehints options
-always_use_bars_union = True
-typehints_document_rtype = True
-typehints_defaults = "braces-after"
+nitpicky = True
 
 # paramlinks options
 paramlinks_hyperlink_param = "name"
+
+# Don't show type hints in the signature - that just makes it hardly readable
+# and we document the types anyway
+autodoc_typehints = "none"
+autodoc_member_order = "alphabetical"
+autodoc_inherit_docstrings = False
+
+html_static_path = ["../../logo"]
+
+# Theme options are theme-specific and customize the look and feel of a theme
+# further. For a list of options available for each theme, see the documentation.
+html_theme_options = {
+    "light_logo": "chango_light_mode_1024.png",
+    "dark_logo": "chango_dark_mode_1024.png",
+    "navigation_with_keys": True,
+    "footer_icons": [
+        {  # Github logo
+            "name": "GitHub",
+            "url": "https://github.com/Bibo-Joshi/chango",
+            "html": (
+                '<svg stroke="currentColor" fill="currentColor" stroke-width="0" '
+                'viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 '
+                "2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.4"
+                "9-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23"
+                ".82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 "
+                "0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.2"
+                "7 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.5"
+                "1.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 "
+                '1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z">'
+                "</path></svg>"
+            ),
+            "class": "",
+        }
+    ],
+}
+
+# The name for this set of Sphinx documents.  If None, it defaults to
+# "<project> <release> documentation".
+html_title = f"chango {version}"
+
+# Furo's default permalink icon is `#` which doesn't look great imo.
+html_permalinks_icon = "¶"
+
+# The name of an image file (within the static path) to use as favicon of the
+# docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
+# pixels large.
+html_favicon = "../../logo/chango_icon.ico"
+
+
+_TYPE_VAR_PATTERN = re.compile(r"typing\.([A-Z][a-zA-Z]*)")
+
+
+def missing_reference(
+    _: Sphinx, __: BuildEnvironment, node: pending_xref, contnode: Node
+) -> None | Node:
+    """Here we redirect links to type variables. Sphinx tries to link TypeVar T to typing.T which
+    does not exist. We instead link to typing.TypeVar.
+    """
+    if not (match := _TYPE_VAR_PATTERN.match(node["reftarget"])):
+        # Sort out everything that is obviously not a TypeVar
+        return None
+
+    name = match.group(1)
+    if hasattr(typing, name):
+        # We don't want to change valid links that exist
+        return None
+
+    link_node = reference(refuri="https://docs.python.org/3/library/typing.html#typing.TypeVar")
+    link_node.append(contnode.deepcopy())
+    return link_node
+
+
+def setup(app: Sphinx) -> None:
+    app.connect("missing-reference", missing_reference)
+    # app.connect("autodoc-process-bases", autodoc_process_bases)

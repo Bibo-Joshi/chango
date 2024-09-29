@@ -7,6 +7,8 @@ from typing import Protocol, overload
 from ._utils.filename import FileName
 from ._utils.types import PathLike
 
+__all__ = ["change_uid_from_file", "ensure_uid"]
+
 
 def change_uid_from_file(file: PathLike) -> str:
     """Get the change note identifier from a file name or path.
@@ -49,7 +51,7 @@ def ensure_uid(obj: _UIDProtocol | _UIDPropProtocol | str | None) -> str | None:
 
     Args:
         obj: An object that either has a string attribute ``uid`` (e.g.
-            :class:`~chango.abc.ChangeNote` or :class:`~chango.abc.Version`), is a :obj:`str` or
+            :class:`~chango.abc.ChangeNote` or :class:`~chango.Version`), is a :obj:`str` or
             is :obj:`None`.
 
     Returns:

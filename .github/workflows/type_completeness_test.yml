@@ -2,7 +2,7 @@ name: Check Type Completeness
 on:
   pull_request:
     paths:
-      - chango/**
+      - src/**
       - pyproject.toml
       - .github/workflows/type_completeness_test.yml
   push:

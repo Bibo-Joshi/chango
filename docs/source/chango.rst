@@ -2,40 +2,13 @@ chango
 ======
 
 .. automodule:: chango
-    :members:
-    :show-inheritance:
+    :members: __version__
 
-chango.abc
-----------
+.. toctree::
+    :titlesonly:
 
-.. automodule:: chango.abc
-    :members:
-    :show-inheritance:
-
-chango.concrete
----------------
-
-.. automodule:: chango.concrete
-    :members:
-    :show-inheritance:
-
-chango.constants
-----------------
-
-.. automodule:: chango.constants
-    :members:
-    :show-inheritance:
-
-chango.errors
--------------
-
-.. automodule:: chango.errors
-    :members:
-    :show-inheritance:
-
-chango.helpers
---------------
-
-.. automodule:: chango.helpers
-    :members:
-    :show-inheritance:
+    chango.changenoteinfo
+    chango.version
+    chango.abc
+    chango.concrete
+    

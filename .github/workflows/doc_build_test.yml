@@ -2,7 +2,7 @@ name: Test Documentation Build
 on:
   pull_request:
     paths:
-      - chango/**
+      - src/**
       - '**.rst'
   push:
     branches:

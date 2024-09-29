@@ -77,7 +77,7 @@ class ChangeNote(abc.ABC):
             The :class:`ChangeNote` object.
 
         Raises:
-            :class:`chango.errors.ValidationError`: If the data is not a valid change note file.
+            :class:`chango.error.ValidationError`: If the data is not a valid change note file.
         """
         path = Path(file_path)
         file_name = FileName.from_string(path.name)
@@ -104,7 +104,7 @@ class ChangeNote(abc.ABC):
             The :class:`ChangeNote` object.
 
         Raises:
-            :class:`chango.errors.ValidationError`: If the data is not a valid change note file.
+            :class:`chango.error.ValidationError`: If the data is not a valid change note file.
         """
         return cls.from_string(slug=slug, uid=uid, string=data.decode(encoding))
 
@@ -113,7 +113,7 @@ class ChangeNote(abc.ABC):
     def from_string(cls, slug: str, uid: str, string: str) -> Self:
         """Read a change note from the specified string data. The implementation must be able to
         handle the case where the string is not a valid change note and raise an
-        :exc:`~chango.errors.ValidationError` in that case.
+        :exc:`~chango.error.ValidationError` in that case.
 
         Args:
             slug: The slug of the change note.
@@ -124,7 +124,7 @@ class ChangeNote(abc.ABC):
             The :class:`ChangeNote` object.
 
         Raises:
-            :class:`chango.errors.ValidationError`: If the string is not a valid change note.
+            :class:`chango.error.ValidationError`: If the string is not a valid change note.
         """
 
     @abc.abstractmethod
