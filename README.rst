@@ -29,6 +29,10 @@
    :target: https://results.pre-commit.ci/latest/github/Bibo-Joshi/chango/main
    :alt: pre-commit.ci status
 
+.. image:: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json
+    :target: https://github.com/astral-sh/ruff
+    :alt: Ruff
+
 Introduction
 ------------
 
