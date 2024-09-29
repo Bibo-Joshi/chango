@@ -26,7 +26,9 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
     @property
     @abc.abstractmethod
     def scanner(self) -> VST:
-        """The used :class:`~chango.abc.VersionScanner`."""
+        """:class:`VST <typing.TypeVar>`: The :class:`~chango.abc.VersionScanner` used by this
+        instance.
+        """
 
     @abc.abstractmethod
     def build_template_change_note(self, slug: str, uid: str | None = None) -> CNT:
@@ -41,7 +43,7 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
                 to generate a random one.
 
         Returns:
-            The :class:`~chango.abc.ChangeNote` object.
+            :class:`CNT <typing.TypeVar>`:The :class:`~chango.abc.ChangeNote` object.
         """
 
     @abc.abstractmethod
@@ -49,13 +51,17 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
         """Build a new empty version note.
 
         Args:
-            version: The version of the software project this note is for.
-                May be :obj:`None` if the version is not yet released.
+            version (:class:`~chango.Version` | :obj:`str` | :obj:`None`): The version of the
+                software project this note is for. May be :obj:`None` if the version is not yet
+                released.
+
+        Returns:
+            :class:`VNT <typing.TypeVar>`: The :class:`~chango.abc.VersionNote` object.
         """
 
     @abc.abstractmethod
     def build_version_history(self) -> VHT:
-        """Build a new empty version history."""
+        """:class:`VHT <typing.TypeVar>`: Build a new empty version history."""
 
     @abc.abstractmethod
     def load_change_note(self, uid: str) -> CNT:
@@ -63,6 +69,9 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
 
         Args:
             uid (:obj:`str`): The unique identifier or file name of the change note to load.
+
+        Returns:
+            :class:`CNT <typing.TypeVar>`: The :class:`~chango.abc.ChangeNote` object.
         """
 
     @abc.abstractmethod
@@ -75,9 +84,13 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
               expected that :paramref:`version` is of type :class:`~chango.Version`.
 
         Args:
-            change_note: The change note to write or its UID.
-            version: The version the change note belongs to. Maybe be
-                :obj:`None` if the change note is not yet released.
+            change_note (:class:`CNT <typing.TypeVar>` | :obj:`str`): The change note to write or
+                its UID.
+            version (:class:`~chango.Version` | :obj:`str` | :obj:`None`): The version the change
+                note belongs to. Maybe be :obj:`None` if the change note is not yet released.
+
+        Returns:
+            :class:`pathlib.Path`: The directory to write the change note to.
         """
 
     def write_change_note(
@@ -86,13 +99,13 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
         """Write a change note to disk.
 
         Args:
-            change_note: The change note to write.
-            version: The version the change note belongs to. Maybe be
-                :obj:`None` if the change note is not yet released.
+            change_note (:class:`CNT <typing.TypeVar>` | :obj:`str`): The change note to write.
+            version (:class:`~chango.Version` | :obj:`str` | :obj:`None`): The version the change
+                note belongs to. Maybe be :obj:`None` if the change note is not yet released.
             encoding (:obj:`str`): The encoding to use for writing.
 
         Returns:
-            The file path the change note was written to.
+            :class:`pathlib.Path`: The file path the change note was written to.
         """
         return change_note.to_file(
             self.get_write_directory(change_note=change_note, version=version), encoding=encoding
@@ -102,8 +115,11 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
         """Load a version note.
 
         Args:
-            version: The version of the version note to load. May be :obj:`None` if the version is
-                not yet released.
+            version (:class:`~chango.Version` | :obj:`str` | :obj:`None`): The version of the
+                version note to load. May be :obj:`None` if the version is not yet released.
+
+        Returns:
+            :class:`VNT <typing.TypeVar>`: The loaded :class:`~chango.abc.VersionNote`.
         """
         changes = self.scanner.get_changes(version)
         version_note = self.build_version_note(version=version)
@@ -116,16 +132,18 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
         """Load the version history.
 
         Important:
-            Unreleased changes are included in the returned version history, if available.
+            By default, unreleased changes are included in the returned version history, if
+            available.
 
         Args:
-            start_from: The version to start from. If :obj:`None`, start from the
-                earliest available version.
-            end_at: The version to end at. If :obj:`None`, end at the latest available
-                version, *including* unreleased changes.
+            start_from (:class:`~chango.Version` | :obj:`str`, optional): The version to start
+                from. If :obj:`None`, start from the earliest available version.
+            end_at (:class:`~chango.Version` | :obj:`str`, optional): The version to end at.
+                If :obj:`None`, end at the latest available version, *including* unreleased
+                changes.
 
         Returns:
-            The loaded version history.
+            :class:`VHT <typing.TypeVar>`: The loaded version :class:`~chango.abc.VersionHistory`.
         """
         version_history = self.build_version_history()
 
@@ -143,11 +161,11 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
         if necessary.
 
         Args:
-            version: The version to release.
+            version (:class:`~chango.Version`): The version to release.
 
         Returns:
-            Whether a release was performed. If no unreleased changes are available, this method
-            returns :obj:`False`.
+            :obj:`bool`: Whether a release was performed. If no unreleased changes are available,
+            this method returns :obj:`False`.
         """
         if not self.scanner.has_unreleased_changes():
             return False
