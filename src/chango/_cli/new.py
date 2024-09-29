@@ -18,7 +18,7 @@ def new(
     edit: Annotated[
         bool, typer.Option(help="Whether to open the change note in the default editor.")
     ] = True,
-):
+) -> None:
     """Create a new change note."""
     change_note = get_chango_instance().build_template_change_note(slug=slug)
     path = get_chango_instance().write_change_note(change_note, version=None)

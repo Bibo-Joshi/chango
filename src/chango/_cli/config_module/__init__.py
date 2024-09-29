@@ -11,13 +11,13 @@ from .models import CLIConfig, import_chango_instance_from_config
 
 
 class _UserConfigManager:
-    def __init__(self):
+    def __init__(self) -> None:
         self._chango_instance: ChanGo | None = None
 
     def get_chango_instance(self) -> ChanGo:
         if self._chango_instance is None:
             self._chango_instance = import_chango_instance_from_config(
-                CLIConfig()  # type: ignore[reportCallIssue]
+                CLIConfig()  # type: ignore[call-arg]
             )
         return self._chango_instance
 

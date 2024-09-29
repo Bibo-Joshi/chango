@@ -11,6 +11,5 @@ if TYPE_CHECKING:
 
 VersionUID = str | None
 VUIDInput = Union["Version", str] | None
-VersionIO = Union["Version", None]
 CNUIDInput = Union["ChangeNote", str]
 PathLike = str | Path

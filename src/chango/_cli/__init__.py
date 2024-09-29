@@ -17,7 +17,7 @@ from .report import app as report_app
 app = typer.Typer(help="CLI for chango - CHANgelog GOvernor for Your Project")
 
 
-def version_callback(value: bool):
+def version_callback(value: bool) -> None:
     if value:
         typer.echo(__version__)
         raise typer.Exit
@@ -29,7 +29,7 @@ def main(
         bool,
         typer.Option("--version", callback=version_callback, help="Show the version and exit."),
     ] = False,
-):
+) -> None:
     pass
 
 

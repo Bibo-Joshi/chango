@@ -31,7 +31,7 @@ def version(
     ],
     markup: MARKUP = MarkupLanguage.MARKDOWN,
     output: OUTPUT_FILE = None,
-):
+) -> None:
     """Print a report of the change notes for a specific version."""
     version_note = get_chango_instance().load_version_note(uid)
     text = version_note.render(markup=markup)
@@ -43,7 +43,7 @@ def version(
 
 
 @app.command()
-def history(markup: MARKUP = MarkupLanguage.MARKDOWN, output: OUTPUT_FILE = None):
+def history(markup: MARKUP = MarkupLanguage.MARKDOWN, output: OUTPUT_FILE = None) -> None:
     """Print a report of the version history."""
     version_history = get_chango_instance().load_version_history()
     text = version_history.render(markup=markup)

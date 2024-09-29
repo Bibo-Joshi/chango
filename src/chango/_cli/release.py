@@ -22,7 +22,7 @@ def release(
     date: Annotated[
         dtm.date, typer.Argument(help="The date of the version release.", parser=date_callback)
     ],
-):
+) -> None:
     """Release the unreleased changes to a new version."""
     if get_chango_instance().release(Version(uid, date)):
         typer.echo(f"Released version {uid} on {date}")

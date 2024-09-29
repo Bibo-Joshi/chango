@@ -3,7 +3,7 @@
 #  SPDX-License-Identifier: MIT
 from typing import override
 
-from .._utils.types import VersionIO
+from .. import Version
 from ..abc import VersionNote
 from ..concrete import CommentChangeNote
 from ..constants import MarkupLanguage
@@ -16,7 +16,7 @@ def _indent_multiline(text: str, indent: int = 2) -> str:
     )
 
 
-class CommentVersionNote[V: VersionIO](VersionNote[CommentChangeNote, V]):
+class CommentVersionNote[V: (Version, None)](VersionNote[CommentChangeNote, V]):
     """A simple version note implementation that works with
     :class:`~chango.concrete.CommentChangeNote`.
     """

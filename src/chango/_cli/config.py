@@ -29,7 +29,7 @@ _PATH_ANNOTATION = Annotated[
 
 
 @app.callback()
-def callback(context: typer.Context, path: _PATH_ANNOTATION = None):
+def callback(context: typer.Context, path: _PATH_ANNOTATION = None) -> None:
     if not path:
         effective_path = Path.cwd() / "pyproject.toml"
     elif path.is_absolute():
@@ -48,7 +48,7 @@ def callback(context: typer.Context, path: _PATH_ANNOTATION = None):
         raise typer.BadParameter(f"Failed to parse the configuration file: {exc}") from exc
 
     try:
-        context.obj["data"] = toml_data["tool"]["chango"]  # type: ignore[reportIndexIssue]
+        context.obj["data"] = toml_data["tool"]["chango"]  # type: ignore[index]
     except KeyError as exc:
         raise typer.BadParameter(
             "No configuration found for chango in the configuration file."
@@ -56,7 +56,7 @@ def callback(context: typer.Context, path: _PATH_ANNOTATION = None):
 
 
 @app.command()
-def show(context: typer.Context):
+def show(context: typer.Context) -> None:
     """Show the configuration."""
     string = f"""
 Showing the configuration of the chango CLIas configured in {context.obj['path']}.
@@ -68,13 +68,13 @@ Showing the configuration of the chango CLIas configured in {context.obj['path']
 
 
 @app.command()
-def schema():
+def schema() -> None:
     """Show the JSON schema of the configuration."""
     rprint(Markdown(f"```json\n{json.dumps(CLIConfig.model_json_schema(), indent=2)}\n```"))
 
 
 @app.command()
-def validate(context: typer.Context):
+def validate(context: typer.Context) -> None:
     """Validate the configuration."""
     try:
         config = CLIConfig.model_validate(dict(context.obj["data"]))

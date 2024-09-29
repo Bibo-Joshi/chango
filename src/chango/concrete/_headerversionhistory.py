@@ -31,7 +31,7 @@ class HeaderVersionHistory[VNT: VersionNote](VersionHistory[VNT]):
         if has_dates:
             changes = sorted(
                 released_notes,
-                key=lambda note: note.date,  # type: ignore[reportArgumentType]
+                key=lambda note: note.date,  # type: ignore[arg-type,return-value]
             )
             match markup:
                 case MarkupLanguage.MARKDOWN:
@@ -66,8 +66,10 @@ class HeaderVersionHistory[VNT: VersionNote](VersionHistory[VNT]):
         template = string.Template(tpl_str)
         return "\n\n".join(
             template.substitute(
-                uid=note.uid or "Unreleased",
-                date=note.date.isoformat() if note.date else "unknown",
+                uid="Unreleased" if note.uid is None else "Unreleased",
+                date=(
+                    "unknown" if (note.date is None) else note.date.isoformat()  # type: ignore[attr-defined]
+                ),
                 comment=note.render(markup),
             )
             for note in changes

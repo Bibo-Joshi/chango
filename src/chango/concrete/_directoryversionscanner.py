@@ -57,7 +57,7 @@ class DirectoryVersionScanner(VersionScanner):
         if (path := Path(unreleased_directory)).is_dir():
             self.unreleased_directory: Path = path
         else:
-            self.unreleased_directory: Path = self.base_directory / unreleased_directory
+            self.unreleased_directory = self.base_directory / unreleased_directory
 
         self.__available_versions: dict[str, _VersionInfo] | None = None
 

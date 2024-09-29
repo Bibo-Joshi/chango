@@ -20,7 +20,7 @@ class VersionHistory[VNT: VersionNote](MutableMapping[VersionUID, VNT], abc.ABC)
         themselves.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._version_notes: dict[VersionUID, VNT] = {}
 
     def __delitem__(self, __key: VUIDInput) -> None:
@@ -50,7 +50,7 @@ class VersionHistory[VNT: VersionNote](MutableMapping[VersionUID, VNT], abc.ABC)
         Args:
             version_note: The version note to add.
         """
-        self[version_note.uid] = version_note  # type: ignore[reportArgumentType]
+        self[version_note.uid] = version_note  # type: ignore[index]
 
     def remove_version_note(self, version_note: VNT) -> None:
         """Remove a version note from the version note.
@@ -58,7 +58,7 @@ class VersionHistory[VNT: VersionNote](MutableMapping[VersionUID, VNT], abc.ABC)
         Args:
             version_note: The version note to remove.
         """
-        del self[version_note.uid]  # type: ignore[reportArgumentType]
+        del self[version_note.uid]  # type: ignore[arg-type]
 
     @abc.abstractmethod
     def render(self, markup: str) -> str:

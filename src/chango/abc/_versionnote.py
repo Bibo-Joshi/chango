@@ -8,14 +8,13 @@ from collections.abc import Iterator, MutableMapping
 from typing import TYPE_CHECKING, overload
 
 from .._utils.filename import FileName
-from .._utils.types import VersionIO
 from ..abc._changenote import ChangeNote
 
 if TYPE_CHECKING:
     from chango import Version
 
 
-class VersionNote[CNT: ChangeNote, V: VersionIO](MutableMapping[str, CNT], abc.ABC):
+class VersionNote[CNT: ChangeNote, V: (Version, None)](MutableMapping[str, CNT], abc.ABC):
     """Abstract base class for a version note describing the set of changes in a software project
     for a single version.
 

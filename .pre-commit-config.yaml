@@ -13,29 +13,32 @@ repos:
         args:
           - --fix
           - --unsafe-fixes
-  # Does not have support for PEP 695 generics yet
-  #  - repo: https://github.com/pre-commit/mirrors-mypy
-  #    rev: v1.10.1
-  #    hooks:
-  #      - id: mypy
-  #        name: mypy
-  #        files: ^(?!(tests)).*\.py$
-  #        args:
-  #          - --install-types
-  - repo: https://github.com/RobertCraigie/pyright-python
-    rev: v1.1.382.post0
+     # Does not have support for PEP 695 generics yet
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.11.2
     hooks:
-      - id: pyright
-        name: pyright
+      - id: mypy
+        name: mypy
         files: ^(?!(tests)).*\.py$
+        args:
+          - --install-types
+          - --enable-incomplete-feature=NewGenericSyntax
         additional_dependencies:
-          # https://github.com/RobertCraigie/pyright-python/issues/164
-          - pyright[nodejs]
           - pydantic-settings~=2.3
           - shortuuid~=1.0
-          - sphinx~=7.3
           - tomlkit~=0.13
           - typer~=0.12
+#  - repo: https://github.com/RobertCraigie/pyright-python
+#    rev: v1.1.382.post0
+#    hooks:
+#      - id: pyright
+#        name: pyright
+#        files: ^(?!(tests)).*\.py$
+#        additional_dependencies:
+#          - pydantic-settings~=2.3
+#          - shortuuid~=1.0
+#          - tomlkit~=0.13
+#          - typer~=0.12
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.17.0
     hooks:

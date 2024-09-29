@@ -20,6 +20,6 @@ def edit(
             help="The unique identifier of the change note to edit.", show_default=False
         ),
     ],
-):
+) -> None:
     """Edit an existing change note in the default editor."""
     typer.launch(get_chango_instance().scanner.lookup_change_note(uid).path.as_posix())
