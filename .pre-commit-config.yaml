@@ -1,30 +1,51 @@
 ci:
-    autofix_commit_msg: |
-        [pre-commit.ci] auto fixes from pre-commit.com hooks
-
-        for more information, see https://pre-commit.ci
-    autoupdate_commit_msg: 'Bump `pre-commit` Dependency Versions'
-    autoupdate_schedule: quarterly
+  autoupdate_commit_msg: 'Bump `pre-commit` Dependency Versions'
+  autoupdate_schedule: quarterly
 
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: 'v0.5.1'
+    rev: v0.6.8
     hooks:
-      # Run the linter.
-      - id: ruff
-        args: [ --fix ]
       # Run the formatter.
       - id: ruff-format
+      # Run the linter.
+      - id: ruff
+        args:
+          - --fix
+          - --unsafe-fixes
+     # Does not have support for PEP 695 generics yet
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.10.1
+    rev: v1.11.2
     hooks:
       - id: mypy
         name: mypy
         files: ^(?!(tests)).*\.py$
         args:
-          - --install-types
+          - --enable-incomplete-feature=NewGenericSyntax
+        additional_dependencies:
+          - pydantic-settings~=2.3
+          - shortuuid~=1.0
+          - sphinx~=8.0
+          - tomlkit~=0.13
+          - typer~=0.12
+          - types-Pygments
+          - types-PyYAML
+# pyright doesn't work well with pre-commit.ci - see
+# - https://github.com/RobertCraigie/pyright-python/pull/300
+# - https://github.com/RobertCraigie/pyright-python/issues/231
+#  - repo: https://github.com/RobertCraigie/pyright-python
+#    rev: v1.1.382.post0
+#    hooks:
+#      - id: pyright
+#        name: pyright
+#        files: ^(?!(tests)).*\.py$
+#        additional_dependencies:
+#          - pydantic-settings~=2.3
+#          - shortuuid~=1.0
+#          - tomlkit~=0.13
+#          - typer~=0.12
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.16.0
+    rev: v3.17.0
     hooks:
       - id: pyupgrade
         args:

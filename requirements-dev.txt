@@ -1,4 +1,6 @@
+-e .
 pre-commit
-coverage~=7.5
+pytest~=8.3
+coverage
 build
 -r docs/requirements-docs.txt
