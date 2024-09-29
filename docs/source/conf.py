@@ -39,7 +39,7 @@ paramlinks_hyperlink_param = "name"
 # and we document the types anyway
 autodoc_typehints = "none"
 
-html_static_path = ["_static", "../../logo"]
+html_static_path = ["../../logo"]
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further. For a list of options available for each theme, see the documentation.
