@@ -40,7 +40,7 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
             uid: The unique identifier for the change note or :obj:`None` to generate a random one.
 
         Returns:
-            The :class:`ChangeNote` object.
+            The :class:`~chango.abc.ChangeNote` object.
         """
 
     @abc.abstractmethod

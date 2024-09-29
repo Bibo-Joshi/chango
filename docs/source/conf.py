@@ -1,6 +1,13 @@
+import re
 import sys
 import tomllib
+import typing
 from pathlib import Path
+
+from docutils.nodes import Node, reference
+from sphinx.addnodes import pending_xref
+from sphinx.application import Sphinx
+from sphinx.environment import BuildEnvironment
 
 sys.path.insert(0, str(Path("../..").resolve().absolute()))
 
@@ -38,6 +45,8 @@ paramlinks_hyperlink_param = "name"
 # Don't show type hints in the signature - that just makes it hardly readable
 # and we document the types anyway
 autodoc_typehints = "none"
+autodoc_member_order = "alphabetical"
+autodoc_inherit_docstrings = False
 
 html_static_path = ["../../logo"]
 
@@ -79,3 +88,31 @@ html_permalinks_icon = "¶"
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
 html_favicon = "../../logo/chango_icon.ico"
+
+
+_TYPE_VAR_PATTERN = re.compile(r"typing\.([A-Z][a-zA-Z]*)")
+
+
+def missing_reference(
+    _: Sphinx, __: BuildEnvironment, node: pending_xref, contnode: Node
+) -> None | Node:
+    """Here we redirect links to type variables. Sphinx tries to link TypeVar T to typing.T which
+    does not exist. We instead link to typing.TypeVar.
+    """
+    if not (match := _TYPE_VAR_PATTERN.match(node["reftarget"])):
+        # Sort out everything that is obviously not a TypeVar
+        return None
+
+    name = match.group(1)
+    if hasattr(typing, name):
+        # We don't want to change valid links that exist
+        return None
+
+    link_node = reference(refuri="https://docs.python.org/3/library/typing.html#typing.TypeVar")
+    link_node.append(contnode.deepcopy())
+    return link_node
+
+
+def setup(app: Sphinx) -> None:
+    app.connect("missing-reference", missing_reference)
+    # app.connect("autodoc-process-bases", autodoc_process_bases)
