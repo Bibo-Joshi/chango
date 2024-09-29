@@ -115,4 +115,3 @@ def missing_reference(
 
 def setup(app: Sphinx) -> None:
     app.connect("missing-reference", missing_reference)
-    # app.connect("autodoc-process-bases", autodoc_process_bases)
