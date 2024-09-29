@@ -2,7 +2,7 @@ name: Unit Tests
 on:
   pull_request:
     paths:
-      - chango/**
+      - src/**
       - tests/**
       - pyproject.toml
       - requirements-dev.txt
