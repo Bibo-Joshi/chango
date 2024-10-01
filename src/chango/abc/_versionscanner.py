@@ -37,16 +37,25 @@ class VersionScanner(Collection[Version]):
             calls :meth:`has_unreleased_changes` internally.
 
         Args:
-            uid: The version identifier to check.
+            uid (:class:`~chango.Version` | :obj:`str` | :obj:`None`): The version identifier to
+                check.
         """
 
     @abc.abstractmethod
     def has_unreleased_changes(self) -> bool:
-        """Check if there are changes in the repository that are not yet released in a version."""
+        """Check if there are changes in the repository that are not yet released in a version.
+
+        Returns:
+            :obj:`bool`: :obj:`True` if there are unreleased changes, :obj:`False` otherwise.
+        """
 
     @abc.abstractmethod
     def get_latest_version(self) -> Version:
-        """Get the latest version"""
+        """Get the latest version
+
+        Returns:
+            :class:`~chango.Version`: The latest version
+        """
 
     @abc.abstractmethod
     def get_available_versions(
@@ -58,13 +67,14 @@ class VersionScanner(Collection[Version]):
             Unreleased changes must *not* be included in the returned version identifiers.
 
         Args:
-            start_from: The version identifier to start from. If :obj:`None`, start from the
-                earliest available version.
-            end_at: The version identifier to end at. If :obj:`None`, end at the latest available
-                version, *excluding* unreleased changes.
+            start_from (:class:`~chango.Version` | :obj:`str`, optional): The version identifier
+                to start from. If :obj:`None`, start from the earliest available version.
+            end_at (:class:`~chango.Version` | :obj:`str`, optional): The version identifier to end
+                at. If :obj:`None`, end at the latest available version, *excluding* unreleased
+                changes.
 
         Returns:
-            The available versions.
+            Tuple[:class:`~chango.Version`]: The available versions.
         """
 
     @abc.abstractmethod
@@ -72,11 +82,11 @@ class VersionScanner(Collection[Version]):
         """Lookup a change note with the given identifier.
 
         Args:
-            uid: The unique identifier or file name of the change note to lookup
+            uid (:obj:`str`): The unique identifier or file name of the change note to lookup
 
         Returns:
-            The metadata about the change note specifying the file path and version it
-            belongs to.
+            :class:`chango.ChangeNoteInfo`: The metadata about the change note specifying the file
+                path and version it belongs to.
         """
 
     def get_version(self, uid: str) -> Version:
@@ -87,10 +97,10 @@ class VersionScanner(Collection[Version]):
             override this method to provide a more efficient way to get the version.
 
         Args:
-            uid: The version identifier to get the version for.
+            uid (:obj:`str`): The version identifier to get the version for.
 
         Returns:
-            The version.
+            :class:`~chango.Version`: The version.
         """
         return next(version for version in self if version.uid == uid)
 
@@ -106,10 +116,10 @@ class VersionScanner(Collection[Version]):
             The returned UIDs must be in the order in which the changes were made.
 
         Args:
-            uid: The version identifier to get the change files for. If
-                :obj:`None`, get the change files for unreleased changes must be
-                returned.
+            uid (:class:`~chango.Version` | :obj:`str` | :obj:`None`): The version identifier to
+                get the change files for. If :obj:`None`, get the change files for unreleased
+                changes must be returned.
 
         Returns:
-            UIDs of the changes corresponding to the version identifier.
+            Tuple[:obj:`str`]: UIDs of the changes corresponding to the version identifier.
         """

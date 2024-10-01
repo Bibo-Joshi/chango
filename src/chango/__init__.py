@@ -18,4 +18,4 @@ from ._changenoteinfo import ChangeNoteInfo
 from ._version import Version
 
 #: :obj:`str`: The version of the ``chango`` library as string
-__version__ = __about__.__version__
+__version__: str = __about__.__version__

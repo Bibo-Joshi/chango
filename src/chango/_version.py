@@ -10,12 +10,12 @@ class Version:
     """Objects of this type represent a released version of a software project.
 
     Args:
-        uid: Unique identifier / version number of this version.
-        date: Release date of this version.
+        uid (:obj:`str`): Unique identifier / version number of this version.
+        date (:class:`datetime.date`): Release date of this version.
 
     Attributes:
-        uid: Unique identifier / version number of this version.
-        date: Release date of this version.
+        uid (:obj:`str`): Unique identifier / version number of this version.
+        date (:class:`datetime.date`): Release date of this version.
     """
 
     uid: str

@@ -48,7 +48,8 @@ class VersionHistory[VNT: VersionNote](MutableMapping[VersionUID, VNT], abc.ABC)
         """Add a version note to the version note.
 
         Args:
-            version_note: The version note to add.
+            version_note (:class:`VNT <typing.TypeVar>`): The :class:`~chango.abc.VersionNote`
+                note to add.
         """
         self[version_note.uid] = version_note  # type: ignore[index]
 
@@ -56,7 +57,8 @@ class VersionHistory[VNT: VersionNote](MutableMapping[VersionUID, VNT], abc.ABC)
         """Remove a version note from the version note.
 
         Args:
-            version_note: The version note to remove.
+            version_note (:class:`VNT <typing.TypeVar>`): The :class:`~chango.abc.VersionNote`
+                note to remove.
         """
         del self[version_note.uid]  # type: ignore[arg-type]
 
@@ -73,7 +75,7 @@ class VersionHistory[VNT: VersionNote](MutableMapping[VersionUID, VNT], abc.ABC)
               :attr:`~chango.abc.VersionNote.date` if available.
 
         Args:
-            markup: The markup language to use for rendering. If the markup language
+            markup (:obj:`str`): The markup language to use for rendering. If the markup language
                 is not supported, an :exc:`~chango.error.UnsupportedMarkupError` should be raised.
 
         Returns:

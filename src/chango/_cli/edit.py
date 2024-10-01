@@ -20,4 +20,4 @@ def edit(
     ],
 ) -> None:
     """Edit an existing change note in the default editor."""
-    typer.launch(get_chango_instance().scanner.lookup_change_note(uid).path.as_posix())
+    typer.launch(get_chango_instance().scanner.lookup_change_note(uid).file_path.as_posix())

@@ -29,12 +29,12 @@ class VersionNote[CNT: ChangeNote, V: (Version, None)](MutableMapping[str, CNT],
         may interfere with the order in which they are displayed.
 
     Args:
-        version: The version of the software project this note is for.
-            May be :obj:`None` if the version is not yet released.
+        version (:class:`~chango.Version` | :obj:`None`): The version of the software project this
+            note is for or May be :obj:`None` if the version is not yet released.
 
     Attributes:
-        version: The version of the software project this note is for.
-            May be :obj:`None` if the version is not yet released.
+        version: (:class:`~chango.Version` | :obj:`None`): The version of the software project this
+            note is for or May be :obj:`None` if the version is not yet released.
     """
 
     def __init__(self, version: V) -> None:
@@ -108,7 +108,8 @@ class VersionNote[CNT: ChangeNote, V: (Version, None)](MutableMapping[str, CNT],
         """Add a change note to the version note.
 
         Args:
-            change_note: The change note to add.
+            change_note (:class:`CNT <typing.TypeVar>`): The :class:`~chango.abc.ChangeNote` note
+                to add.
         """
         self[change_note.uid] = change_note
 
@@ -116,7 +117,8 @@ class VersionNote[CNT: ChangeNote, V: (Version, None)](MutableMapping[str, CNT],
         """Remove a change note from the version note.
 
         Args:
-            change_note: The change note to remove.
+            change_note (:class:`CNT <typing.TypeVar>`): The :class:`~chango.abc.ChangeNote` note
+                to remove.
         """
         del self[change_note.uid]
 
@@ -125,7 +127,7 @@ class VersionNote[CNT: ChangeNote, V: (Version, None)](MutableMapping[str, CNT],
         """Render the version note as a string.
 
         Args:
-            markup: The markup language to use for rendering. If the markup language
+            markup (:obj:`str`): The markup language to use for rendering. If the markup language
                 is not supported, an :exc:`~chango.error.UnsupportedMarkupError` should be raised.
 
         Returns:

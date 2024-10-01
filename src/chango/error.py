@@ -1,7 +1,7 @@
 #  SPDX-FileCopyrightText: 2024-present Hinrich Mahler <chango@mahlerhome.de>
 #
 #  SPDX-License-Identifier: MIT
-
+"""This module contains error classes specific to the :mod:`chango` package."""
 
 __all__ = ["ChanGoError", "UnsupportedMarkupError", "ValidationError"]
 
