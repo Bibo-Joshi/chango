@@ -41,4 +41,5 @@ app.command()(release)
 app.add_typer(report_app, name="report")
 
 if os.getenv("SPHINX_BUILD") == "True":
+    # See https://github.com/fastapi/typer/issues/200#issuecomment-795873331
     _typer_click_object = typer.main.get_command(app)
