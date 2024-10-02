@@ -27,18 +27,22 @@ class DirectoryVersionScanner(VersionScanner):
     subdirectories named after the version identifier.
 
     Args:
-        base_directory: The base directory to scan for version directories.
-        unreleased_directory: The directory that contains unreleased changes. If
-            :meth:`pathlib.Path.is_dir` returns :obj:`False` for this directory, it will be assumed
-            to be a subdirectory of the base directory.
-        directory_pattern: The pattern to match version directories against. Must contain one named
-            group ``uid`` for the version identifier and a second named group for the ``date`` for
-            the date of the version release in ISO format.
+        base_directory (:obj:`str` | :class:`~pathlib.Path`): The base directory to scan for
+            version directories.
+        unreleased_directory (:obj:`str` | :class:`~pathlib.Path`): The directory that contains
+            unreleased changes. If :meth:`pathlib.Path.is_dir` returns :obj:`False` for this
+            directory, it will be assumed to be a subdirectory of the base directory.
+        directory_pattern (:obj:`str` | :obj:`re.Pattern`, optional): The pattern to match version
+            directories against. Must contain one named group ``uid`` for the version identifier
+            and a second named group for the ``date`` for the date of the version release in ISO
+            format.
 
     Attributes:
-        base_directory: The base directory to scan for version directories.
-        directory_pattern: The pattern to match version directories against.
-        unreleased_directory: The directory that contains unreleased changes.
+        base_directory (:class:`~pathlib.Path`): The base directory to scan for version
+            directories.
+        directory_pattern (:obj:`re.Pattern`): The pattern to match version directories against.
+        unreleased_directory (:class:`~pathlib.Path`): The directory that contains unreleased
+            changes.
 
     """
 
@@ -93,6 +97,9 @@ class DirectoryVersionScanner(VersionScanner):
     def has_unreleased_changes(self) -> bool:
         """Implementation of :meth:`chango.abc.VersionScanner.has_unreleased_changes`.
         Checks if :attr:`unreleased_directory` contains any files.
+
+        Returns:
+            :obj:`bool`: :obj:`True` if there are unreleased changes, :obj:`False` otherwise.
         """
         try:
             next(file.is_file() for file in self.unreleased_directory.iterdir())
@@ -108,6 +115,9 @@ class DirectoryVersionScanner(VersionScanner):
             If the release date is available for all versions, the latest version is determined
             based on the release date. Otherwise, and in case of multiple releases on the same day,
             lexicographical comparison of the version identifiers is employed.
+
+        Returns:
+            :class:`~chango.Version`: The latest version
         """
         if all(vi.date is not None or uid is None for uid, vi in self._available_versions.items()):
             uid: str = max(
@@ -131,7 +141,7 @@ class DirectoryVersionScanner(VersionScanner):
             lexicographical comparison of the version identifiers.
 
         Returns:
-            The available versions within the specified range.
+            Tuple[:class:`~chango.Version`]: The available versions within the specified range.
         """
         start = ensure_uid(start_from)
         end = ensure_uid(end_at)

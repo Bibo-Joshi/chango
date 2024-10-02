@@ -17,14 +17,14 @@ class DirectoryChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
     subdirectories named after the version identifier.
 
     Args:
-        change_note_type: The type of change notes to load. Must be a subclass of
+        change_note_type (:class:`type`): The type of change notes to load. Must be a subclass of
             :class:`~chango.abc.ChangeNote`.
-        version_note_type: The type of version notes to load. Must be a subclass of
+        version_note_type (:class:`type`): The type of version notes to load. Must be a subclass of
             :class:`~chango.abc.VersionNote`.
-        version_history_type: The type of version histories to load. Must be a subclass of
-            :class:`~chango.abc.VersionHistory`.
-        scanner: The version scanner to use.
-        directory_format: Reverse of
+        version_history_type (:class:`type`): The type of version histories to load. Must be a
+            subclass of :class:`~chango.abc.VersionHistory`.
+        scanner (:class:`~chango.concrete.DirectoryVersionScanner`): The version scanner to use.
+        directory_format (:obj:`str`, optional): Reverse of
             :paramref:`~chango.concrete.DirectoryVersionScannerdirectory_pattern`.
             Must be a string that can be used
             with :meth:`str.format` and contain at least one named field ``uid`` for the version
@@ -33,7 +33,7 @@ class DirectoryChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
             :paramref:`~chango.concrete.DirectoryVersionScannerdirectory_pattern`.
 
     Attributes:
-        directory_format: The format string used to create version directories.
+        directory_format (:obj:`str`): The format string used to create version directories.
     """
 
     def __init__(

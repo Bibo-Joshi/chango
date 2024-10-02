@@ -12,14 +12,14 @@ class CommentChangeNote(ChangeNote):
     """A simple change note that consists of a single comment. May be multi-line.
 
     Args:
-        comment: The comment text.
+        comment (:obj:`str`): The comment text.
 
     Attributes:
-        comment: The comment text.
+        comment (:obj:`str`): The comment text.
     """
 
     MARKUP: ClassVar[str] = MarkupLanguage.TEXT
-    """The markup language used in the comment. Will also be used as file extension.
+    """:obj:`str`: The markup language used in the comment. Will also be used as file extension.
     """
 
     @override

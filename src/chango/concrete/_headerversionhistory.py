@@ -25,6 +25,17 @@ class HeaderVersionHistory[VNT: VersionNote](VersionHistory[VNT]):
             Version notes are sorted only if all of them have a date. Otherwise, they are rendered
             in the order they were added to the version history.
 
+        Args:
+            markup (:obj:`str`): The markup language to use for rendering.
+
+        Returns:
+            :obj:`str`: The rendered version history.
+
+        Raises:
+            :exc:`~chango.error.UnsupportedMarkupError`: If the ``markup`` parameter does not
+                coincide with :attr:`~chango.constants.MarkupLanguage.MARKDOWN`,
+                :attr:`~chango.constants.MarkupLanguage.HTML`, or
+                :attr:`~chango.constants.MarkupLanguage.RESTRUCTUREDTEXT`
         """
         released_notes = list(filter(lambda note: note.version, self.values()))
         has_dates = all(note.date for note in released_notes)
