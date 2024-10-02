@@ -1,3 +1,4 @@
+import os
 import re
 import sys
 import tomllib
@@ -29,6 +30,7 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
     "sphinx.ext.napoleon",
+    "sphinx_click",
     "sphinx_copybutton",
     "sphinx_paramlinks",
 ]
@@ -114,4 +116,6 @@ def missing_reference(
 
 
 def setup(app: Sphinx) -> None:
+    # for usage in _cli.__init__
+    os.environ["SPHINX_BUILD"] = "True"
     app.connect("missing-reference", missing_reference)

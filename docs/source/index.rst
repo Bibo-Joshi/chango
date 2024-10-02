@@ -6,3 +6,4 @@
 
    chango
    chango_auxil
+   cli
