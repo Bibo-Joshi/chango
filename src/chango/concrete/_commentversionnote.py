@@ -30,9 +30,15 @@ class CommentVersionNote[V: (Version, None)](VersionNote[CommentChangeNote, V]):
         For markup languages Markdown, HTML and reStructuredText, the change notes will be
         rendered as unordered lists.
 
+        Args:
+            markup (:obj:`str`): The markup language to use for rendering.
+
         Raises:
             :exc:`~chango.error.UnsupportedMarkupError`: If the ``markup`` parameter does not
                 coincide with :attr:`chango.concrete.CommentChangeNote.MARKUP`
+
+        Returns:
+            :obj:`str`: The rendered version note.
         """
         match MarkupLanguage.from_string(markup):
             case MarkupLanguage.MARKDOWN:
