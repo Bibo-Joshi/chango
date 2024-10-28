@@ -20,13 +20,16 @@ app = typer.Typer(help="Show or verify the configuration of the chango CLI.")
 _PATH_ANNOTATION = Annotated[
     Optional[Path],  # noqa: UP007 - typer currently can't handle Path | None
     typer.Option(
-        help="The path to the pyproject.toml file. Defaults to the current working directory.",
+        help=(
+            "The path to the [code]pyproject.toml[/code] file. "
+            "Defaults to the current working directory."
+        ),
         dir_okay=False,
     ),
 ]
 
 
-@app.callback()
+@app.callback(rich_help_panel="Meta Functionality")
 def callback(context: typer.Context, path: _PATH_ANNOTATION = None) -> None:
     if not path:
         effective_path = Path.cwd() / "pyproject.toml"
