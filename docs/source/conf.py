@@ -5,6 +5,7 @@ import tomllib
 import typing
 from pathlib import Path
 
+import click
 from docutils.nodes import Node, reference
 from sphinx.addnodes import pending_xref
 from sphinx.application import Sphinx
@@ -92,6 +93,16 @@ html_permalinks_icon = "¶"
 html_favicon = "../../logo/chango_icon.ico"
 
 
+# Due to Sphinx behaviour, these imports only work when imported here, not at top of module.
+from docs.auxil.rich_to_rst import RichConverter  # noqa: E402
+
+
+def convert_rich_to_rst(_: Sphinx, __: click.Context, lines: list[str]) -> None:
+    converter = RichConverter("\n".join(lines))
+    converter.parse_rich_text()
+    lines[:] = converter.render_rst_text().split("\n")
+
+
 _TYPE_VAR_PATTERN = re.compile(r"typing\.([A-Z][a-zA-Z]*)")
 
 
@@ -119,3 +130,18 @@ def setup(app: Sphinx) -> None:
     # for usage in _cli.__init__
     os.environ["SPHINX_BUILD"] = "True"
     app.connect("missing-reference", missing_reference)
+
+    # We use the hooks defined by sphinx-click to convert python-rich syntax to rst
+    # See also https://sphinx-click.readthedocs.io/en/latest/usage/#events.
+    # This is a relatively sane way to have nice rendering both in the CLI and in the HTML
+    # documentation. Doing conversion for computing the documentation is preferable to doing
+    # conversions for the CLI as the latter would impact the CLI performance
+    for event in [
+        "sphinx-click-process-description",
+        "sphinx-click-process-usage",
+        "sphinx-click-process-options",
+        "sphinx-click-process-arguments",
+        "sphinx-click-process-envvars",
+        "sphinx-click-process-epilog",
+    ]:
+        app.connect(event, convert_rich_to_rst)

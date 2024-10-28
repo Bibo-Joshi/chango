@@ -15,7 +15,9 @@ from .new import new
 from .release import release
 from .report import app as report_app
 
-app = typer.Typer(help="CLI for chango - CHANgelog GOvernor for Your Project")
+app = typer.Typer(
+    help="CLI for chango - CHANgelog GOvernor for Your Project", rich_markup_mode="rich"
+)
 
 
 def version_callback(value: bool) -> None:
