@@ -32,7 +32,7 @@ jobs:
         run: |
           python -W ignore -m pip install --upgrade pip
           python -W ignore -m pip install -r requirements-dev.txt
-          python -W ignore -m pip install pytest-xdist
+          python -W ignore -m pip install pytest-xdist pytest-randomly
 
       - name: Test with pytest
         run: |
