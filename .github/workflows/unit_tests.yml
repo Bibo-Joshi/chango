@@ -17,7 +17,7 @@ jobs:
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
-        python-version: ['3.12']
+        python-version: ['3.12', '3.13']
         os: [ubuntu-latest, windows-latest, macos-latest]
       fail-fast: False
     steps:
@@ -35,10 +35,12 @@ jobs:
         run: |
           python -W ignore -m pip install --upgrade pip
           python -W ignore -m pip install -r requirements-dev.txt
+          python -W ignore -m pip install pytest-xdist pytest-randomly
 
       - name: Test with pytest
         run: |
-          coverage run -m pytest -v --junit-xml=.test_junit.xml
+          # `-n auto --dist worksteal` uses pytest-xdist to run tests on multiple CPU workers
+          coverage run -m pytest -v --dist worksteal --junit-xml=.test_junit.xml
 
       - name: Test Summary
         id: test_summary
