@@ -22,7 +22,7 @@ def change_uid_from_file(file: PathLike) -> str:
     """
     if isinstance(file, Path):
         return change_uid_from_file(file.name)
-    return FileName(file).uid
+    return FileName.from_string(file).uid
 
 
 class _UIDProtocol(Protocol):
