@@ -4,6 +4,7 @@ on:
     paths:
       - src/**
       - '**.rst'
+      - '.github/workflows/doc_build_test.yml'
   push:
     branches:
       - main

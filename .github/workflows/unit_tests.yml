@@ -6,7 +6,7 @@ on:
       - tests/**
       - pyproject.toml
       - requirements-dev.txt
-      - .github/workflows/unit_tests.yml
+      - '.github/workflows/unit_tests.yml'
   push:
     branches:
       - main
