@@ -23,12 +23,13 @@ class TestVersionNote:
         ids=["None", "Version"],
     )
     def setup(self, request):
-        # This is the next best thing to parametrizing __init__ that I coud find in reasonable time
+        # This is the next best thing to parametrizing __init__ that I could find
+        # in reasonable time
         version = request.param
         self.version = version
         self.version_note = CommentVersionNote(version=version)
         self.change_notes = [
-            CommentChangeNote(slug=f"change-{i}", uid=f"change-{i}", comment=f"change-{i}")
+            CommentChangeNote(slug=f"slug-{i}", uid=f"uid-{i}", comment=f"comment-{i}")
             for i in range(5)
         ]
 
@@ -52,7 +53,7 @@ class TestVersionNote:
 
         self.version_note[key] = self.change_note
         assert self.version_note[key] == self.change_note
-        del self.version_note[self.change_note.uid]
+        del self.version_note[key]
 
         with pytest.raises(KeyError):
             self.version_note[key]
@@ -83,3 +84,9 @@ class TestVersionNote:
 
         for i, key in enumerate(self.version_note):
             assert self.version_note[key] is self.change_notes[i]
+
+    def test_len(self):
+        assert len(self.version_note) == 0
+        for change_note in self.change_notes:
+            self.version_note.add_change_note(change_note)
+        assert len(self.version_note) == len(self.change_notes)
