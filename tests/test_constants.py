@@ -42,12 +42,26 @@ class TestMarkupLanguage:
                 string = "." + string
             assert MarkupLanguage.from_string(string) == member
 
-    def test_from_string_invalid(self):
-        with pytest.raises(
-            ValueError, match="File extension `unknown` not found in default mapping."
-        ):
-            MarkupLanguage.from_string("unknown")
-        with pytest.raises(
-            ValueError, match="File extension `.unknown` not found in default mapping."
-        ):
-            MarkupLanguage.from_string(".unknown")
+    @pytest.mark.parametrize("leading_dot", [True, False])
+    def test_from_string_custom_mapping(self, leading_dot):
+        custom_mapping = {
+            "abc": MarkupLanguage.TEXT,
+            "def": MarkupLanguage.HTML,
+            "ghi": MarkupLanguage.MARKDOWN,
+        }
+        for ext, member in custom_mapping.items():
+            string = ext
+            if leading_dot:
+                string = "." + string
+            assert MarkupLanguage.from_string(string, custom_mapping) == member
+
+    @pytest.mark.parametrize("leading_dot", [True, False])
+    @pytest.mark.parametrize(
+        "mapping", [None, {"abc": MarkupLanguage.TEXT}], ids=["default", "custom"]
+    )
+    def test_from_string_invalid(self, leading_dot, mapping):
+        string = "invalid"
+        if leading_dot:
+            string = "." + string
+        with pytest.raises(ValueError, match=f"File extension `{string}` not found"):
+            MarkupLanguage.from_string(string, mapping)
