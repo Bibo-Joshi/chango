@@ -45,13 +45,19 @@ class VersionNote[CNT: ChangeNote, V: (Version, None)](MutableMapping[str, CNT],
         try:
             del self._change_notes[__key]
         except KeyError:
-            del self._change_notes[FileName.from_string(__key).uid]
+            try:
+                del self._change_notes[FileName.from_string(__key).uid]
+            except ValueError:
+                raise KeyError(__key) from None
 
     def __getitem__(self, __key: str) -> CNT:
         try:
             return self._change_notes[__key]
         except KeyError:
-            return self._change_notes[FileName.from_string(__key).uid]
+            try:
+                return self._change_notes[FileName.from_string(__key).uid]
+            except ValueError:
+                raise KeyError(__key) from None
 
     def __iter__(self) -> Iterator[str]:
         return iter(self._change_notes)
