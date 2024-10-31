@@ -90,11 +90,11 @@ branch = true
 parallel = true
 
 [tool.coverage.report]
-exclude_lines = [
-  "no cov",
+exclude_also = [
   "@overload",
   "@abstractmethod",
-  "if TYPE_CHECKING:"
+  "if TYPE_CHECKING:",
+  "class.*\b\\(Protocol|typing.Protocol\\):",
 ]
 
 # CHANGO

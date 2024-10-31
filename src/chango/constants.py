@@ -64,12 +64,7 @@ class MarkupLanguage(StrEnum):
         with contextlib.suppress(KeyError):
             return cls[lookup.upper()]
 
-        if mapping:
-            if out := mapping[lookup]:
-                return out
-            raise ValueError(f"File extension `{string}` not found in provided mapping.")
-
-        default_mapping = {
+        effective_mapping = mapping or {
             "adoc": cls.ASCIIDOC,
             "htm": cls.HTML,
             "md": cls.MARKDOWN,
@@ -86,6 +81,6 @@ class MarkupLanguage(StrEnum):
         }
 
         with contextlib.suppress(KeyError):
-            return default_mapping[lookup]
+            return effective_mapping[lookup]
 
-        raise ValueError(f"File extension `{string}` not found in default mapping.")
+        raise ValueError(f"File extension `{string}` not found in mapping.")
