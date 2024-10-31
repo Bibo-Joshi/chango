@@ -128,7 +128,6 @@ class ChangeNote(abc.ABC):
             :class:`chango.error.ValidationError`: If the string is not a valid change note.
         """
 
-    @abc.abstractmethod
     def to_bytes(self, encoding: str = UTF8) -> bytes:
         """Write the change note to bytes. This binary data should be suitable for writing to a
         file and reading back in with :meth:`from_bytes`.
