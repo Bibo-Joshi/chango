@@ -91,10 +91,10 @@ parallel = true
 
 [tool.coverage.report]
 exclude_also = [
-  "@(typing\\.)?overload",
-  "class .*\\b(typing\\.)?Protocol\\):",
-  "@(abc\\.)?abstractmethod",
+  "@overload",
+  "@abstractmethod",
   "if TYPE_CHECKING:",
+  "class.*\b\\(Protocol\\):",
 ]
 
 # CHANGO
