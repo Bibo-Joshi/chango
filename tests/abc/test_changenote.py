@@ -84,6 +84,13 @@ class TestChangeNote:
                 slug="slug", uid="uid", data=UTF_16_PATH.read_bytes(), encoding="utf-8"
             )
 
+    def test_to_bytes(self):
+        assert self.change_note.to_bytes() == b"this is a comment"
+
+    def test_to_bytes_encoding(self):
+        change_note = CommentChangeNote(slug="slug", comment="this is a comment 𝛙𝌢𑁍", uid="uid")
+        assert change_note.to_bytes(encoding="utf-16") == "this is a comment 𝛙𝌢𑁍".encode("utf-16")
+
     @pytest.mark.parametrize("directory", [None, "custom"])
     def test_to_file(self, tmp_path, directory):
         path = None
