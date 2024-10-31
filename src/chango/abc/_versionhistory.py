@@ -36,13 +36,13 @@ class VersionHistory[VNT: VersionNote](MutableMapping[VersionUID, VNT], abc.ABC)
         return len(self._version_notes)
 
     def __setitem__(self, __key: VUIDInput, __value: VNT) -> None:
-        if (uid := ensure_uid(__key)) != __value.uid:
+        if ensure_uid(__key) != __value.uid:
             warnings.warn(
                 f"Key {__key!r} does not match version note UID {__value.uid!r}. "
-                "Using value the version UID as key.",
+                "Using the version UID as key.",
                 stacklevel=2,
             )
-        self._version_notes[uid] = __value
+        self._version_notes[__value.uid] = __value  # type: ignore[index]
 
     def add_version_note(self, version_note: VNT) -> None:
         """Add a version note to the version note.

@@ -69,7 +69,7 @@ class VersionNote[CNT: ChangeNote, V: (Version, None)](MutableMapping[str, CNT],
         if __key != __value.uid:
             warnings.warn(
                 f"Key {__key!r} does not match change note UID {__value.uid!r}. "
-                "Using value the UID as key.",
+                "Using the UID as key.",
                 stacklevel=2,
             )
         self._change_notes[__value.uid] = __value
