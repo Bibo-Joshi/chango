@@ -18,12 +18,11 @@ class ChangeNote(abc.ABC):
         uid (:obj:`str`): A unique identifier for the change note. If not provided, a
             random identifier will be generated. Should be 8 characters long and consist of
             lowercase letters and digits.
-
-    This is a dummy change
     """
 
     def __init__(self, slug: str, uid: str | None = None):
         self._file_name = FileName(slug=slug, uid=uid) if uid else FileName(slug=slug)
+        self.stuff = "foo"
 
     @property
     def slug(self) -> str:
