@@ -94,7 +94,7 @@ exclude_also = [
   "@overload",
   "@abstractmethod",
   "if TYPE_CHECKING:",
-  "class.*\b\\(Protocol|typing.Protocol\\):",
+  "class.*\b\\(Protocol\\):",
 ]
 
 # CHANGO
