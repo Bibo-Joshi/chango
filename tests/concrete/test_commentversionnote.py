@@ -11,7 +11,7 @@ from chango.error import UnsupportedMarkupError
 
 
 class TestCommentVersionNote:
-    comments = tuple("comment 1", "a\nmulti-line\ncomment 2", "comment 3")
+    comments = ("comment 1", "a\nmulti-line\ncomment 2", "comment 3")
     change_notes = tuple(
         CommentChangeNote(slug=f"slug-{i}", comment=comment) for i, comment in enumerate(comments)
     )
