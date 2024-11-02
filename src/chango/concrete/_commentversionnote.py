@@ -6,14 +6,15 @@ from typing import TYPE_CHECKING, override
 from ..abc import VersionNote
 from ..concrete import CommentChangeNote
 from ..constants import MarkupLanguage
+from ..error import UnsupportedMarkupError
 
 if TYPE_CHECKING:
     from chango import Version
 
 
-def _indent_multiline(text: str, indent: int = 2) -> str:
+def _indent_multiline(text: str, indent: int = 2, newlines: int = 1) -> str:
     """Indent all lines of a multi-line string except the first one."""
-    return "\n".join(
+    return (newlines * "\n").join(
         line if i == 0 else " " * indent + line for i, line in enumerate(text.splitlines())
     )
 
@@ -40,16 +41,28 @@ class CommentVersionNote[V: (Version, None)](VersionNote[CommentChangeNote, V]):
         Returns:
             :obj:`str`: The rendered version note.
         """
-        match MarkupLanguage.from_string(markup):
+        try:
+            markup = MarkupLanguage.from_string(markup)
+        except ValueError as exc:
+            raise UnsupportedMarkupError(markup) from exc
+
+        match markup:
             case MarkupLanguage.MARKDOWN:
-                return "\n".join(f"- {_indent_multiline(note.comment)}" for note in self.values())
+                return "\n".join(
+                    f"- {_indent_multiline(note.comment, indent=4, newlines=2)}"
+                    for note in self.values()
+                )
             case MarkupLanguage.HTML:
                 return (
                     "<ul>\n"
-                    + "\n".join(f"<li>{note.comment}</li>" for note in self.values())
+                    + "\n".join(
+                        f"<li>{note.comment.replace("\n", "<br>")}</li>" for note in self.values()
+                    )
                     + "\n</ul>"
                 )
             case MarkupLanguage.RESTRUCTUREDTEXT:
-                return "\n".join(f"- {_indent_multiline(note.comment)}" for note in self.values())
+                return "\n".join(
+                    f"- {_indent_multiline(note.comment, newlines=2)}" for note in self.values()
+                )
             case _:
-                return "\n".join(note.comment for note in self.values())
+                return "\n\n".join(note.comment for note in self.values())
