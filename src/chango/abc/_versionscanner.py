@@ -101,8 +101,14 @@ class VersionScanner(Collection[Version]):
 
         Returns:
             :class:`~chango.Version`: The version.
+
+        Raises:
+            ValueError: If the version with the given identifier is not available.
         """
-        return next(version for version in self if version.uid == uid)
+        try:
+            return next(version for version in self if version.uid == uid)
+        except StopIteration as exc:
+            raise ValueError(f"Version '{uid}' not available.") from exc
 
     @abc.abstractmethod
     def get_changes(self, uid: VUIDInput) -> tuple[str, ...]:
@@ -122,4 +128,7 @@ class VersionScanner(Collection[Version]):
 
         Returns:
             Tuple[:obj:`str`]: UIDs of the changes corresponding to the version identifier.
+
+        Raises:
+            ValueError: If the version with the given identifier is not available.
         """

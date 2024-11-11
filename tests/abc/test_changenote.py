@@ -7,10 +7,10 @@ import pytest
 import shortuuid
 
 from chango.concrete import CommentChangeNote
-from tests.auxil.files import data_file
+from tests.auxil.files import data_path
 
-UTF_8_PATH = data_file("comment-change-note.uid.txt")
-UTF_16_PATH = data_file("comment-change-note-utf16.uid.txt")
+UTF_8_PATH = data_path("comment-change-note.uid.txt")
+UTF_16_PATH = data_path("comment-change-note-utf16.uid.txt")
 
 
 @pytest.fixture(params=["string", "path"])

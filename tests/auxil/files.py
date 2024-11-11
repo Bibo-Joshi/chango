@@ -9,5 +9,5 @@ PROJECT_ROOT_PATH = Path(__file__).parent.parent.parent.resolve()
 TEST_DATA_PATH = PROJECT_ROOT_PATH / "tests" / "data"
 
 
-def data_file(filename: PathLike) -> Path:
+def data_path(filename: PathLike) -> Path:
     return TEST_DATA_PATH / filename
