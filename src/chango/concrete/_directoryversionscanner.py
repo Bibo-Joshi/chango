@@ -1,6 +1,7 @@
 #  SPDX-FileCopyrightText: 2024-present Hinrich Mahler <chango@mahlerhome.de>
 #
 #  SPDX-License-Identifier: MIT
+import contextlib
 import datetime as dtm
 import itertools
 import re
@@ -12,6 +13,7 @@ from .._utils.filename import FileName
 from .._utils.types import PathLike, VUIDInput
 from .._version import Version
 from ..abc import VersionScanner
+from ..error import ValidationError
 from ..helpers import ensure_uid
 
 _DEFAULT_PATTERN = re.compile(r"(?P<uid>[^_]+)_(?P<date>[\d-]+)")
@@ -20,6 +22,11 @@ _DEFAULT_PATTERN = re.compile(r"(?P<uid>[^_]+)_(?P<date>[\d-]+)")
 class _VersionInfo(NamedTuple):
     date: dtm.date
     directory: Path
+
+
+class _FileInfo(NamedTuple):
+    uid: str
+    file: Path
 
 
 class DirectoryVersionScanner(VersionScanner):
@@ -115,11 +122,7 @@ class DirectoryVersionScanner(VersionScanner):
         Returns:
             :obj:`bool`: :obj:`True` if there are unreleased changes, :obj:`False` otherwise.
         """
-        try:
-            next(file.is_file() for file in self.unreleased_directory.iterdir())
-            return True
-        except StopIteration:
-            return False
+        return bool(self._get_file_names(None))
 
     @override
     def get_latest_version(self) -> Version:
@@ -161,7 +164,7 @@ class DirectoryVersionScanner(VersionScanner):
             if (start is None or uid >= start) and (end is None or uid <= end)
         )
 
-    def _get_file_names(self, uid: VUIDInput) -> tuple[str, ...]:
+    def _get_file_names(self, uid: VUIDInput) -> tuple[_FileInfo, ...]:
         try:
             directory = (
                 self._available_versions[ensure_uid(uid)].directory
@@ -171,16 +174,26 @@ class DirectoryVersionScanner(VersionScanner):
         except KeyError as exc:
             raise ValueError(f"Version '{uid}' not available.") from exc
 
-        return tuple(change.name for change in directory.iterdir() if change.is_file())
+        out = []
+        for change in directory.iterdir():
+            if change.is_file():
+                with contextlib.suppress(ValidationError):
+                    name = FileName.from_string(change.name)
+                    out.append(_FileInfo(name.uid, change))
+
+        return tuple(out)
 
     @override
     def lookup_change_note(self, uid: str) -> ChangeNoteInfo:
         try:
             version, file_name = next(
-                (self._get_available_version(version_uid) if version_uid else None, name)
+                (
+                    self._get_available_version(version_uid) if version_uid else None,
+                    file_info.file.name,
+                )
                 for version_uid in itertools.chain(self._available_versions, (None,))
-                for name in self._get_file_names(version_uid)
-                if uid == FileName.from_string(name).uid
+                for file_info in self._get_file_names(version_uid)
+                if uid == file_info.uid
             )
             directory = (
                 self._available_versions[version.uid].directory
@@ -198,4 +211,4 @@ class DirectoryVersionScanner(VersionScanner):
 
     @override
     def get_changes(self, uid: VUIDInput) -> tuple[str, ...]:
-        return tuple(FileName.from_string(name).uid for name in self._get_file_names(uid))
+        return tuple(file_info.uid for file_info in self._get_file_names(uid))

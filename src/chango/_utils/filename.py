@@ -28,7 +28,11 @@ class FileName:
 
     @classmethod
     def from_string(cls, string: str) -> Self:
-        slug, uid, _ = string.split(cls.SEPARATOR)
+        try:
+            slug, uid, _ = string.split(cls.SEPARATOR)
+        except ValueError as exc:
+            raise ValidationError(f"invalid filename: {string!r}") from exc
+
         return cls(slug, uid)
 
     def to_string(self, extension: str) -> str:
