@@ -149,11 +149,11 @@ class TestDirectoryVersionScanner:
         ],
     )
     def test_get_changes(self, scanner, version):
-        changes = scanner.get_changes(version)
+        changes = set(scanner.get_changes(version))
 
         uid = version.uid if isinstance(version, Version) else (version or "ur")
 
-        assert changes == tuple(f"uid_{uid.replace('.', '-')}_{idx}" for idx in range(3))
+        assert changes == {f"uid_{uid.replace('.', '-')}_{idx}" for idx in range(3)}
 
     def test_get_changes_not_found(self, scanner):
         with pytest.raises(ValueError, match="not available"):
