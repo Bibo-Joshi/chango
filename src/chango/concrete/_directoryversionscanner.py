@@ -176,10 +176,12 @@ class DirectoryVersionScanner(VersionScanner):
 
         out = []
         for change in directory.iterdir():
-            if change.is_file():
-                with contextlib.suppress(ValidationError):
-                    name = FileName.from_string(change.name)
-                    out.append(_FileInfo(name.uid, change))
+            if not change.is_file():
+                continue
+
+            with contextlib.suppress(ValidationError):
+                name = FileName.from_string(change.name)
+                out.append(_FileInfo(name.uid, change))
 
         return tuple(out)
 
