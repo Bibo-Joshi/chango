@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, overload
 
 from .._utils.filename import FileName
 from ..abc._changenote import ChangeNote
+from ..error import ValidationError
 
 if TYPE_CHECKING:
     from chango import Version
@@ -47,7 +48,7 @@ class VersionNote[CNT: ChangeNote, V: (Version, None)](MutableMapping[str, CNT],
         except KeyError:
             try:
                 del self._change_notes[FileName.from_string(__key).uid]
-            except ValueError:
+            except ValidationError:
                 raise KeyError(__key) from None
 
     def __getitem__(self, __key: str) -> CNT:
@@ -56,7 +57,7 @@ class VersionNote[CNT: ChangeNote, V: (Version, None)](MutableMapping[str, CNT],
         except KeyError:
             try:
                 return self._change_notes[FileName.from_string(__key).uid]
-            except ValueError:
+            except ValidationError:
                 raise KeyError(__key) from None
 
     def __iter__(self) -> Iterator[str]:

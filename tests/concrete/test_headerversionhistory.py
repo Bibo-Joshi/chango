@@ -10,7 +10,7 @@ from chango import Version
 from chango.concrete import CommentChangeNote, CommentVersionNote, HeaderVersionHistory
 from chango.constants import MarkupLanguage
 from chango.error import UnsupportedMarkupError
-from tests.auxil.files import data_file
+from tests.auxil.files import data_path
 
 
 class TestHeaderVersionHistory:
@@ -20,7 +20,7 @@ class TestHeaderVersionHistory:
     def get_expected_file(unreleased_changes: bool, markup: MarkupLanguage) -> Path:
         unreleased_prefix = "with-unreleased" if unreleased_changes else "without-unreleased"
         file_name = f"{unreleased_prefix}.{markup}"
-        return data_file(Path("headerversionhistory") / file_name)
+        return data_path(Path("headerversionhistory") / file_name)
 
     @classmethod
     def get_expected_string(cls, unreleased_changes: bool, markup: MarkupLanguage) -> str:

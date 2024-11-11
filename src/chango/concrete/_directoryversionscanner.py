@@ -1,6 +1,7 @@
 #  SPDX-FileCopyrightText: 2024-present Hinrich Mahler <chango@mahlerhome.de>
 #
 #  SPDX-License-Identifier: MIT
+import contextlib
 import datetime as dtm
 import itertools
 import re
@@ -12,6 +13,7 @@ from .._utils.filename import FileName
 from .._utils.types import PathLike, VUIDInput
 from .._version import Version
 from ..abc import VersionScanner
+from ..error import ValidationError
 from ..helpers import ensure_uid
 
 _DEFAULT_PATTERN = re.compile(r"(?P<uid>[^_]+)_(?P<date>[\d-]+)")
@@ -20,6 +22,11 @@ _DEFAULT_PATTERN = re.compile(r"(?P<uid>[^_]+)_(?P<date>[\d-]+)")
 class _VersionInfo(NamedTuple):
     date: dtm.date
     directory: Path
+
+
+class _FileInfo(NamedTuple):
+    uid: str
+    file: Path
 
 
 class DirectoryVersionScanner(VersionScanner):
@@ -62,6 +69,10 @@ class DirectoryVersionScanner(VersionScanner):
             self.unreleased_directory: Path = path
         else:
             self.unreleased_directory = self.base_directory / unreleased_directory
+            if not self.unreleased_directory.is_dir():
+                raise ValueError(
+                    f"Unreleased directory '{self.unreleased_directory}' does not exist."
+                )
 
         self.__available_versions: dict[str, _VersionInfo] | None = None
 
@@ -85,13 +96,23 @@ class DirectoryVersionScanner(VersionScanner):
         return self.__available_versions
 
     def _get_available_version(self, uid: str) -> Version:
-        return Version(uid=uid, date=self._available_versions[uid].date)
+        try:
+            return Version(uid=uid, date=self._available_versions[uid].date)
+        except KeyError as exc:
+            raise ValueError(f"Version '{uid}' not available.") from exc
 
     @override
     def is_available(self, uid: VUIDInput) -> bool:
         if uid is None:
             return self.has_unreleased_changes()
-        return ensure_uid(uid) in self._available_versions
+
+        if (version := self._available_versions.get(ensure_uid(uid))) is None:
+            return False
+
+        if isinstance(uid, Version):
+            return version.date == uid.date
+
+        return True
 
     @override
     def has_unreleased_changes(self) -> bool:
@@ -101,32 +122,24 @@ class DirectoryVersionScanner(VersionScanner):
         Returns:
             :obj:`bool`: :obj:`True` if there are unreleased changes, :obj:`False` otherwise.
         """
-        try:
-            next(file.is_file() for file in self.unreleased_directory.iterdir())
-            return True
-        except StopIteration:
-            return False
+        return bool(self._get_file_names(None))
 
     @override
     def get_latest_version(self) -> Version:
         """Implementation of :meth:`chango.abc.VersionScanner.get_latest_version`.
 
         Important:
-            If the release date is available for all versions, the latest version is determined
-            based on the release date. Otherwise, and in case of multiple releases on the same day,
+            In case of multiple releases on the same day,
             lexicographical comparison of the version identifiers is employed.
 
         Returns:
             :class:`~chango.Version`: The latest version
         """
-        if all(vi.date is not None or uid is None for uid, vi in self._available_versions.items()):
-            uid: str = max(
+        return self._get_available_version(
+            max(
                 self._available_versions, key=lambda uid: (self._available_versions[uid].date, uid)
             )
-        else:
-            uid = max(self._available_versions)
-
-        return self._get_available_version(uid)
+        )
 
     @override
     def get_available_versions(
@@ -151,23 +164,38 @@ class DirectoryVersionScanner(VersionScanner):
             if (start is None or uid >= start) and (end is None or uid <= end)
         )
 
-    def _get_file_names(self, uid: VUIDInput) -> tuple[str, ...]:
-        directory = (
-            self._available_versions[ensure_uid(uid)].directory
-            if uid
-            else self.unreleased_directory
-        )
+    def _get_file_names(self, uid: VUIDInput) -> tuple[_FileInfo, ...]:
+        try:
+            directory = (
+                self._available_versions[ensure_uid(uid)].directory
+                if uid
+                else self.unreleased_directory
+            )
+        except KeyError as exc:
+            raise ValueError(f"Version '{uid}' not available.") from exc
 
-        return tuple(change.name for change in directory.iterdir() if change.is_file())
+        out = []
+        for change in directory.iterdir():
+            if not change.is_file():
+                continue
+
+            with contextlib.suppress(ValidationError):
+                name = FileName.from_string(change.name)
+                out.append(_FileInfo(name.uid, change))
+
+        return tuple(out)
 
     @override
     def lookup_change_note(self, uid: str) -> ChangeNoteInfo:
         try:
             version, file_name = next(
-                (self._get_available_version(version_uid) if version_uid else None, name)
+                (
+                    self._get_available_version(version_uid) if version_uid else None,
+                    file_info.file.name,
+                )
                 for version_uid in itertools.chain(self._available_versions, (None,))
-                for name in self._get_file_names(version_uid)
-                if uid == FileName.from_string(name).uid
+                for file_info in self._get_file_names(version_uid)
+                if uid == file_info.uid
             )
             directory = (
                 self._available_versions[version.uid].directory
@@ -185,4 +213,4 @@ class DirectoryVersionScanner(VersionScanner):
 
     @override
     def get_changes(self, uid: VUIDInput) -> tuple[str, ...]:
-        return tuple(FileName.from_string(name).uid for name in self._get_file_names(uid))
+        return tuple(file_info.uid for file_info in self._get_file_names(uid))
