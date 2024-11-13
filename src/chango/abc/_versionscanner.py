@@ -18,6 +18,8 @@ class VersionScanner(Collection[Version]):
     """
 
     def __contains__(self, __x: object) -> bool:
+        if __x is None:
+            return self.has_unreleased_changes()
         if not isinstance(__x, str | Version):
             return False
         return self.is_available(__x)
