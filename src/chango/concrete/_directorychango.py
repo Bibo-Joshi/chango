@@ -2,11 +2,14 @@
 #
 #  SPDX-License-Identifier: MIT
 from pathlib import Path
-from typing import override
+from typing import TYPE_CHECKING, Optional, override
 
 from .._utils.types import VUIDInput
 from ..abc import ChangeNote, ChanGo, VersionHistory, VersionNote
 from ._directoryversionscanner import DirectoryVersionScanner
+
+if TYPE_CHECKING:
+    from chango import Version
 
 
 class DirectoryChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
@@ -60,7 +63,7 @@ class DirectoryChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
         return self.change_note_type.build_template(slug=slug, uid=uid)
 
     @override
-    def build_version_note(self, version: VUIDInput) -> VNT:
+    def build_version_note(self, version: Optional["Version"]) -> VNT:
         return self.version_note_type(version=version)
 
     @override
@@ -76,9 +79,16 @@ class DirectoryChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
         if version is None:
             directory = self.scanner.unreleased_directory
         else:
-            version_obj = (
-                self.scanner.get_version(version) if isinstance(version, str) else version
-            )
+            if isinstance(version, str):
+                try:
+                    version_obj = self.scanner.get_version(version)
+                except ValueError as exc:
+                    raise TypeError(
+                        f"Version '{version}' not available yet. To get the write directory for a "
+                        "new version, pass the version as `change.Version` object."
+                    ) from exc
+            else:
+                version_obj = version
 
             directory = self.scanner.base_directory / self.directory_format.format(
                 uid=version_obj.uid, date=version_obj.date.isoformat()
