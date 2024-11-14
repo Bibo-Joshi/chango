@@ -136,12 +136,12 @@ class ChangeNote(abc.ABC):
             This convenience method calls :meth:`to_string` internally.
 
         Args:
-            encoding (:obj:`str`): The encoding to use for writing.
+            encoding (:obj:`str`): The encoding to use.
 
         Returns:
             :obj:`bytes`: The bytes data.
         """
-        return self.to_string().encode(encoding)
+        return self.to_string(encoding).encode(encoding)
 
     @abc.abstractmethod
     def to_string(self, encoding: str = UTF8) -> str:
