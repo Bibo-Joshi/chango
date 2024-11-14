@@ -38,10 +38,6 @@ class CommentChangeNote(ChangeNote):
         return cls(slug=slug, comment=string, uid=uid)
 
     @override
-    def to_bytes(self, encoding: str = UTF8) -> bytes:
-        return self.comment.encode(encoding)
-
-    @override
     def to_string(self, encoding: str = UTF8) -> str:
         return self.comment
 
