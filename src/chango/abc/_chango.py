@@ -3,7 +3,7 @@
 #  SPDX-License-Identifier: MIT
 import abc
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from .._utils.files import UTF8
 from .._utils.types import VUIDInput
@@ -47,11 +47,11 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
         """
 
     @abc.abstractmethod
-    def build_version_note(self, version: VUIDInput) -> VNT:
+    def build_version_note(self, version: Optional["Version"]) -> VNT:
         """Build a new empty version note.
 
         Args:
-            version (:class:`~chango.Version` | :obj:`str` | :obj:`None`): The version of the
+            version (:class:`~chango.Version` | :obj:`None`): The version of the
                 software project this note is for. May be :obj:`None` if the version is not yet
                 released.
 
@@ -91,6 +91,9 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
 
         Returns:
             :class:`pathlib.Path`: The directory to write the change note to.
+
+        Raises:
+            TypeError: If the :paramref:`version` is a :obj:`str` but not yet available.
         """
 
     def write_change_note(
@@ -116,13 +119,18 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
 
         Args:
             version (:class:`~chango.Version` | :obj:`str` | :obj:`None`): The version of the
-                version note to load. May be :obj:`None` if the version is not yet released.
+                version note to load or the corresponding uid. May be :obj:`None` if the version is
+                not yet released.
 
         Returns:
             :class:`VNT <typing.TypeVar>`: The loaded :class:`~chango.abc.VersionNote`.
+
+        Raises:
+            ValueError: If the version is not available.
         """
         changes = self.scanner.get_changes(version)
-        version_note = self.build_version_note(version=version)
+        version_obj = self.scanner.get_version(version) if isinstance(version, str) else version
+        version_note = self.build_version_note(version=version_obj)
         for change in changes:
             version_note.add_change_note(self.load_change_note(change))
 
