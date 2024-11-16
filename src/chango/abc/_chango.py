@@ -101,6 +101,10 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
     ) -> Path:
         """Write a change note to disk.
 
+        Important:
+            The :paramref:`version` does *not* need to be already available. In that case, it's
+            expected that :paramref:`version` is of type :class:`~chango.Version`.
+
         Args:
             change_note (:class:`CNT <typing.TypeVar>` | :obj:`str`): The change note to write.
             version (:class:`~chango.Version` | :obj:`str` | :obj:`None`): The version the change
@@ -109,9 +113,13 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
 
         Returns:
             :class:`pathlib.Path`: The file path the change note was written to.
+
+        Raises:
+            TypeError: If the :paramref:`version` is a :obj:`str` but not yet available.
         """
         return change_note.to_file(
-            self.get_write_directory(change_note=change_note, version=version), encoding=encoding
+            directory=self.get_write_directory(change_note=change_note, version=version),
+            encoding=encoding,
         )
 
     def load_version_note(self, version: VUIDInput) -> VNT:
@@ -155,7 +163,7 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
         """
         version_history = self.build_version_history()
 
-        if self.scanner.has_unreleased_changes():
+        if not end_at and self.scanner.has_unreleased_changes():
             version_history.add_version_note(self.load_version_note(None))
 
         for version in self.scanner.get_available_versions(start_from=start_from, end_at=end_at):
