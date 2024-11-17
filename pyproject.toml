@@ -95,6 +95,7 @@ exclude_also = [
   "@abstractmethod",
   "if TYPE_CHECKING:",
   "class .*\\bProtocol\\):",
+  "if __name__ == .__main__.:"
 ]
 
 # CHANGO
