@@ -12,6 +12,7 @@ Unreleased
 - Add Python 3.13 to Test Matrix \(`#11 <https://github.com/Bibo-Joshi/chango/pull/11>`_\)
 - Make Use of ``pytest-xdist`` and ``pytest-randomly`` \(`#9 <https://github.com/Bibo-Joshi/chango/pull/9>`_\)
 - Remove Redundant ``CommentChangeNote.to_bytes`` \(`#23 <https://github.com/Bibo-Joshi/chango/pull/23>`_\)
+- Initial Readme Content and Changelog Setup (`#26 <https://github.com/Bibo-Joshi/chango/pull/26>`_)
 - Set Up Initial ReadTheDocs Build \(`#2 <https://github.com/Bibo-Joshi/chango/pull/2>`_\)
 - Add CLI to Sphinx Documentation \(`#6 <https://github.com/Bibo-Joshi/chango/pull/6>`_\)
 - Add Unit Tests for ``chango.abc.ChangeNote`` \(`#13 <https://github.com/Bibo-Joshi/chango/pull/13>`_\)
