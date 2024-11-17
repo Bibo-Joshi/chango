@@ -1,0 +1,1 @@
+Add Types To Docstrings: ``chango.concrete`` \(`#5 <https://github.com/Bibo-Joshi/chango/pull/5>`_\)

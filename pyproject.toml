@@ -100,5 +100,5 @@ exclude_also = [
 
 # CHANGO
 [tool.chango]
-sys_path = "."
-chango_instance = { name= "chango_instance", module = "myconfig" }
+sys_path = "changes"
+chango_instance = { name= "chango_instance", module = "config" }

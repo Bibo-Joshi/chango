@@ -1,0 +1,1 @@
+Remove Redundant Logic From and Add Unit Tests for ``HeaderVersionHistory`` \(`#19 <https://github.com/Bibo-Joshi/chango/pull/19>`_\)

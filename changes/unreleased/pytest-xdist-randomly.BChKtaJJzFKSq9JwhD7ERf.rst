@@ -1,0 +1,1 @@
+Make Use of ``pytest-xdist`` and ``pytest-randomly`` \(`#9 <https://github.com/Bibo-Joshi/chango/pull/9>`_\)

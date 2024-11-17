@@ -1,0 +1,1 @@
+Initial Setup for Testing the CLI \(`#25 <https://github.com/Bibo-Joshi/chango/pull/25>`_\)

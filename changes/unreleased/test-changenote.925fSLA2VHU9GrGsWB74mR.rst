@@ -1,0 +1,1 @@
+Add Unit Tests for ``chango.abc.ChangeNote`` \(`#13 <https://github.com/Bibo-Joshi/chango/pull/13>`_\)

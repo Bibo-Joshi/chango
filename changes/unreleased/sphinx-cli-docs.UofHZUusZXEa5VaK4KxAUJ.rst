@@ -1,0 +1,1 @@
+Add CLI to Sphinx Documentation \(`#6 <https://github.com/Bibo-Joshi/chango/pull/6>`_\)

@@ -1,0 +1,1 @@
+Set Up Unified Formatting for CLI Help Texts and HTML Documentation \(`#7 <https://github.com/Bibo-Joshi/chango/pull/7>`_\)

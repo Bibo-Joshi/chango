@@ -1,0 +1,1 @@
+Set Up Initial ReadTheDocs Build \(`#2 <https://github.com/Bibo-Joshi/chango/pull/2>`_\)
