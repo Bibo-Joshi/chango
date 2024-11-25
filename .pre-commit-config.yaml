@@ -19,7 +19,7 @@ repos:
     hooks:
       - id: mypy
         name: mypy
-        files: ^(?!(tests)).*\.py$
+        files: ^(?!(tests|changes)).*\.py$
         args:
           - --enable-incomplete-feature=NewGenericSyntax
         additional_dependencies:

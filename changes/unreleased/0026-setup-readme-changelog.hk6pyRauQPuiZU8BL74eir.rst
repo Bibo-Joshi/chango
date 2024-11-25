@@ -1,0 +1,1 @@
+Initial Readme Content and Changelog Setup (`#26 <https://github.com/Bibo-Joshi/chango/pull/26>`_)

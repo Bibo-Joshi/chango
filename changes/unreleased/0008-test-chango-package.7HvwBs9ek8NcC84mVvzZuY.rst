@@ -1,0 +1,1 @@
+Add Unit Tests for Direct Members of ``chango`` Package \(`#8 <https://github.com/Bibo-Joshi/chango/pull/8>`_\)

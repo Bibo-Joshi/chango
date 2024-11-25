@@ -1,0 +1,1 @@
+Add Initial Functionality \(`#1 <https://github.com/Bibo-Joshi/chango/pull/1>`_\)

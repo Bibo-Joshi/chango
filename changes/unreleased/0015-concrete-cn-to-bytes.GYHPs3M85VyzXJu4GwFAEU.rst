@@ -1,0 +1,1 @@
+Make ``ChangeNote.to_bytes`` Concrete \(`#15 <https://github.com/Bibo-Joshi/chango/pull/15>`_\)

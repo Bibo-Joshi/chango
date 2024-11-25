@@ -1,0 +1,1 @@
+Add Unit Tests for ``DirectoryVersionScanner`` \(`#20 <https://github.com/Bibo-Joshi/chango/pull/20>`_\)

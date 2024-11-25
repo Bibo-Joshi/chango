@@ -1,0 +1,1 @@
+Remove Redundant ``CommentChangeNote.to_bytes`` \(`#23 <https://github.com/Bibo-Joshi/chango/pull/23>`_\)
