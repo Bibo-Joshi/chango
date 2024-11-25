@@ -39,7 +39,7 @@ Introduction
 ``chango`` is a changelog generation tool.
 Changes are described alongside the code changes in the codebase.
 ``chango`` extracts these changes and generates a changelog.
-``chango`` consists both a command line interface and a Python API.
+``chango`` consists of both a command line interface and a Python API.
 All aspects of the data formats, storage, and rendering are customizable via an interface class approach.
 
 Installing
