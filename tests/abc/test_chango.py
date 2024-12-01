@@ -2,6 +2,7 @@
 #
 #  SPDX-License-Identifier: MIT
 import datetime as dtm
+import functools
 import shutil
 
 import pytest
@@ -194,3 +195,12 @@ class TestChanGo:
         except Exception:
             for file_name, file_content in expected_files:
                 (self.DATA_ROOT / "unreleased" / file_name).write_bytes(file_content)
+
+    def test_build_github_event_change_note(self, chango, monkeypatch):
+        monkeypatch.setattr(
+            chango,
+            "build_github_event_change_note",
+            functools.partial(ChanGo.build_github_event_change_note, chango),
+        )
+        with pytest.raises(NotImplementedError):
+            chango.build_github_event_change_note({})

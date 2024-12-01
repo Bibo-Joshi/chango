@@ -4,6 +4,7 @@
 import pytest
 
 from chango.concrete import CommentChangeNote
+from chango.constants import MarkupLanguage
 
 
 class TestCommentChangeNote:
@@ -46,3 +47,47 @@ class TestCommentChangeNote:
         assert change_note.slug == "slug"
         assert isinstance(change_note.uid, str)
         assert len(change_note.uid) > 0
+
+    def test_build_from_github_event_unsupported_event(self):
+        with pytest.raises(ValueError, match="not a pull request event"):
+            CommentChangeNote.build_from_github_event({})
+
+    def test_build_from_github_event_unsupported_language(self, monkeypatch):
+        monkeypatch.setattr(CommentChangeNote, "MARKUP", "unsupported markup language")
+        with pytest.raises(ValueError, match="unsupported markup language"):
+            CommentChangeNote.build_from_github_event(
+                {
+                    "pull_request": {
+                        "html_url": "https://example.com/pull/42",
+                        "number": 42,
+                        "title": "example title",
+                    }
+                }
+            )
+
+    @pytest.mark.parametrize(
+        ("language", "expected"),
+        [
+            (MarkupLanguage.TEXT, "example title (https://example.com/pull/42)"),
+            (MarkupLanguage.MARKDOWN, "example title ([#42](https://example.com/pull/42))"),
+            (
+                MarkupLanguage.RESTRUCTUREDTEXT,
+                "example title (`#42 <https://example.com/pull/42>`_)",
+            ),
+            (MarkupLanguage.HTML, 'example title (<a href="https://example.com/pull/42">#42</a>)'),
+        ],
+    )
+    @pytest.mark.parametrize("event_type", ["pull_request", "pull_request_target"])
+    def test_build_from_github_event(self, event_type, language, expected, monkeypatch):
+        monkeypatch.setattr(CommentChangeNote, "MARKUP", language)
+        event_data = {
+            event_type: {
+                "html_url": "https://example.com/pull/42",
+                "number": 42,
+                "title": "example title",
+            }
+        }
+
+        change_note = CommentChangeNote.build_from_github_event(event_data)
+        assert change_note.comment == expected
+        assert change_note.slug == "0042"

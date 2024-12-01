@@ -65,6 +65,19 @@ class TestDirectoryChango:
             assert isinstance(note.uid, str)
             assert len(note.uid) == len(shortuuid.ShortUUID().uuid())
 
+    def test_build_github_event_change_note(self, chango):
+        event = {
+            "pull_request": {
+                "html_url": "https://example.com/pull/42",
+                "number": 42,
+                "title": "example title",
+            }
+        }
+        note = chango.build_github_event_change_note(event)
+        assert isinstance(note, CommentChangeNote)
+        assert isinstance(note.uid, str)
+        assert len(note.uid) == len(shortuuid.ShortUUID().uuid())
+
     def test_build_version_note_version(self, chango):
         version = Version("uid", dtm.date.today())  # noqa: DTZ011
         note = chango.build_version_note(version)
