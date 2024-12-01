@@ -2,7 +2,7 @@
 #
 #  SPDX-License-Identifier: MIT
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional, override
+from typing import TYPE_CHECKING, Any, Optional, override
 
 from .._utils.types import VUIDInput
 from ..abc import ChangeNote, ChanGo, VersionHistory, VersionNote
@@ -96,3 +96,11 @@ class DirectoryChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
 
         directory.mkdir(parents=True, exist_ok=True)
         return directory
+
+    @override
+    def build_github_event_change_note(self, event: dict[str, Any]) -> CNT:
+        """Implementation of :meth:`~chango.abc.ChanGo.build_github_event_change_note`.
+        Will always call :meth:`chango.abc.ChangeNote.build_from_github_event` and does not check
+        if a new change note is necessary.
+        """
+        return self.change_note_type.build_from_github_event(event)

@@ -40,9 +40,8 @@ runs:
         script: |
           from chango._cli.config_module import get_chango_instance
           chango_instance = get_chango_instance()
-          slug = f"{${{ github.event.pull_request.number }}:04}"
           
-          change_note = chango_instance.build_template_change_note(slug=slug)
+          change_note = chango_instance.build_github_event_change_note(${{ toJson(github.event) }})
           chango_instance.write_change_note(change_note, version=None)
 
     - name: Commit and Push

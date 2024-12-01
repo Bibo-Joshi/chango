@@ -3,7 +3,7 @@
 #  SPDX-License-Identifier: MIT
 import abc
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from .._utils.files import UTF8
 from .._utils.types import VUIDInput
@@ -95,6 +95,36 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
         Raises:
             TypeError: If the :paramref:`version` is a :obj:`str` but not yet available.
         """
+
+    def build_github_event_change_note(self, event: dict[str, Any]) -> CNT | None:
+        """Build a change note from a GitHub event.
+
+        Important:
+            This is an optional method and by default raises a :class:`NotImplementedError`.
+            Implement this method if you want to automatically create change notes based on
+            GitHub events.
+
+        Tip:
+            This method is useful for automatically creating change note drafts in GitHub actions
+            to ensure that each pull request has documented changes.
+
+        Args:
+            event (Dict[:obj:`str`, :obj:`~typing.Any`]): The GitHub event data. This should be one
+              of the `events that trigger workflows <ettw>`_. The event is represented as a
+              JSON dictionary.
+
+        Returns:
+            :class:`CNT <typing.TypeVar>` | :obj:`None`: The change note or :obj:`None` if no
+                change note should be created (e.g., if a change note is already available)
+                for the change.
+
+        Raises:
+            NotImplementedError: If the method is not implemented.
+
+        .. _ettw: https://docs.github.com/en/actions/writing-workflows/\
+            choosing-when-your-workflow-runs/events-that-trigger-workflows
+        """
+        raise NotImplementedError
 
     def write_change_note(
         self, change_note: CNT, version: VUIDInput, encoding: str = UTF8
