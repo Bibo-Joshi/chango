@@ -175,7 +175,8 @@ class DirectoryVersionScanner(VersionScanner):
             raise ValueError(f"Version '{uid}' not available.") from exc
 
         out = []
-        for change in directory.iterdir():
+        # Sorting is an undocumented implementation detail for now!
+        for change in sorted(directory.iterdir()):
             if not change.is_file():
                 continue
 
