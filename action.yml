@@ -38,13 +38,12 @@ runs:
       uses: jannekem/run-python-script-action@v1
       with:
         script: |
-          import json
           from chango._cli.config_module import get_chango_instance
           chango_instance = get_chango_instance()
           
-          change_note = chango_instance.build_github_event_change_note(
-              json.loads(${{ toJson(github.event) }})
-          )
+          null = None
+          
+          change_note = chango_instance.build_github_event_change_note(${{ toJson(github.event) }})
           chango_instance.write_change_note(change_note, version=None)
 
     - name: Commit and Push
