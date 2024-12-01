@@ -20,7 +20,7 @@ You can configure it for example as follows:
       pull_request:
         branches:
           - main
-        type:
+        types:
           - opened
           - reopened
 
@@ -59,3 +59,7 @@ The following inputs can be used to configure the action using the ``with`` keyw
      - The Python version to use.
      - No
      - 3.x
+   * - commit-and-push
+     - Whether to commit and push the change note to the PR branch.
+     - No
+     - true

@@ -8,6 +8,10 @@ inputs:
     description: Python version to use. See actions/setup-python for more information. Default is 3.x
     required: false
     default: 3.x
+  commit-and-push:
+    description: Whether to commit and push the changes to the PR branch. Default is true.
+    required: false
+    default: true
 
 runs:
   using: composite
@@ -45,6 +49,7 @@ runs:
 
     - name: Commit and Push
       id: commit-and-push
+      if: ${{ inputs.commit-and-push == 'true' }}
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
         commit_message: "Add chango fragment for PR #${{ github.event.pull_request.number }}"
