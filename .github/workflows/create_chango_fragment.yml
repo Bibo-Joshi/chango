@@ -11,4 +11,5 @@ jobs:
     name: create-chango-fragment
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - uses: ./
