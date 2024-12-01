@@ -10,4 +10,4 @@ jobs:
       - name: Dump SHA
         id: dump-sha
         run: echo "${{ github.event.pull_request.head.sha }}"
-      - uses: Bibo-Joshi/chango@${{ github.event.pull_request.head.sha }}
+      - uses: Bibo-Joshi/chango
