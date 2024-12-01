@@ -1,4 +1,4 @@
-name: Test Documentation Build
+name: Create Chango Fragment
 on:
   pull_request
 
@@ -7,5 +7,7 @@ jobs:
     name: create-chango-fragment
     runs-on: ubuntu-latest
     steps:
-      - id: run-chango-action
-        uses: Bibo-Joshi/chango@${{ github.event.pull_request.head.sha }}
+      - name: Dump SHA
+        id: dump-sha
+        run: echo "${{ github.event.pull_request.head.sha }}"
+      - uses: Bibo-Joshi/chango@${{ github.event.pull_request.head.sha }}

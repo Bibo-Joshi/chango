@@ -26,7 +26,7 @@ runs:
       run: |
         python -W ignore -m pip install git+https://github.com/Bibo-Joshi/chango.git
 
-    - name: Dump GitHub context
+    - name: Dump GitHub Context
       id: dump-github-context
       env:
         GITHUB_CONTEXT: ${{ toJson(github) }}
@@ -43,4 +43,3 @@ runs:
           
           change_note = chango_instance.build_template_change_note(slug=slug)
           chango_instance.write_change_note(change_note, version=None)
-        
