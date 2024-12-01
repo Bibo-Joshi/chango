@@ -24,7 +24,7 @@ runs:
       id: install-chango
       shell: bash
       run: |
-        python -W ignore -m pip install git+https://github.com/Bibo-Joshi/chango.git
+        python -W ignore -m pip install .
 
     - name: Dump GitHub Context
       id: dump-github-context
