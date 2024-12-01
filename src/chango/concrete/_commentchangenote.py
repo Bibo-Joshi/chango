@@ -50,13 +50,36 @@ class CommentChangeNote(ChangeNote):
     @override
     def build_from_github_event(cls, event: dict[str, Any]) -> Self:
         """Implementation of :meth:`~chango.abc.ChangeNote.build_from_github_event`.
+
         Considers only events of type ``pull_request`` and ``pull_request_target``.
         Uses the pull request number as slug and the pull request title as comment.
 
+        Currently only supports :attr:`MarkupLanguage.TEXT`, :attr:`MarkupLanguage.MARKDOWN`,
+        :attr:`MarkupLanguage.RESTRUCTUREDTEXT` and :attr:`MarkupLanguage.HTML`.
+
+        Caution:
+            Does not consider any formatting in the pull request title!
+
         Raises:
-            ValueError: If the event is not a ``pull_request`` or ``pull_request_target``.
+            ValueError: If the event is not a ``pull_request`` or ``pull_request_target`` or
+                if :attr:`MARKUP` is not supported..
         """
         pull_request = event.get("pull_request") or event.get("pull_request_target")
         if pull_request is None:
             raise ValueError("Event is not a pull request event.")
-        return cls(slug=f"{pull_request['number']:04}", comment=pull_request["title"])
+
+        number = pull_request["number"]
+
+        match cls.MARKUP:
+            case MarkupLanguage.TEXT:
+                link = f"({pull_request["html_url"]})"
+            case MarkupLanguage.MARKDOWN:
+                link = f"([#{number}]({pull_request["html_url"]}))"
+            case MarkupLanguage.RESTRUCTUREDTEXT:
+                link = f"(`#{number} <{pull_request["html_url"]}>`_)"
+            case MarkupLanguage.HTML:
+                link = f'(<a href="{pull_request["html_url"]}">#{number}</a>)'
+            case _:
+                raise ValueError(f"Unsupported markup language: {cls.MARKUP}")
+
+        return cls(slug=f"{number:04}", comment=f'{pull_request["title"]} {link}')
