@@ -1,0 +1,11 @@
+name: Test Documentation Build
+on:
+  pull_request
+
+jobs:
+  create-chango-fragment:
+    name: create-chango-fragment
+    runs-on: ubuntu-latest
+    steps:
+      - id: run-chango-action
+        uses: Bibo-Joshi/chango@${{ github.event.pull_request.head.sha }}
