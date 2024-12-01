@@ -42,6 +42,8 @@ runs:
           chango_instance = get_chango_instance()
           
           null = None
+          false = False
+          true = True
           
           change_note = chango_instance.build_github_event_change_note(${{ toJson(github.event) }})
           chango_instance.write_change_note(change_note, version=None)
