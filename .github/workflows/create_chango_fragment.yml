@@ -11,7 +11,4 @@ jobs:
     name: create-chango-fragment
     runs-on: ubuntu-latest
     steps:
-      - name: Dump SHA
-        id: dump-sha
-        run: echo "${{ github.event.pull_request.head.sha }}"
-      - uses: Bibo-Joshi/chango@gh-actions
+      - uses: ./
