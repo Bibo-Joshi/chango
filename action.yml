@@ -13,6 +13,8 @@ runs:
   using: composite
   steps:
     - uses: actions/checkout@v4
+      with:
+        ref: ${{ github.head_ref }}
 
     - name: Set up Python
       id: setup-python
@@ -45,4 +47,4 @@ runs:
       id: commit-and-push
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
-        commit_message: "Add chango fragment for PR ${{ github.event.pull_request.number }}"
+        commit_message: "Add chango fragment for PR #${{ github.event.pull_request.number }}"
