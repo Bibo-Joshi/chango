@@ -26,15 +26,8 @@ runs:
       run: |
         python -W ignore -m pip install .
 
-    - name: Dump GitHub Context
-      id: dump-github-context
-      shell: bash
-      env:
-        GITHUB_CONTEXT: ${{ toJson(github) }}
-      run: echo "$GITHUB_CONTEXT"
-
-    - name: Compare Completeness
-      id: compare-completeness
+    - name: Create chango fragment
+      id: create-chango-fragment
       uses: jannekem/run-python-script-action@v1
       with:
         script: |
