@@ -40,7 +40,13 @@ runs:
         script: |
           from chango._cli.config_module import get_chango_instance
           chango_instance = get_chango_instance()
-          slug = "some-test"
+          slug = f"{${{ github.event.pull_request.number }}:04}"
           
           change_note = chango_instance.build_template_change_note(slug=slug)
           chango_instance.write_change_note(change_note, version=None)
+
+    - name: Commit and Push
+      id: commit-and-push
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: "Add chango fragment for PR ${{ github.event.pull_request.number }}"
