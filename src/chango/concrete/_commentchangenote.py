@@ -54,8 +54,10 @@ class CommentChangeNote(ChangeNote):
         Considers only events of type ``pull_request`` and ``pull_request_target``.
         Uses the pull request number as slug and the pull request title as comment.
 
-        Currently only supports :attr:`MarkupLanguage.TEXT`, :attr:`MarkupLanguage.MARKDOWN`,
-        :attr:`MarkupLanguage.RESTRUCTUREDTEXT` and :attr:`MarkupLanguage.HTML`.
+        Currently only supports :attr:`~chango.constants.MarkupLanguage.TEXT`,
+            :attr:`~chango.constants.MarkupLanguage.MARKDOWN`,
+            :attr:`~chango.constants.MarkupLanguage.RESTRUCTUREDTEXT` and
+            :attr:`~chango.constants.MarkupLanguage.HTML`.
 
         Caution:
             Does not consider any formatting in the pull request title!
