@@ -1,6 +1,8 @@
 name: Create Chango Fragment
 on:
-  pull_request
+  pull_request:
+    branches:
+      - main
 
 jobs:
   create-chango-fragment:
