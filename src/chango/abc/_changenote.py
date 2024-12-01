@@ -70,6 +70,8 @@ class ChangeNote(abc.ABC):
             This method is useful for automatically creating change note drafts in GitHub actions
             to ensure that each pull request has documented changes.
 
+            .. seealso:: :ref:`action`
+
         Args:
             event (Dict[:obj:`str`, :obj:`~typing.Any`]): The GitHub event data. This should be one
               of the `events that trigger workflows <ettw>`_. The event is represented as a
