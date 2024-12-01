@@ -3,7 +3,7 @@
 #  SPDX-License-Identifier: MIT
 import abc
 from pathlib import Path
-from typing import Self
+from typing import Any, Self
 
 from .._utils.filename import FileName
 from .._utils.files import UTF8
@@ -56,6 +56,37 @@ class ChangeNote(abc.ABC):
         Returns:
             The :class:`ChangeNote` object.
         """
+
+    @classmethod
+    def build_from_github_event(cls, event: dict[str, Any]) -> Self:
+        """Build a change note from a GitHub event.
+
+        Important:
+            This is an optional method and by default raises a :class:`NotImplementedError`.
+            Implement this method if you want to automatically create change notes based on
+            GitHub events.
+
+        Tip:
+            This method is useful for automatically creating change note drafts in GitHub actions
+            to ensure that each pull request has documented changes.
+
+            .. seealso:: :ref:`action`
+
+        Args:
+            event (Dict[:obj:`str`, :obj:`~typing.Any`]): The GitHub event data. This should be one
+              of the `events that trigger workflows <ettw>`_. The event is represented as a
+              JSON dictionary.
+
+        Returns:
+            :class:`CNT <typing.TypeVar>`: The change note or :obj:`None`.
+
+        Raises:
+            NotImplementedError: If the method is not implemented.
+
+        .. _ettw: https://docs.github.com/en/actions/writing-workflows/\
+            choosing-when-your-workflow-runs/events-that-trigger-workflows
+        """
+        raise NotImplementedError
 
     @property
     def file_name(self) -> str:

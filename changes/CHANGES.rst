@@ -28,3 +28,4 @@ Unreleased
 - Add Unit Tests for ``ChanGo`` \(`#24 <https://github.com/Bibo-Joshi/chango/pull/24>`_\)
 - Initial Setup for Testing the CLI \(`#25 <https://github.com/Bibo-Joshi/chango/pull/25>`_\)
 - Initial Readme Content and Changelog Setup (`#26 <https://github.com/Bibo-Joshi/chango/pull/26>`_)
+- Create Change Notes from GitHub Events and Add GitHub Action (`#27 <https://github.com/Bibo-Joshi/chango/pull/27>`_)

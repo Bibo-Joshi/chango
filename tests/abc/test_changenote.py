@@ -6,6 +6,7 @@ from pathlib import Path
 import pytest
 import shortuuid
 
+from chango.abc import ChangeNote
 from chango.concrete import CommentChangeNote
 from tests.auxil.files import data_path
 
@@ -121,3 +122,10 @@ class TestChangeNote:
         finally:
             if path:
                 path.unlink()
+
+    def test_build_from_github_event(self, monkeypatch):
+        monkeypatch.setattr(
+            self.change_note, "build_from_github_event", ChangeNote.build_from_github_event
+        )
+        with pytest.raises(NotImplementedError):
+            self.change_note.build_from_github_event({})

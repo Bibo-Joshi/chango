@@ -1,0 +1,1 @@
+Create Change Notes from GitHub Events and Add GitHub Action (`#27 <https://github.com/Bibo-Joshi/chango/pull/27>`_)

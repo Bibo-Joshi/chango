@@ -1,0 +1,55 @@
+name: chango
+description:
+branding:
+  icon: book-open
+  color: gray-dark
+inputs:
+  python-version:
+    description: Python version to use. See actions/setup-python for more information. Default is 3.x
+    required: false
+    default: 3.x
+  commit-and-push:
+    description: Whether to commit and push the changes to the PR branch. Default is true.
+    required: false
+    default: true
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ github.head_ref }}
+
+    - name: Set up Python
+      id: setup-python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install chango
+      id: install-chango
+      shell: bash
+      run: |
+        python -W ignore -m pip install .
+
+    - name: Create chango fragment
+      id: create-chango-fragment
+      uses: jannekem/run-python-script-action@v1
+      with:
+        script: |
+          from chango._cli.config_module import get_chango_instance
+          chango_instance = get_chango_instance()
+          
+          null = None
+          false = False
+          true = True
+          
+          change_note = chango_instance.build_github_event_change_note(${{ toJson(github.event) }})
+          chango_instance.write_change_note(change_note, version=None)
+
+    - name: Commit and Push
+      id: commit-and-push
+      if: ${{ inputs.commit-and-push == 'true' }}
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: "Add chango fragment for PR #${{ github.event.pull_request.number }}"
