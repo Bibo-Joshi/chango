@@ -30,4 +30,4 @@ class TomlSettings(BaseSettings):
         dotenv_settings: PydanticBaseSettingsSource,
         file_secret_settings: PydanticBaseSettingsSource,
     ) -> tuple[PydanticBaseSettingsSource, ...]:
-        return (PyprojectTomlConfigSettingsSource(settings_cls),)
+        return (PyprojectTomlConfigSettingsSource(settings_cls), init_settings)

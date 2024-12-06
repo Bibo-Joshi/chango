@@ -1,3 +1,4 @@
+import inspect
 import os
 import re
 import sys
@@ -10,6 +11,11 @@ from docutils.nodes import Node, reference
 from sphinx.addnodes import pending_xref
 from sphinx.application import Sphinx
 from sphinx.environment import BuildEnvironment
+from sphinx.util.docutils import SphinxDirective
+
+from chango._cli.config_module import CLIConfig, import_chango_instance_from_config
+from chango._cli.config_module.models import ObjectConfig
+from chango.constants import MarkupLanguage
 
 sys.path.insert(0, str(Path("../..").resolve().absolute()))
 
@@ -126,9 +132,79 @@ def missing_reference(
     return link_node
 
 
-def setup(app: Sphinx) -> None:
+def unchanged(var: str | None) -> str:
+    if var is None:
+        raise ValueError
+    return var
+
+
+T = typing.TypeVar("T")
+
+
+def with_default(
+    validator: typing.Callable[[str | None], T], default: T
+) -> typing.Callable[[str | None], T]:
+    def wrapped(x: str | None) -> T:
+        return validator(x) if (x is not None) else default
+
+    return wrapped
+
+
+def parse_function(func: typing.Callable) -> dict[str, typing.Callable[[str | None], typing.Any]]:
+
+    signature = inspect.signature(func)
+    defaults = {
+        param.name: param.default
+        for param in signature.parameters.values()
+        if param.default is not param.empty
+    }
+    annotations = typing.get_type_hints(func, include_extras=True, localns=locals())
+    validators = {
+        name: typing.get_args(annotation)[1]
+        if typing.get_origin(annotation) is typing.Annotated
+        else unchanged
+        for name, annotation in annotations.items()
+        if name != "return"
+    }
+
+    return {
+        name: with_default(validator, default) if (default := defaults.get(name)) else validator
+        for name, validator in validators.items()
+    }
+
+
+chango_instance = import_chango_instance_from_config(
+    CLIConfig(
+        chango_instance=ObjectConfig(name="chango_instance", module="config"),
+        sys_path=Path(__file__).parent.parent.parent / "changes",
+    )
+)
+
+
+class ChangoDirective(SphinxDirective):
+    has_content = True
+    option_spec = parse_function(chango_instance.load_version_history)  # type: ignore[assignment]
+
+    def run(self) -> list[Node]:
+        title = " ".join(self.content)
+        text = chango_instance.load_version_history(**self.options).render(
+            MarkupLanguage.RESTRUCTUREDTEXT
+        )
+        if title:
+            text = f"{title}\n{len(title)*'='}\n\n{text}"
+        print(text)
+        return self.parse_text_to_nodes(text, allow_section_headings=True)
+
+
+def config_inited(_: Sphinx, __: dict[str, str]) -> None:
     # for usage in _cli.__init__
     os.environ["SPHINX_BUILD"] = "True"
+    print("…………………………………", os.getenv("SPHINX_BUILD"))
+
+
+def setup(app: Sphinx) -> None:
+    app.add_directive("chango", ChangoDirective)
+    app.connect("config-inited", config_inited)
     app.connect("missing-reference", missing_reference)
 
     # We use the hooks defined by sphinx-click to convert python-rich syntax to rst
