@@ -1,0 +1,32 @@
+Unreleased
+----------
+*unknown*
+
+- Initial Commit
+- Add Initial Functionality \(`#1 <https://github.com/Bibo-Joshi/chango/pull/1>`_\)
+- Set Up Initial ReadTheDocs Build \(`#2 <https://github.com/Bibo-Joshi/chango/pull/2>`_\)
+- Add Types to Docstrings: ``chango`` and ``chango.abc`` \(`#4 <https://github.com/Bibo-Joshi/chango/pull/4>`_\)
+- Add Types To Docstrings: ``chango.concrete`` \(`#5 <https://github.com/Bibo-Joshi/chango/pull/5>`_\)
+- Add CLI to Sphinx Documentation \(`#6 <https://github.com/Bibo-Joshi/chango/pull/6>`_\)
+- Set Up Unified Formatting for CLI Help Texts and HTML Documentation \(`#7 <https://github.com/Bibo-Joshi/chango/pull/7>`_\)
+- Add Unit Tests for Direct Members of ``chango`` Package \(`#8 <https://github.com/Bibo-Joshi/chango/pull/8>`_\)
+- Make Use of ``pytest-xdist`` and ``pytest-randomly`` \(`#9 <https://github.com/Bibo-Joshi/chango/pull/9>`_\)
+- Cache Dependencies in CI \(`#10 <https://github.com/Bibo-Joshi/chango/pull/10>`_\)
+- Add Python 3.13 to Test Matrix \(`#11 <https://github.com/Bibo-Joshi/chango/pull/11>`_\)
+- Improve Coverage of Existing Tests \(`#12 <https://github.com/Bibo-Joshi/chango/pull/12>`_\)
+- Add Unit Tests for ``chango.abc.ChangeNote`` \(`#13 <https://github.com/Bibo-Joshi/chango/pull/13>`_\)
+- Improve Coverage Configuration \(`#14 <https://github.com/Bibo-Joshi/chango/pull/14>`_\)
+- Make ``ChangeNote.to_bytes`` Concrete \(`#15 <https://github.com/Bibo-Joshi/chango/pull/15>`_\)
+- Add Unit Tests for ``chango.abc.VersionNote`` \(`#16 <https://github.com/Bibo-Joshi/chango/pull/16>`_\)
+- Add Unit Tests for ``chango.abc.VersionHistory`` \(`#17 <https://github.com/Bibo-Joshi/chango/pull/17>`_\)
+- Add Unit Tests for ``chango.concrete.Comment(Change|Version)Note`` \(`#18 <https://github.com/Bibo-Joshi/chango/pull/18>`_\)
+- Remove Redundant Logic From and Add Unit Tests for ``HeaderVersionHistory`` \(`#19 <https://github.com/Bibo-Joshi/chango/pull/19>`_\)
+- Add Unit Tests for ``DirectoryVersionScanner`` \(`#20 <https://github.com/Bibo-Joshi/chango/pull/20>`_\)
+- Add Unit Tests for ``VersionScanner`` \(`#21 <https://github.com/Bibo-Joshi/chango/pull/21>`_\)
+- Add Unit Tests for ``DirectoryChanGo`` \(`#22 <https://github.com/Bibo-Joshi/chango/pull/22>`_\)
+- Remove Redundant ``CommentChangeNote.to_bytes`` \(`#23 <https://github.com/Bibo-Joshi/chango/pull/23>`_\)
+- Add Unit Tests for ``ChanGo`` \(`#24 <https://github.com/Bibo-Joshi/chango/pull/24>`_\)
+- Initial Setup for Testing the CLI \(`#25 <https://github.com/Bibo-Joshi/chango/pull/25>`_\)
+- Initial Readme Content and Changelog Setup (`#26 <https://github.com/Bibo-Joshi/chango/pull/26>`_)
+- Create Change Notes from GitHub Events and Add GitHub Action (`#27 <https://github.com/Bibo-Joshi/chango/pull/27>`_)
+- First Try on Adding Sphinx Directive (`#28 <https://github.com/Bibo-Joshi/chango/pull/28>`_)
