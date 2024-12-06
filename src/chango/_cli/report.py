@@ -8,8 +8,9 @@ from typing import Annotated
 
 import typer
 
+from chango.config import get_chango_instance
+
 from ..constants import MarkupLanguage
-from .config_module import get_chango_instance
 from .utils.types import MARKUP, OUTPUT_FILE
 
 app = typer.Typer(help="Generate reports for one or multiple versions.")
