@@ -1,2 +1,1 @@
 .. chango:: Changelog
-

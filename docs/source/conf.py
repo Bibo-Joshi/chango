@@ -174,7 +174,7 @@ def parse_function(func: typing.Callable) -> dict[str, typing.Callable[[str | No
     }
 
 
-chango_instance = get_chango_instance(Path(__file__).parent.parent.parent / "changes")
+chango_instance = get_chango_instance(Path(__file__).parent.parent.parent)
 
 
 class ChangoDirective(SphinxDirective):
@@ -188,14 +188,12 @@ class ChangoDirective(SphinxDirective):
         )
         if title:
             text = f"{title}\n{len(title)*'='}\n\n{text}"
-        print(text)
         return self.parse_text_to_nodes(text, allow_section_headings=True)
 
 
 def config_inited(_: Sphinx, __: dict[str, str]) -> None:
     # for usage in _cli.__init__
     os.environ["SPHINX_BUILD"] = "True"
-    print("…………………………………", os.getenv("SPHINX_BUILD"))
 
 
 def setup(app: Sphinx) -> None:
