@@ -1,4 +1,3 @@
-import inspect
 import os
 import re
 import sys
@@ -11,10 +10,6 @@ from docutils.nodes import Node, reference
 from sphinx.addnodes import pending_xref
 from sphinx.application import Sphinx
 from sphinx.environment import BuildEnvironment
-from sphinx.util.docutils import SphinxDirective
-
-from chango.config import get_chango_instance
-from chango.constants import MarkupLanguage
 
 sys.path.insert(0, str(Path("../..").resolve().absolute()))
 
@@ -39,11 +34,15 @@ extensions = [
     "sphinx_click",
     "sphinx_copybutton",
     "sphinx_paramlinks",
+    "chango.sphinx_ext",
 ]
 
 html_theme = "furo"
 
-intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3", None),
+    "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
+}
 
 nitpicky = True
 
@@ -52,6 +51,12 @@ paramlinks_hyperlink_param = "name"
 
 # Use "Example:" instead of ".. admonition:: Example"
 napoleon_use_admonition_for_examples = True
+
+# Don't copy the ">>>" part of interactive python examples
+copybutton_only_copy_prompt_lines = False
+
+# Configuration for the chango sphinx directive
+chango_pyproject_toml_path = Path(__file__).parent.parent.parent
 
 # Don't show type hints in the signature - that just makes it hardly readable
 # and we document the types anyway
@@ -134,70 +139,12 @@ def missing_reference(
     return link_node
 
 
-def unchanged(var: str | None) -> str:
-    if var is None:
-        raise ValueError
-    return var
-
-
-T = typing.TypeVar("T")
-
-
-def with_default(
-    validator: typing.Callable[[str | None], T], default: T
-) -> typing.Callable[[str | None], T]:
-    def wrapped(x: str | None) -> T:
-        return validator(x) if (x is not None) else default
-
-    return wrapped
-
-
-def parse_function(func: typing.Callable) -> dict[str, typing.Callable[[str | None], typing.Any]]:
-    signature = inspect.signature(func)
-    defaults = {
-        param.name: param.default
-        for param in signature.parameters.values()
-        if param.default is not param.empty
-    }
-    annotations = typing.get_type_hints(func, include_extras=True, localns=locals())
-    validators = {
-        name: typing.get_args(annotation)[1]
-        if typing.get_origin(annotation) is typing.Annotated
-        else unchanged
-        for name, annotation in annotations.items()
-        if name != "return"
-    }
-
-    return {
-        name: with_default(validator, default) if (default := defaults.get(name)) else validator
-        for name, validator in validators.items()
-    }
-
-
-chango_instance = get_chango_instance(Path(__file__).parent.parent.parent)
-
-
-class ChangoDirective(SphinxDirective):
-    has_content = True
-    option_spec = parse_function(chango_instance.load_version_history)  # type: ignore[assignment]
-
-    def run(self) -> list[Node]:
-        title = " ".join(self.content)
-        text = chango_instance.load_version_history(**self.options).render(
-            MarkupLanguage.RESTRUCTUREDTEXT
-        )
-        if title:
-            text = f"{title}\n{len(title)*'='}\n\n{text}"
-        return self.parse_text_to_nodes(text, allow_section_headings=True)
-
-
 def config_inited(_: Sphinx, __: dict[str, str]) -> None:
     # for usage in _cli.__init__
     os.environ["SPHINX_BUILD"] = "True"
 
 
 def setup(app: Sphinx) -> None:
-    app.add_directive("chango", ChangoDirective)
     app.connect("config-inited", config_inited)
     app.connect("missing-reference", missing_reference)
 
