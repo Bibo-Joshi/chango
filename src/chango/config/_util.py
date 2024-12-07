@@ -74,7 +74,7 @@ class TomlSettings(BaseSettings):
         dotenv_settings: PydanticBaseSettingsSource,
         file_secret_settings: PydanticBaseSettingsSource,
     ) -> tuple[PydanticBaseSettingsSource, ...]:
-        return (cls._SOURCE_FACTORY(settings_cls),)
+        return init_settings, cls._SOURCE_FACTORY(settings_cls)
 
 
 @contextlib.contextmanager

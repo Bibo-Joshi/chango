@@ -1,0 +1,3 @@
+[tool.chango]
+sys_path = "/abs/sys_path"
+chango_instance = { name= "name", module = "module", package = "package" }
