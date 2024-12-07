@@ -29,16 +29,21 @@ def temporary_chdir(path: Path):
 class TestChanGoInstanceConfig:
     chango_instance = ChanGoInstanceConfig(name="name", module="module", package="package")
 
-    def test_init(self):
-        print(self.chango_instance)
-        config = ChanGoConfig(sys_path=Path("sys_path"), chango_instance=self.chango_instance)
-        assert config.sys_path == Path("sys_path")
-        assert config.chango_instance is self.chango_instance
+    def test_init(self, tmp_path):
+        # To ensure that there is pyproject.toml in the current directory that would interfere
+        # with the test.
+        with temporary_chdir(tmp_path):
+            config = ChanGoConfig(sys_path=Path("sys_path"), chango_instance=self.chango_instance)
+            assert config.sys_path == Path("sys_path")
+            assert config.chango_instance is self.chango_instance
 
-    def test_init_required(self):
-        config = ChanGoConfig(chango_instance=self.chango_instance)
-        assert config.sys_path is None
-        assert config.chango_instance is self.chango_instance
+    def test_init_required(self, tmp_path):
+        # To ensure that there is pyproject.toml in the current directory that would interfere
+        # with the test.
+        with temporary_chdir(tmp_path):
+            config = ChanGoConfig(chango_instance=self.chango_instance)
+            assert config.sys_path is None
+            assert config.chango_instance is self.chango_instance
 
     @pytest.mark.parametrize(
         "path",

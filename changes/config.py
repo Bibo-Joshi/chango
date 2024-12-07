@@ -15,8 +15,10 @@ from chango.constants import MarkupLanguage
 
 data_root = Path(__file__).parent
 
-RstChangeNote = CommentChangeNote
-RstChangeNote.MARKUP = MarkupLanguage.RESTRUCTUREDTEXT
+
+class RstChangeNote(CommentChangeNote):
+    MARKUP = MarkupLanguage.RESTRUCTUREDTEXT
+
 
 chango_instance = DirectoryChanGo(
     change_note_type=RstChangeNote,
