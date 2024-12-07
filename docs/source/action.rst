@@ -63,3 +63,7 @@ The following inputs can be used to configure the action using the ``with`` keyw
      - Whether to commit and push the change note to the PR branch.
      - No
      - true
+   * - pyproject-toml
+     - Path to the ``pyproject.toml`` file. Takes the same input as :func:`chango.config.get_chango_instance`.
+     - No
+     - :obj:`None`

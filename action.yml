@@ -12,6 +12,10 @@ inputs:
     description: Whether to commit and push the changes to the PR branch. Default is true.
     required: false
     default: true
+  pyproject-toml:
+    description: Path to the ``pyproject.toml`` file. Takes the same input as ``chango.config.get_chango_instance``.
+    required: false
+    default: __null__
 
 runs:
   using: composite
@@ -37,8 +41,8 @@ runs:
       uses: jannekem/run-python-script-action@v1
       with:
         script: |
-          from chango._cli.config_module import get_chango_instance
-          chango_instance = get_chango_instance()
+          from chango.config import get_chango_instance
+          chango_instance = get_chango_instance(None if ${{ inputs.pyproject_toml }} == '__null__' else ${{ inputs.pyproject_toml }})
           
           null = None
           false = False
