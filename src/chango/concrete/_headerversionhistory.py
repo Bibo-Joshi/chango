@@ -62,7 +62,7 @@ class HeaderVersionHistory[VNT: VersionNote](VersionHistory[VNT]):
         return "\n\n".join(
             template.substitute(
                 uid=note.uid or "Unreleased",  # type: ignore[truthy-function]
-                rst_underline="-" * len(note.uid or "Unreleased"),  # type: ignore[truthy-function,arg-type]
+                rst_underline="=" * len(note.uid or "Unreleased"),  # type: ignore[truthy-function,arg-type]
                 date=(
                     "unknown" if (note.date is None) else note.date.isoformat()  # type: ignore[attr-defined]
                 ),
