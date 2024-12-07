@@ -37,16 +37,6 @@ class FrozenModel(BaseModel):
             cls.model_config["frozen"] = original_frozen
 
 
-def get_pyproject_toml_path(path: PathLike | None) -> Path:
-    """Get the path to the pyproject.toml file."""
-    effective_path = Path.cwd() if path is None else Path(path).resolve()
-    if not effective_path.is_absolute():
-        effective_path = (Path.cwd() / effective_path).resolve()
-    if not effective_path.is_file():
-        effective_path = effective_path / "pyproject.toml"
-    return effective_path
-
-
 class TomlSettings(BaseSettings):
     """Example loading values from the table used by default."""
 
@@ -92,3 +82,13 @@ def add_sys_path(path: Path | None) -> Iterator[None]:
         yield
     finally:
         sys.path.remove(str(path))
+
+
+def get_pyproject_toml_path(path: PathLike | None) -> Path:
+    """Get the path to the pyproject.toml file."""
+    effective_path = Path.cwd() if path is None else Path(path).resolve()
+    if not effective_path.is_absolute():
+        effective_path = (Path.cwd() / effective_path).resolve()
+    if not effective_path.is_file():
+        effective_path = effective_path / "pyproject.toml"
+    return effective_path

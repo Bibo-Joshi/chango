@@ -10,11 +10,10 @@ from pydantic_settings import SettingsConfigDict
 
 from chango.abc import ChanGo
 
-from ._util import FrozenModel, TomlSettings, add_sys_path, get_pyproject_toml_path
+from .._utils.config import FrozenModel, TomlSettings, add_sys_path, get_pyproject_toml_path
+from .._utils.types import PathLike
 
 __all__ = ["ChanGoConfig", "ChanGoInstanceConfig"]
-
-from .._utils.types import PathLike
 
 
 class ChanGoInstanceConfig(FrozenModel):
