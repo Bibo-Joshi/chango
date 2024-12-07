@@ -13,7 +13,8 @@ import typer
 from rich import print as rprint
 from rich.markdown import Markdown
 
-from chango._cli.config_module import CLIConfig, import_chango_instance_from_config
+from .._utils.config import get_pyproject_toml_path
+from ..config import ChanGoConfig
 
 app = typer.Typer(help="Show or verify the configuration of the chango CLI.")
 
@@ -22,26 +23,20 @@ _PATH_ANNOTATION = Annotated[
     typer.Option(
         help=(
             "The path to the [code]pyproject.toml[/code] file. "
-            "Defaults to the current working directory."
-        ),
-        dir_okay=False,
+            "Input behavior as for [code]chango.config.ChanGoConfig.load[/code]."
+        )
     ),
 ]
 
 
 @app.callback(rich_help_panel="Meta Functionality")
 def callback(context: typer.Context, path: _PATH_ANNOTATION = None) -> None:
-    if not path:
-        effective_path = Path.cwd() / "pyproject.toml"
-    elif path.is_absolute():
-        effective_path = path
-    else:
-        effective_path = Path.cwd() / path
+    effective_path = get_pyproject_toml_path(path)
 
     if not effective_path.exists():
         raise typer.BadParameter(f"File not found: {effective_path}")
 
-    context.obj = {"path": path or Path.cwd() / "pyproject.toml"}
+    context.obj = {"path": effective_path}
 
     try:
         toml_data = tomlkit.load(context.obj["path"].open("rb"))
@@ -60,7 +55,7 @@ def callback(context: typer.Context, path: _PATH_ANNOTATION = None) -> None:
 def show(context: typer.Context) -> None:
     """Show the configuration."""
     string = f"""
-Showing the configuration of the chango CLIas configured in {context.obj['path']}.
+Showing the configuration of the chango CLIas configured in ``{context.obj['path']}``.
 ```toml
 {tomlkit.dumps(context.obj["data"])}
 ```
@@ -71,25 +66,25 @@ Showing the configuration of the chango CLIas configured in {context.obj['path']
 @app.command()
 def schema() -> None:
     """Show the JSON schema of the configuration."""
-    rprint(Markdown(f"```json\n{json.dumps(CLIConfig.model_json_schema(), indent=2)}\n```"))
+    rprint(Markdown(f"```json\n{json.dumps(ChanGoConfig.model_json_schema(), indent=2)}\n```"))
 
 
 @app.command()
 def validate(context: typer.Context) -> None:
     """Validate the configuration."""
     try:
-        config = CLIConfig.model_validate(dict(context.obj["data"]))
+        config = ChanGoConfig.load(context.obj["path"])
     except ValueError as exc:
         raise typer.BadParameter(
             f"Validation of config file at {context.obj['path']} failed:\n{exc}"
         ) from exc
 
     try:
-        import_chango_instance_from_config(config)
+        config.import_chango_instance()
     except ImportError as exc:
         raise typer.BadParameter(
             f"Config file at {context.obj['path']} is valid "
             f"but importing the objects failed:\n{exc}"
         ) from exc
 
-    typer.echo("The configuration is valid.")
+    rprint(f"The configuration in [code]{context.obj['path']}[/code] is valid.")

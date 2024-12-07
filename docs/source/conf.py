@@ -13,8 +13,7 @@ from sphinx.application import Sphinx
 from sphinx.environment import BuildEnvironment
 from sphinx.util.docutils import SphinxDirective
 
-from chango._cli.config_module import CLIConfig, import_chango_instance_from_config
-from chango._cli.config_module.models import ObjectConfig
+from chango.config import get_chango_instance
 from chango.constants import MarkupLanguage
 
 sys.path.insert(0, str(Path("../..").resolve().absolute()))
@@ -50,6 +49,9 @@ nitpicky = True
 
 # paramlinks options
 paramlinks_hyperlink_param = "name"
+
+# Use "Example:" instead of ".. admonition:: Example"
+napoleon_use_admonition_for_examples = True
 
 # Don't show type hints in the signature - that just makes it hardly readable
 # and we document the types anyway
@@ -151,7 +153,6 @@ def with_default(
 
 
 def parse_function(func: typing.Callable) -> dict[str, typing.Callable[[str | None], typing.Any]]:
-
     signature = inspect.signature(func)
     defaults = {
         param.name: param.default
@@ -173,12 +174,7 @@ def parse_function(func: typing.Callable) -> dict[str, typing.Callable[[str | No
     }
 
 
-chango_instance = import_chango_instance_from_config(
-    CLIConfig(
-        chango_instance=ObjectConfig(name="chango_instance", module="config"),
-        sys_path=Path(__file__).parent.parent.parent / "changes",
-    )
-)
+chango_instance = get_chango_instance(Path(__file__).parent.parent.parent / "changes")
 
 
 class ChangoDirective(SphinxDirective):

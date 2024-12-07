@@ -8,7 +8,7 @@ from typing import Annotated
 
 import typer
 
-from .config_module import get_chango_instance
+from chango.config import get_chango_instance
 
 
 def new(

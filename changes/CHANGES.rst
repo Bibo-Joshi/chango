@@ -30,3 +30,4 @@ Unreleased
 - Initial Readme Content and Changelog Setup (`#26 <https://github.com/Bibo-Joshi/chango/pull/26>`_)
 - Create Change Notes from GitHub Events and Add GitHub Action (`#27 <https://github.com/Bibo-Joshi/chango/pull/27>`_)
 - First Try on Adding Sphinx Directive (`#28 <https://github.com/Bibo-Joshi/chango/pull/28>`_)
+- Add Public `chango.config` Module (`#29 <https://github.com/Bibo-Joshi/chango/pull/29>`_)
