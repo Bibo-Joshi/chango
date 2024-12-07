@@ -42,7 +42,7 @@ runs:
       with:
         script: |
           from chango.config import get_chango_instance
-          chango_instance = get_chango_instance(None if ${{ inputs.pyproject_toml }} == '__null__' else ${{ inputs.pyproject_toml }})
+          chango_instance = get_chango_instance(None if ${{ inputs.pyproject-toml }} == '__null__' else ${{ inputs.pyproject-toml }})
           
           null = None
           false = False
