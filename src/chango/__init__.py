@@ -8,12 +8,13 @@ __all__ = [
     "__version__",
     "abc",
     "concrete",
+    "config",
     "constants",
     "error",
     "helpers",
 ]
 
-from . import __about__, abc, concrete, constants, error, helpers
+from . import __about__, abc, concrete, config, constants, error, helpers
 from ._changenoteinfo import ChangeNoteInfo
 from ._version import Version
 

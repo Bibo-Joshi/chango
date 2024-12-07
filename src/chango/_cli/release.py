@@ -10,8 +10,8 @@ from typing import Annotated
 import typer
 
 from chango import Version
+from chango.config import get_chango_instance
 
-from .config_module import get_chango_instance
 from .utils.types import date as date_callback
 
 

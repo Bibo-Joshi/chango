@@ -1,0 +1,3 @@
+[tool.chango]
+$sys_path_entry
+chango_instance = { name= "name", module = "module", package = "package" }

@@ -45,6 +45,9 @@ nitpicky = True
 # paramlinks options
 paramlinks_hyperlink_param = "name"
 
+# Use "Example:" instead of ".. admonition:: Example"
+napoleon_use_admonition_for_examples = True
+
 # Don't show type hints in the signature - that just makes it hardly readable
 # and we document the types anyway
 autodoc_typehints = "none"
