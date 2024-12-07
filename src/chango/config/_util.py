@@ -7,7 +7,7 @@ import sys
 from collections.abc import Callable, Generator, Iterator
 from contextlib import contextmanager
 from pathlib import Path
-from typing import override
+from typing import ClassVar, override
 
 from pydantic import BaseModel, ConfigDict
 from pydantic_settings import (
@@ -22,7 +22,9 @@ from chango._utils.types import PathLike
 class FrozenModel(BaseModel):
     """A frozen Pydantic model."""
 
-    model_config = ConfigDict(frozen=True, arbitrary_types_allowed=True, extra="forbid")
+    model_config: ClassVar[ConfigDict] = ConfigDict(
+        frozen=True, arbitrary_types_allowed=True, extra="forbid"
+    )
 
     @classmethod
     @contextmanager

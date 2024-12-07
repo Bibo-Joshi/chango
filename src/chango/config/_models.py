@@ -3,7 +3,7 @@
 #  SPDX-License-Identifier: MIT
 import importlib
 from pathlib import Path
-from typing import Annotated, Self, cast
+from typing import Annotated, Any, ClassVar, Self, cast
 
 from pydantic import Field
 from pydantic_settings import SettingsConfigDict
@@ -81,7 +81,7 @@ class ChanGoConfig(FrozenModel, TomlSettings):
             :class:`~chango.abc.ChanGo` to use in the CLI.
     """
 
-    model_config = SettingsConfigDict(
+    model_config: ClassVar[SettingsConfigDict] = SettingsConfigDict(
         pyproject_toml_table_header=("tool", "chango"), extra="ignore"
     )
 
@@ -121,7 +121,7 @@ class ChanGoConfig(FrozenModel, TomlSettings):
                 obj.sys_path = (pyproject_toml_path.parent / obj.sys_path).resolve()
             return obj
 
-    def import_chango_instance(self) -> ChanGo:
+    def import_chango_instance(self) -> ChanGo[Any, Any, Any, Any]:
         """Import the :class:`~chango.abc.ChanGo` instance specified in :attr:`chango_instance`.
         This considers the :attr:`sys_path` attribute to temporarily add a path to the system path.
 

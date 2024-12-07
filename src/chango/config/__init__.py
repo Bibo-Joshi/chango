@@ -6,6 +6,7 @@
 __all__ = ["ChanGoConfig", "ChanGoInstanceConfig", "get_chango_instance"]
 
 import functools
+from typing import Any
 
 from chango.abc import ChanGo
 
@@ -14,7 +15,7 @@ from ._models import ChanGoConfig, ChanGoInstanceConfig
 
 
 @functools.lru_cache(maxsize=256)
-def get_chango_instance(path: PathLike | None = None) -> ChanGo:
+def get_chango_instance(path: PathLike | None = None) -> ChanGo[Any, Any, Any, Any]:
     """Get the :class:`~chango.abc.ChanGo` instance specified in the configuration file.
     Uses LRU caching to avoid reloading the configuration file multiple times.
 
