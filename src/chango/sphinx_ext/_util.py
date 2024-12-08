@@ -8,6 +8,7 @@ from docutils.nodes import Node
 from sphinx.application import Sphinx
 from sphinx.util.docutils import SphinxDirective
 
+from chango._utils.types import PathLike
 from chango.config import get_chango_instance
 from chango.constants import MarkupLanguage
 
@@ -103,6 +104,11 @@ def directive_factory(app: Sphinx) -> type[SphinxDirective]:
     This approach is necessary because the `option_spec` attribute of a directive class can
     not be dynamically set.
     """
+    if not isinstance(app.config.chango_pyproject_toml_path, PathLike | None):
+        raise TypeError(
+            f"Expected 'chango_pyproject_toml_path' to be a string or Path, "
+            f"but got {type(app.config.chango_pyproject_toml_path)}"
+        )
     chango_instance = get_chango_instance(app.config.chango_pyproject_toml_path)
 
     class ChangoDirective(SphinxDirective):

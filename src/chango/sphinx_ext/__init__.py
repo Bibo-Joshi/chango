@@ -9,6 +9,7 @@
 
 import typing
 from pathlib import Path
+from types import NoneType
 
 from sphinx.application import Sphinx
 
@@ -41,7 +42,7 @@ def setup(app: Sphinx) -> dict[str, typing.Any]:
         None,
         rebuild="env",
         # Path & PurePath do not work well with how sphinx handles config value type checks
-        types=(str, type(Path.cwd())),
+        types=(str, type(Path.cwd()), NoneType),
         description=(
             "Path to the pyproject.toml file to use for the chango configuration. Takes "
             "the same inputs as `chango.config.ChanGoConfig.load`."

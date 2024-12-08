@@ -11,3 +11,9 @@ TEST_DATA_PATH = PROJECT_ROOT_PATH / "tests" / "data"
 
 def data_path(filename: PathLike) -> Path:
     return TEST_DATA_PATH / filename
+
+
+def path_to_python_string(path: Path, output_type: type[str] | type[Path]) -> str:
+    if output_type is str:
+        return f"'{path.as_posix()}'"
+    return f"Path(r'{path}')"
