@@ -8,6 +8,7 @@ import shortuuid
 
 from chango.abc import ChangeNote
 from chango.concrete import CommentChangeNote
+from chango.error import ValidationError
 from tests.auxil.files import data_path
 
 UTF_8_PATH = data_path("comment-change-note.uid.txt")
@@ -46,6 +47,10 @@ class TestChangeNote:
         assert change_note.slug == "slug"
         assert isinstance(change_note.uid, str)
         assert len(change_note.uid) == len(shortuuid.ShortUUID().uuid())
+
+    def test_init_invalid_slug(self):
+        with pytest.raises(ValidationError, match="slug must not contain"):
+            CommentChangeNote(slug="slug.with.dot", comment="this is a comment")
 
     def test_file_name(self):
         assert self.change_note.file_name == "slug.uid.txt"
