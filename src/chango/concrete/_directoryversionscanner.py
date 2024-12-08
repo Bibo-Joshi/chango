@@ -124,6 +124,9 @@ class DirectoryVersionScanner(VersionScanner):
         except KeyError as exc:
             raise ValueError(f"Version '{uid}' not available.") from exc
 
+    def invalidate_caches(self) -> None:
+        self.__available_versions = None
+
     @override
     def is_available(self, uid: VUIDInput) -> bool:
         if uid is None:

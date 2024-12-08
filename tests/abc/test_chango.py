@@ -20,12 +20,12 @@ from chango.helpers import ensure_uid
 from tests.auxil.files import data_path
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture
 def scanner() -> DirectoryVersionScanner:
     return DirectoryVersionScanner(TestChanGo.DATA_ROOT, "unreleased")
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture
 def chango(scanner) -> DirectoryChanGo:
     return DirectoryChanGo(
         change_note_type=CommentChangeNote,
@@ -35,7 +35,7 @@ def chango(scanner) -> DirectoryChanGo:
     )
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture
 def chango_no_unreleased() -> DirectoryChanGo:
     return DirectoryChanGo(
         change_note_type=CommentChangeNote,
@@ -43,6 +43,29 @@ def chango_no_unreleased() -> DirectoryChanGo:
         version_history_type=HeaderVersionHistory,
         scanner=DirectoryVersionScanner(TestChanGo.DATA_ROOT, "no-unreleased"),
     )
+
+
+@pytest.fixture
+def cache_invalidation_tracker():
+    class Tracker:
+        def __init__(self):
+            self.invalidate_caches = False
+            self.super_call = None
+
+        def __call__(self, *args, **kwargs):
+            self.invalidate_caches = True
+            if self.super_call:
+                self.super_call(*args, **kwargs)
+
+        @property
+        def was_called(self):
+            return self.invalidate_caches
+
+        def set_super(self, super_call):
+            self.super_call = super_call
+            return self
+
+    return Tracker()
 
 
 class TestChanGo:
@@ -67,7 +90,9 @@ class TestChanGo:
         ],
     )
     @pytest.mark.parametrize("encoding", ["utf-8", "utf-16"])
-    def test_write_change_note(self, chango, version, monkeypatch, encoding):
+    def test_write_change_note(
+        self, chango, version, monkeypatch, encoding, cache_invalidation_tracker
+    ):
         if version is None:
             expected_path = chango.scanner.unreleased_directory
         else:
@@ -86,9 +111,11 @@ class TestChanGo:
 
         note = chango.build_template_change_note("this-is-a-new-slug")
         monkeypatch.setattr(note, "to_file", to_file)
+        monkeypatch.setattr(chango.scanner, "invalidate_caches", cache_invalidation_tracker)
 
         try:
             chango.write_change_note(note, version, encoding=encoding)
+            assert cache_invalidation_tracker.was_called
         finally:
             if not existed and expected_path.is_dir():
                 shutil.rmtree(expected_path)
@@ -146,12 +173,19 @@ class TestChanGo:
             assert version_history[ensure_uid(version)].date == (version.date if version else None)
             assert version_history[ensure_uid(version)].version == version
 
-    def test_release_no_unreleased_changes(self, chango_no_unreleased: ChanGo):
+    def test_release_no_unreleased_changes(
+        self, chango_no_unreleased: ChanGo, monkeypatch, cache_invalidation_tracker
+    ):
+        monkeypatch.setattr(
+            chango_no_unreleased.scanner, "invalidate_caches", cache_invalidation_tracker
+        )
+
         version = Version("1.4", dtm.date(2024, 1, 4))
         assert not chango_no_unreleased.release(version)
         assert not chango_no_unreleased.scanner.is_available(version)
+        assert not cache_invalidation_tracker.was_called
 
-    def test_release(self, chango):
+    def test_release(self, chango, cache_invalidation_tracker, monkeypatch):
         version = Version("1.4", dtm.date(2024, 1, 4))
         expected_path = chango.scanner.base_directory / "1.4_2024-01-04"
         expected_files = {
@@ -160,11 +194,17 @@ class TestChanGo:
             if file.name != "not-a-change-note.txt"
         }
 
+        monkeypatch.setattr(
+            chango.scanner,
+            "invalidate_caches",
+            cache_invalidation_tracker.set_super(chango.scanner.invalidate_caches),
+        )
+
         try:
             assert chango.release(version)
-            scanner = DirectoryVersionScanner(self.DATA_ROOT, "unreleased")
-            assert scanner.is_available(version)
-            assert scanner.get_version(version.uid) == version
+            assert cache_invalidation_tracker.was_called
+            assert chango.scanner.is_available(version)
+            assert chango.scanner.get_version(version.uid) == version
 
             assert expected_path.is_dir()
             assert {
@@ -176,11 +216,16 @@ class TestChanGo:
             if expected_path.is_dir():
                 shutil.rmtree(expected_path)
 
-    def test_release_same_directory(self, chango, monkeypatch):
+    def test_release_same_directory(self, chango, monkeypatch, cache_invalidation_tracker):
         def get_write_directory(*_, **__):
             return chango.scanner.unreleased_directory
 
         monkeypatch.setattr(chango, "get_write_directory", get_write_directory)
+        monkeypatch.setattr(
+            chango.scanner,
+            "invalidate_caches",
+            cache_invalidation_tracker.set_super(chango.scanner.invalidate_caches),
+        )
 
         version = Version("1.4", dtm.date(2024, 1, 4))
         expected_files = {
@@ -190,6 +235,7 @@ class TestChanGo:
         }
         try:
             assert chango.release(version)
+            assert cache_invalidation_tracker.was_called
             for file_name, file_content in expected_files:
                 assert (self.DATA_ROOT / "unreleased" / file_name).read_bytes() == file_content
         except Exception:

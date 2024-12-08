@@ -137,6 +137,10 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
             The :paramref:`version` does *not* need to be already available. In that case, it's
             expected that :paramref:`version` is of type :class:`~chango.Version`.
 
+        Tip:
+            This method calls :meth:`chango.abc.VersionScanner.invalidate_caches` after writing
+            the change note to disk.
+
         Args:
             change_note (:class:`CNT <typing.TypeVar>` | :obj:`str`): The change note to write.
             version (:class:`~chango.Version` | :obj:`str` | :obj:`None`): The version the change
@@ -149,10 +153,12 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
         Raises:
             TypeError: If the :paramref:`version` is a :obj:`str` but not yet available.
         """
-        return change_note.to_file(
+        path = change_note.to_file(
             directory=self.get_write_directory(change_note=change_note, version=version),
             encoding=encoding,
         )
+        self.scanner.invalidate_caches()
+        return path
 
     def load_version_note(self, version: VUIDInput) -> VNT:
         """Load a version note.
@@ -208,6 +214,10 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
         This calls :meth:`get_write_directory` for all unreleased change notes and moves the file
         if necessary.
 
+        Tip:
+            This method calls :meth:`chango.abc.VersionScanner.invalidate_caches` after
+            releasing the version.
+
         Args:
             version (:class:`~chango.Version`): The version to release.
 
@@ -222,5 +232,7 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
             write_dir = self.get_write_directory(uid, version)
             if change_info.file_path.parent != write_dir:
                 change_info.file_path.rename(write_dir / change_info.file_path.name)
+
+        self.scanner.invalidate_caches()
 
         return True

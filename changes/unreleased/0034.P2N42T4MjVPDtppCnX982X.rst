@@ -1,0 +1,1 @@
+Add ``VersionScanner.invalidate_caches`` (`#34 <https://github.com/Bibo-Joshi/chango/pull/34>`_)
