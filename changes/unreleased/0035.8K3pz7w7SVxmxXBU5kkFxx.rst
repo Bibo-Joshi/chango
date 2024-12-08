@@ -1,0 +1,1 @@
+Increase Code Coverage (`#35 <https://github.com/Bibo-Joshi/chango/pull/35>`_)
