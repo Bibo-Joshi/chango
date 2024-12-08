@@ -16,7 +16,7 @@ from chango import __version__
 
 __all__ = ["setup"]
 
-from ._util import directory_factory
+from ._util import directive_factory
 
 
 def setup(app: Sphinx) -> dict[str, typing.Any]:
@@ -47,6 +47,6 @@ def setup(app: Sphinx) -> dict[str, typing.Any]:
             "the same inputs as `chango.config.ChanGoConfig.load`."
         ),
     )
-    app.add_directive("chango", directory_factory(app))
+    app.add_directive("chango", directive_factory(app))
 
     return {"version": __version__, "parallel_read_safe": True, "parallel_write_safe": True}

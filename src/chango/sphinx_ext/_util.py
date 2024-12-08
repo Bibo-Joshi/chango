@@ -98,7 +98,7 @@ def parse_function(func: typing.Callable) -> dict[str, typing.Callable[[str | No
     }
 
 
-def directory_factory(app: Sphinx) -> type[SphinxDirective]:
+def directive_factory(app: Sphinx) -> type[SphinxDirective]:
     """Create a directive class that uses the chango instance from the Sphinx app config.
     This approach is necessary because the `option_spec` attribute of a directive class can
     not be dynamically set.
