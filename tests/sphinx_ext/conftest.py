@@ -14,8 +14,6 @@ from tests.auxil.files import TEST_DATA_PATH
 # Best reference for how use sphinx testing so far is
 # https://github.com/sphinx-doc/sphinx/issues/7008
 
-pytest_plugins = ["sphinx.testing.fixtures"]
-
 
 @pytest.fixture(scope="session")
 def rootdir():
