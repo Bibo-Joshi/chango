@@ -64,9 +64,11 @@ class MockChanGo(SimpleNamespace):
         self.received_args = None
         self.version_history = MockVersionHistory()
 
-    def load_version_history(self, *args, **kwargs) -> MockVersionHistory:
+    def load_version_history(
+        self, *args, start_from: str | None = None, end_at: str | None = None, **kwargs
+    ) -> MockVersionHistory:
         self.received_args = args
-        self.received_kwargs = kwargs
+        self.received_kwargs = kwargs | {"start_from": start_from, "end_at": end_at}
         return self.version_history
 
 

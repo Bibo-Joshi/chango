@@ -57,7 +57,7 @@ The following configuration options are available:
         .. code-block:: rst
 
             .. chango:: Headline
-               :start_from: 1.0.0
+               :start_from: "1.0.0"
 
         Renders as
 

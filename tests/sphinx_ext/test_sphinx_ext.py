@@ -1,6 +1,7 @@
 #  SPDX-FileCopyrightText: 2024-present Hinrich Mahler <chango@mahlerhome.de>
 #
 #  SPDX-License-Identifier: MIT
+import logging
 from collections.abc import Callable
 from pathlib import Path
 from string import Template
@@ -9,16 +10,31 @@ import pytest
 import shortuuid
 from _pytest.tmpdir import TempPathFactory
 from sphinx.testing.util import SphinxTestApp
+from sphinx.util.logging import pending_warnings
 
 from chango import __version__
 from chango._utils.types import PathLike
 from tests.auxil.files import data_path, path_to_python_string
+from tests.sphinx_ext.conftest import MockStorage
 
 MAKE_APP_TYPE = Callable[..., SphinxTestApp]
 
 
+class SphinxBuildError(RuntimeError):
+    pass
+
+
 class TestSphinxExt:
     SPHINX_EXT_TEST_ROOT = data_path("sphinx_ext")
+
+    @staticmethod
+    def assert_successful_build(app: SphinxTestApp):
+        with pending_warnings() as mem_handler:
+            app.build()
+
+            for record in mem_handler.buffer:
+                if record.levelno == logging.ERROR:
+                    raise SphinxBuildError(record.getMessage())
 
     @classmethod
     def create_template(
@@ -172,3 +188,77 @@ class TestSphinxExt:
 
         if headline:
             assert f"<h1>{headline}" in content
+
+    def test_argument_passing_basic(
+        self,
+        cg_config_mock: MockStorage,
+        make_app: MAKE_APP_TYPE,
+        tmp_path_factory: TempPathFactory,
+    ):
+        directive = """
+.. chango::
+   :start_from: "start_from"
+   :end_at: "end_at"
+"""
+        app = make_app(
+            srcdir=self.create_template(
+                directive_insert=directive, tmp_path_factory=tmp_path_factory
+            )
+        )
+
+        self.assert_successful_build(app)
+        received_kwargs = cg_config_mock.get().chango.received_kwargs
+        assert received_kwargs == {"start_from": "start_from", "end_at": "end_at"}
+
+    def test_argument_passing_unknown_option(
+        self, make_app: MAKE_APP_TYPE, tmp_path_factory: TempPathFactory
+    ):
+        directive = """
+.. chango::
+   :unknown:
+"""
+        app = make_app(
+            srcdir=self.create_template(
+                directive_insert=directive, tmp_path_factory=tmp_path_factory
+            )
+        )
+
+        with pytest.raises(SphinxBuildError, match='unknown option: "unknown"'):
+            self.assert_successful_build(app)
+
+    def test_argument_passing_json_data(
+        self,
+        cg_config_mock: MockStorage,
+        make_app: MAKE_APP_TYPE,
+        tmp_path_factory: TempPathFactory,
+    ):
+        directive = """
+.. chango::
+   :start_from: {"key": "value"}
+   :end_at: [false, true, null]
+"""
+        app = make_app(
+            srcdir=self.create_template(
+                directive_insert=directive, tmp_path_factory=tmp_path_factory
+            )
+        )
+
+        self.assert_successful_build(app)
+        received_kwargs = cg_config_mock.get().chango.received_kwargs
+        assert received_kwargs == {"start_from": {"key": "value"}, "end_at": [False, True, None]}
+
+    def test_argument_passing_invalid_json_data(
+        self, make_app: MAKE_APP_TYPE, tmp_path_factory: TempPathFactory
+    ):
+        directive = """
+.. chango::
+    :start_from: {"key": "value}
+    """
+        app = make_app(
+            srcdir=self.create_template(
+                directive_insert=directive, tmp_path_factory=tmp_path_factory
+            )
+        )
+
+        with pytest.raises(SphinxBuildError, match="must be a JSON-serializable value"):
+            self.assert_successful_build(app)

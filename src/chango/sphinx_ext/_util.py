@@ -28,9 +28,15 @@ class JsonValidator:
                 f"Option '{self.option_name}' must be a JSON-serializable value, not None"
             )
 
-        return json.loads(var)
+        try:
+            return json.loads(var)
+        except json.JSONDecodeError as exc:
+            raise ValueError(
+                f"Option '{self.option_name}' must be a JSON-serializable value, not {var!r}"
+            ) from exc
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> str:  # pragma: no cover
+        """So far only used for debugging."""
         return "<return json parsed data>"
 
 
