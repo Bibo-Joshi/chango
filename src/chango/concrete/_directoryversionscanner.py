@@ -3,6 +3,7 @@
 #  SPDX-License-Identifier: MIT
 import contextlib
 import datetime as dtm
+import inspect
 import itertools
 import re
 from pathlib import Path
@@ -29,6 +30,12 @@ class _FileInfo(NamedTuple):
     file: Path
 
 
+def _make_relative_to(base: Path, path: Path) -> Path:
+    if path.is_absolute():
+        return path.resolve().absolute()
+    return (base / path).resolve().absolute()
+
+
 class DirectoryVersionScanner(VersionScanner):
     """Implementation of a version scanner that assumes that change notes are stored in
     subdirectories named after the version identifier.
@@ -36,9 +43,24 @@ class DirectoryVersionScanner(VersionScanner):
     Args:
         base_directory (:obj:`str` | :class:`~pathlib.Path`): The base directory to scan for
             version directories.
+
+            Important:
+                If the path is relative, it will be resolved relative to the
+                directory of the calling module.
+
+                .. admonition:: Example
+
+                    If you build your :class:`DirectoryVersionScanner` within
+                    ``/home/user/project/chango.py``,
+                    passing ``base_directory="changes"`` will resolve to
+                    ``/home/user/project/changes``.
         unreleased_directory (:obj:`str` | :class:`~pathlib.Path`): The directory that contains
-            unreleased changes. If :meth:`pathlib.Path.is_dir` returns :obj:`False` for this
-            directory, it will be assumed to be a subdirectory of the base directory.
+            unreleased changes.
+
+            Important:
+                If :meth:`pathlib.Path.is_dir` returns :obj:`False` for this
+                directory, it will be assumed to be a subdirectory of the
+                :paramref:`base_directory`.
         directory_pattern (:obj:`str` | :obj:`re.Pattern`, optional): The pattern to match version
             directories against. Must contain one named group ``uid`` for the version identifier
             and a second named group for the ``date`` for the date of the version release in ISO
@@ -61,12 +83,13 @@ class DirectoryVersionScanner(VersionScanner):
     ):
         self.directory_pattern: re.Pattern[str] = re.compile(directory_pattern)
 
-        self.base_directory: Path = Path(base_directory)
+        caller_dir = Path(inspect.stack()[1].filename).resolve().absolute().parent
+        self.base_directory: Path = _make_relative_to(caller_dir, Path(base_directory))
         if not self.base_directory.is_dir():
             raise ValueError(f"Base directory '{self.base_directory}' does not exist.")
 
         if (path := Path(unreleased_directory)).is_dir():
-            self.unreleased_directory: Path = path
+            self.unreleased_directory: Path = path.resolve().absolute()
         else:
             self.unreleased_directory = self.base_directory / unreleased_directory
             if not self.unreleased_directory.is_dir():

@@ -1,0 +1,1 @@
+Make Parameter ``base_directory`` of ``DirectoryVersionScanner`` Relative to Calling Module (`#33 <https://github.com/Bibo-Joshi/chango/pull/33>`_)

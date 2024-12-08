@@ -33,6 +33,11 @@ class TestDirectoryVersionScanner:
         assert scanner.base_directory == self.DATA_ROOT
         assert scanner.unreleased_directory == self.DATA_ROOT / "unreleased"
 
+    def test_init_relative(self):
+        scanner = DirectoryVersionScanner("../data/directoryversionscanner", "unreleased")
+        assert scanner.base_directory == self.DATA_ROOT
+        assert scanner.unreleased_directory == self.DATA_ROOT / "unreleased"
+
     def test_base_directory_not_exists(self):
         with pytest.raises(ValueError, match="does not exist"):
             DirectoryVersionScanner("does_not_exist", "unreleased")
