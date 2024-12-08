@@ -215,8 +215,8 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
         if necessary.
 
         Tip:
-            This method calls :meth:`chango.abc.VersionScanner.invalidate_caches` after writing
-            the change note to disk.
+            This method calls :meth:`chango.abc.VersionScanner.invalidate_caches` after
+            releasing the version.
 
         Args:
             version (:class:`~chango.Version`): The version to release.
