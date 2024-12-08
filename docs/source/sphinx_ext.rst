@@ -73,7 +73,15 @@ The following configuration options are available:
 
     If your implementation of :class:`~chango.abc.ChanGo` has additional options, you can pass them as keyword arguments to the directive.
     ``chango`` will inspect the signature of the method and configure the options accordingly.
-    Default values are taken into account.
+
+
+    .. important::
+
+        Since the options will be interpreted as keyword arguments for :meth:`~chango.abc.ChanGo.load_version_history`, by default, each option is required to have a value.
+
+    .. tip::
+
+        The values be interpreted as JSON string and will be loaded using :func:`json.loads`.
 
     Since you can only specify strings as options in reStructuredText, it may be necessary to use custom validator functions to convert the strings to the correct types.
     Custom validators can be specified by using :class:`typing.Annotated` in the signature of the method.
@@ -96,13 +104,19 @@ The following configuration options are available:
                     raise ValueError('Value must not be None')
                 return tuple(map(int, value.split(',')))
 
+            def flag_validator(value: str | None) -> bool:
+                if value is not None:
+                    raise ValueError('Flag options must not have a value')
+                return True
+
             class MyChanGo(ChanGo):
                 def load_version_history(
                     self,
                     start_from: str | None = None,
                     end_at: str | None = None,
-                    custom_option_1: int | None = None,
+                    custom_option_1: dict[str, str] | None = None,
                     custom_option_2: Annotated[Sequence[int], sequence_validator] = (1, 2, 3),
+                    custom_option_3: Annotated[bool, flag_validator] = False,
                 ):
                     ...
 
@@ -111,8 +125,9 @@ The following configuration options are available:
         .. code-block:: rst
 
             .. chango::
-               :custom_option_1: 42
+               :custom_option_1: {"key": "value"}
                :custom_option_2: 4,5,6
+               :custom_option_3:
 
     The following options are available by default:
 

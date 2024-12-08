@@ -1,7 +1,7 @@
 #  SPDX-FileCopyrightText: 2024-present Hinrich Mahler <chango@mahlerhome.de>
 #
 #  SPDX-License-Identifier: MIT
-import inspect
+import json
 import typing
 
 from docutils.nodes import Node
@@ -13,44 +13,31 @@ from chango.config import get_chango_instance
 from chango.constants import MarkupLanguage
 
 
-class NoChangeValidator:
+class JsonValidator:
     """Validator that does not change the input.
     Note that in contrast to `docutils.parsers.rst.directives.unchanged`, this function
     does not convert `None` to an empty string.
     """
 
-    def __call__(self, var: str | None) -> str | None:
-        return var
+    def __init__(self, option_name: str) -> None:
+        self.option_name = option_name
+
+    def __call__(self, var: str | None) -> str | int | float | bool | dict | list | None:
+        if var is None:
+            raise ValueError(
+                f"Option '{self.option_name}' must be a JSON-serializable value, not None"
+            )
+
+        return json.loads(var)
 
     def __repr__(self) -> str:
-        return "<return unchanged>"
-
-
-NO_CHANGE_VALIDATOR = NoChangeValidator()
-
-
-class WithDefaultValidator[T]:
-    """Validator-Wrapper that applies a default value if the input is `None`.
-    Otherwise, the input is passed to the validator function.
-    """
-
-    def __init__(self, validator: typing.Callable[[str | None], T], default: T) -> None:
-        self.validator: typing.Callable[[str | None], T] = validator
-        self.default: T = default
-
-    def apply_default(self, value: str | None) -> T:
-        return self.default if value is None else self.validator(value)
-
-    def __call__(self, value: str | None) -> T:
-        return self.default if value is None else self.validator(value)
-
-    def __repr__(self) -> str:
-        return f"<return {self.default} if None else {self.validator}>"
+        return "<return json parsed data>"
 
 
 def parse_function(func: typing.Callable) -> dict[str, typing.Callable[[str | None], typing.Any]]:
     """Parse a function's signature and annotations to create a dictionary of validators.
-    Custom validators may be defined using the `typing.Annotated` type. Defaults are considered.
+    Custom validators may be defined using the `typing.Annotated` type. Defaults are not -
+    options are interpreted as kwargs and are always expected to carry a value.
 
     Example:
         >>> from typing import Annotated
@@ -67,35 +54,19 @@ def parse_function(func: typing.Callable) -> dict[str, typing.Callable[[str | No
         ...     pass
         >>>
         >>> parse_function(foo)
-        {'arg1': <return unchanged>, 'arg2': <return 42 if None else <return unchanged>>, 'arg3': \
-        <return (1, 2, 3) if None else <function custom_validator at 0x000001C89BEB80E0>>}
+        {'arg1': <return json parsed data>, 'arg2': <return json parsed data>, \
+        'arg3': <function main.<locals>.custom_validator at 0x000001FB6F1D7100>}
 
     """
-    # We get the defaults via the inspect.signature API
-    signature = inspect.signature(func)
-    defaults = {
-        param.name: param.default
-        for param in signature.parameters.values()
-        if param.default is not param.empty
-    }
-
     # To get custom validator, we need to evaluate the annotations to detect `typing.Annotated`
     annotations = typing.get_type_hints(func, include_extras=True, localns=locals())
-    validators = {
+    return {
         name: typing.get_args(annotation)[1]
         if typing.get_origin(annotation) is typing.Annotated
-        else NO_CHANGE_VALIDATOR
+        else JsonValidator(name)
         for name, annotation in annotations.items()
         # The return value is not a parameter
         if name != "return"
-    }
-
-    # Combine the validators with the defaults
-    return {
-        name: WithDefaultValidator(validator, default)
-        if (default := defaults.get(name))
-        else validator
-        for name, validator in validators.items()
     }
 
 
