@@ -17,5 +17,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Create the new fragment
+      - uses: actions/checkout@v4
       - uses: ./
 
