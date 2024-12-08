@@ -271,7 +271,7 @@ class TestSphinxExt:
             )
         )
 
-        with pytest.raises(SphinxBuildError, match="must be a JSON-serializable value"):
+        with pytest.raises(SphinxBuildError, match="must be a JSON-loadable value"):
             self.assert_successful_build(app)
 
     def test_argument_passing_missing_value(
@@ -287,7 +287,7 @@ class TestSphinxExt:
             )
         )
 
-        with pytest.raises(SphinxBuildError, match="must be a JSON-serializable value"):
+        with pytest.raises(SphinxBuildError, match="must be a JSON-loadable value"):
             self.assert_successful_build(app)
 
     def test_argument_passing_custom_signature(

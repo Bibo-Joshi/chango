@@ -14,9 +14,8 @@ from chango.constants import MarkupLanguage
 
 
 class JsonValidator:
-    """Validator that does not change the input.
-    Note that in contrast to `docutils.parsers.rst.directives.unchanged`, this function
-    does not convert `None` to an empty string.
+    """Validator that interprets the input as JSON data and loads it accordingly.
+    The value must be a JSON-loadable value, not None.
     """
 
     def __init__(self, option_name: str) -> None:
@@ -25,14 +24,14 @@ class JsonValidator:
     def __call__(self, var: str | None) -> str | int | float | bool | dict | list | None:
         if var is None:
             raise ValueError(
-                f"Option '{self.option_name}' must be a JSON-serializable value, not None"
+                f"Option '{self.option_name}' must be a JSON-loadable value, not None"
             )
 
         try:
             return json.loads(var)
         except json.JSONDecodeError as exc:
             raise ValueError(
-                f"Option '{self.option_name}' must be a JSON-serializable value, not {var!r}"
+                f"Option '{self.option_name}' must be a JSON-loadable value, not {var!r}"
             ) from exc
 
     def __repr__(self) -> str:  # pragma: no cover
