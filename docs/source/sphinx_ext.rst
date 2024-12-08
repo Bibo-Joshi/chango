@@ -117,9 +117,9 @@ The following configuration options are available:
     The following options are available by default:
 
     Keyword Arguments:
-        start_from (:obj:`str`, optional): The version to start from. Passed to parameter
+        ``:start_from:`` (:obj:`str`, optional): The version to start from. Passed to parameter
             :paramref:`~chango.abc.ChanGo.load_version_history` of
             :meth:`~chango.abc.ChanGo.load_version_history`. Defaults to ``None``.
-        end_at (:obj:`str`, optional): The version to end at. Passed to parameter
+        ``:end_at:`` (:obj:`str`, optional): The version to end at. Passed to parameter
             :paramref:`~chango.abc.ChanGo.load_version_history` of
             :meth:`~chango.abc.ChanGo.load_version_history`. Defaults to ``None``.
