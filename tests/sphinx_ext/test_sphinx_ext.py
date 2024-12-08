@@ -2,9 +2,10 @@
 #
 #  SPDX-License-Identifier: MIT
 import logging
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from pathlib import Path
 from string import Template
+from typing import Annotated
 
 import pytest
 import shortuuid
@@ -14,8 +15,9 @@ from sphinx.util.logging import pending_warnings
 
 from chango import __version__
 from chango._utils.types import PathLike
+from chango.constants import MarkupLanguage
 from tests.auxil.files import data_path, path_to_python_string
-from tests.sphinx_ext.conftest import MockStorage
+from tests.sphinx_ext.conftest import MockChanGo, MockStorage
 
 MAKE_APP_TYPE = Callable[..., SphinxTestApp]
 
@@ -156,7 +158,7 @@ class TestSphinxExt:
                 tmp_path_factory=tmp_path_factory,
             )
         )
-        app.build()
+        self.assert_successful_build(app)
         received_sys_path = cg_config_mock.get().sys_path
 
         if path in ("explicit_none", None):
@@ -178,7 +180,7 @@ class TestSphinxExt:
             )
         )
 
-        app.build()
+        self.assert_successful_build(app)
 
         index = app.outdir.joinpath("index.html")
         assert index.exists()
@@ -188,6 +190,15 @@ class TestSphinxExt:
 
         if headline:
             assert f"<h1>{headline}" in content
+        else:
+            assert f"<h1>{headline}" not in content
+
+    def test_directive_rendering_passed_markup_language(self, cg_config_mock, app: SphinxTestApp):
+        self.assert_successful_build(app)
+        received_args = cg_config_mock.get().chango.version_history.received_args
+        received_kwargs = cg_config_mock.get().chango.version_history.received_kwargs
+        assert received_args == (MarkupLanguage.RESTRUCTUREDTEXT,)
+        assert received_kwargs == {}
 
     def test_argument_passing_basic(
         self,
@@ -262,3 +273,82 @@ class TestSphinxExt:
 
         with pytest.raises(SphinxBuildError, match="must be a JSON-serializable value"):
             self.assert_successful_build(app)
+
+    def test_argument_passing_missing_value(
+        self, make_app: MAKE_APP_TYPE, tmp_path_factory: TempPathFactory
+    ):
+        directive = """
+.. chango::
+    :start_from:
+    """
+        app = make_app(
+            srcdir=self.create_template(
+                directive_insert=directive, tmp_path_factory=tmp_path_factory
+            )
+        )
+
+        with pytest.raises(SphinxBuildError, match="must be a JSON-serializable value"):
+            self.assert_successful_build(app)
+
+    def test_argument_passing_custom_signature(
+        self,
+        cg_config_mock: MockStorage,
+        make_app: MAKE_APP_TYPE,
+        tmp_path_factory: TempPathFactory,
+        monkeypatch,
+    ):
+        validator_kwargs = {}
+
+        def sequence_validator(value: str | None) -> Sequence[int]:
+            validator_kwargs["sequence_validator"] = value
+            return tuple(map(int, value.split(",")))
+
+        def flag_validator(value: str | None) -> bool:
+            validator_kwargs["flag_validator"] = value
+            return True
+
+        original_load_version_history = MockChanGo.load_version_history
+
+        def load_version_history(
+            *args,
+            start_from: str | None = None,
+            end_at: str | None = None,
+            json_dict_arg: dict[str, str] | None = None,
+            sequence_arg: Annotated[Sequence[int], sequence_validator] = (1, 2, 3),
+            flag_arg: Annotated[bool, flag_validator] = False,
+        ):
+            return original_load_version_history(
+                *args,
+                start_from=start_from,
+                end_at=end_at,
+                json_dict_arg=json_dict_arg,
+                sequence_arg=sequence_arg,
+                flag_arg=flag_arg,
+            )
+
+        monkeypatch.setattr(MockChanGo, "load_version_history", load_version_history)
+
+        directive = """
+.. chango::
+    :json_dict_arg: {"key": "value"}
+    :sequence_arg: 1,2,3
+    :flag_arg:
+    """
+
+        app = make_app(
+            srcdir=self.create_template(
+                directive_insert=directive, tmp_path_factory=tmp_path_factory
+            )
+        )
+
+        self.assert_successful_build(app)
+
+        received_kwargs = cg_config_mock.get().chango.received_kwargs
+        assert received_kwargs == {
+            "json_dict_arg": {"key": "value"},
+            "sequence_arg": (1, 2, 3),
+            "flag_arg": True,
+            "start_from": None,
+            "end_at": None,
+        }
+        assert validator_kwargs == {"sequence_validator": "1,2,3", "flag_validator": None}
