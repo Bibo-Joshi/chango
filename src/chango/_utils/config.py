@@ -74,21 +74,18 @@ def add_sys_path(path: Path | None) -> Iterator[None]:
         yield
         return
 
-    if not path.is_absolute():
-        path = Path.cwd() / path
+    effective_path = path.resolve()
 
     try:
-        sys.path.insert(0, str(path))
+        sys.path.insert(0, str(effective_path))
         yield
     finally:
-        sys.path.remove(str(path))
+        sys.path.remove(str(effective_path))
 
 
 def get_pyproject_toml_path(path: PathLike | None) -> Path:
     """Get the path to the pyproject.toml file."""
     effective_path = Path.cwd() if path is None else Path(path).resolve()
-    if not effective_path.is_absolute():
-        effective_path = (Path.cwd() / effective_path).resolve()
     if not effective_path.is_file():
         effective_path = effective_path / "pyproject.toml"
     return effective_path
