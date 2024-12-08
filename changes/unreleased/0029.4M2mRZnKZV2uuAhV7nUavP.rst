@@ -1,1 +1,1 @@
-Add Public `chango.config` Module (`#29 <https://github.com/Bibo-Joshi/chango/pull/29>`_)
+Add Public ``chango.config`` Module (`#29 <https://github.com/Bibo-Joshi/chango/pull/29>`_)

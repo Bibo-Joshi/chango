@@ -1,4 +1,1 @@
-Changelog
----------
-
-.. include:: ../../changes/CHANGES.rst
+.. chango:: Changelog

@@ -34,11 +34,15 @@ extensions = [
     "sphinx_click",
     "sphinx_copybutton",
     "sphinx_paramlinks",
+    "chango.sphinx_ext",
 ]
 
 html_theme = "furo"
 
-intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3", None),
+    "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
+}
 
 nitpicky = True
 
@@ -47,6 +51,12 @@ paramlinks_hyperlink_param = "name"
 
 # Use "Example:" instead of ".. admonition:: Example"
 napoleon_use_admonition_for_examples = True
+
+# Don't copy the ">>>" part of interactive python examples
+copybutton_only_copy_prompt_lines = False
+
+# Configuration for the chango sphinx directive
+chango_pyproject_toml_path = Path(__file__).parent.parent.parent
 
 # Don't show type hints in the signature - that just makes it hardly readable
 # and we document the types anyway
@@ -129,9 +139,13 @@ def missing_reference(
     return link_node
 
 
-def setup(app: Sphinx) -> None:
+def config_inited(_: Sphinx, __: dict[str, str]) -> None:
     # for usage in _cli.__init__
     os.environ["SPHINX_BUILD"] = "True"
+
+
+def setup(app: Sphinx) -> None:
+    app.connect("config-inited", config_inited)
     app.connect("missing-reference", missing_reference)
 
     # We use the hooks defined by sphinx-click to convert python-rich syntax to rst

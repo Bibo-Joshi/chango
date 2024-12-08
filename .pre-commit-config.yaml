@@ -23,6 +23,7 @@ repos:
         args:
           - --enable-incomplete-feature=NewGenericSyntax
         additional_dependencies:
+          - .
           - pydantic-settings~=2.3
           - shortuuid~=1.0
           - sphinx~=8.0
