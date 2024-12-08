@@ -83,3 +83,8 @@ class TestVersionScanner:
     def test_get_version_not_found(self, scanner):
         with pytest.raises(ValueError, match="not available"):
             scanner.get_version("1.4")
+
+    def test_invalidates_caches(self, scanner):
+        # This does nothing, but we want to test that it doesn't raise an error
+        scanner.invalidate_caches = VersionScanner.invalidate_caches
+        scanner.invalidate_caches(scanner)

@@ -134,3 +134,16 @@ class VersionScanner(Collection[Version]):
         Raises:
             ValueError: If the version with the given identifier is not available.
         """
+
+    def invalidate_caches(self) -> None:
+        """Invalidate any internal caches that may be used by the implementation.
+
+        Important:
+
+            * This method is not required to do anything if the implementation does not use any
+              caches. By default, it does nothing.
+            * This method is called by :meth:`chango.abc.ChanGo.release` and
+              :meth:`chango.abc.ChanGo.write_change_note` after the respective operation has been
+              completed. This gives the implementation the opportunity to clear any caches that
+              may have been affected by the operation.
+        """

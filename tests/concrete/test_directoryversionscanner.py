@@ -3,6 +3,7 @@
 #  SPDX-License-Identifier: MIT
 
 import datetime as dtm
+from pathlib import Path
 
 import pytest
 
@@ -163,3 +164,24 @@ class TestDirectoryVersionScanner:
     def test_get_changes_not_found(self, scanner):
         with pytest.raises(ValueError, match="not available"):
             scanner.get_changes("1.4")
+
+    def test_invalidate_caches(self, scanner):
+        original_versions = {
+            Version("1.1", dtm.date(2024, 1, 1)),
+            Version("1.2", dtm.date(2024, 1, 2)),
+            Version("1.3", dtm.date(2024, 1, 3)),
+            Version("1.3.1", dtm.date(2024, 1, 3)),
+        }
+
+        assert set(scanner.get_available_versions()) == original_versions
+
+        new_directory = Path(self.DATA_ROOT / "1.4_2024-01-04")
+        try:
+            new_directory.mkdir()
+            assert set(scanner.get_available_versions()) == original_versions
+            scanner.invalidate_caches()
+            assert set(scanner.get_available_versions()) == original_versions | {
+                Version("1.4", dtm.date(2024, 1, 4))
+            }
+        finally:
+            new_directory.rmdir()
