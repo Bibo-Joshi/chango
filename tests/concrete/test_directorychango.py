@@ -79,7 +79,7 @@ class TestDirectoryChango:
         assert len(note.uid) == len(shortuuid.ShortUUID().uuid())
 
     def test_build_version_note_version(self, chango):
-        version = Version("uid", dtm.date.today())  # noqa: DTZ011
+        version = Version("uid", dtm.date.today())
         note = chango.build_version_note(version)
         assert isinstance(note, CommentVersionNote)
         assert note.version == version
