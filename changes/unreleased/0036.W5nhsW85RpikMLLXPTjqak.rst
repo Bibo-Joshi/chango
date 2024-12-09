@@ -1,0 +1,1 @@
+Add Unit Tests for CLI (`#36 <https://github.com/Bibo-Joshi/chango/pull/36>`_)
