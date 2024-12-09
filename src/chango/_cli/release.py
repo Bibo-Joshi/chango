@@ -20,7 +20,9 @@ def _today() -> dtm.date:
 
 
 def release(
-    uid: Annotated[str, typer.Option(help="The unique identifier of the version release.")],
+    uid: Annotated[
+        str, typer.Option(help="The unique identifier of the version release.", show_default=False)
+    ],
     date: Annotated[
         dtm.date,
         typer.Option(
