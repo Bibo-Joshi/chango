@@ -40,7 +40,6 @@ jobs:
 
       - name: Test with pytest
         run: |
-          # `-n auto --dist worksteal` uses pytest-xdist to run tests on multiple CPU workers
           pytest --cov -v --junit-xml=.test_junit.xml
 
       - name: Test Summary
