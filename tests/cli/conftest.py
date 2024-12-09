@@ -1,6 +1,7 @@
 #  SPDX-FileCopyrightText: 2024-present Hinrich Mahler <chango@mahlerhome.de>
 #
 #  SPDX-License-Identifier: MIT
+import unittest.mock
 from collections.abc import Mapping, Sequence
 from typing import IO, Any
 
@@ -9,6 +10,7 @@ from click.testing import Result
 from typer import Typer
 from typer.testing import CliRunner
 
+import chango
 from chango._cli import app as chango_app
 
 
@@ -47,3 +49,14 @@ class ReuseCliRunner(CliRunner):
 @pytest.fixture(scope="session")
 def cli():
     return ReuseCliRunner(chango_app)
+
+
+@pytest.fixture
+def mock_chango_instance(monkeypatch):
+    chango_config = unittest.mock.MagicMock()
+    monkeypatch.setattr(chango.config.ChanGoConfig, "load", lambda *_, **__: chango_config)
+
+    yield chango_config.import_chango_instance()
+
+    # This is required to ensure that each test gets a new instance of the mock
+    chango.config.get_chango_instance.cache_clear()
