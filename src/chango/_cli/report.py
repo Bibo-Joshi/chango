@@ -20,7 +20,7 @@ app = typer.Typer(help="Generate reports for one or multiple versions.")
 def version(
     uid: Annotated[
         str,
-        typer.Argument(
+        typer.Option(
             help=(
                 "The unique identifier of the version to report on. Leave empty for unreleased "
                 "changes."
