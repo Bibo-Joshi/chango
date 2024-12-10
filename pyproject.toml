@@ -67,6 +67,7 @@ split-on-trailing-comma = false
 
 [tool.ruff.lint.per-file-ignores]
 "docs/**.py" = ["INP001"]
+"tests/**.py" = ["PLR0913"]
 "tests/data/**.py" = ["INP001"]
 
 [tool.ruff.format]

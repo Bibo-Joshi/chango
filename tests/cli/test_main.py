@@ -8,5 +8,5 @@ from tests.cli.conftest import ReuseCliRunner
 class TestMain:
     def test_version(self, cli: ReuseCliRunner):
         result = cli.invoke(args=["--version"])
+        assert result.check_exit_code()
         assert result.stdout == __version__ + "\n"
-        assert result.exit_code == 0

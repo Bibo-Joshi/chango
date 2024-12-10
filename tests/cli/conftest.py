@@ -1,9 +1,10 @@
 #  SPDX-FileCopyrightText: 2024-present Hinrich Mahler <chango@mahlerhome.de>
 #
 #  SPDX-License-Identifier: MIT
+import traceback
 import unittest.mock
 from collections.abc import Mapping, Sequence
-from typing import IO, Any
+from typing import IO, Any, Literal
 
 import pytest
 from click.testing import Result
@@ -12,6 +13,27 @@ from typer.testing import CliRunner
 
 import chango
 from chango._cli import app as chango_app
+
+
+class CLIResult:
+    def __init__(self, result: Result) -> None:
+        self._result = result
+
+    def __getattr__(self, name: str) -> Any:
+        # only called if attribute is not found in self
+        return getattr(self._result, name)
+
+    def check_exit_code(self, expected_code: int = 0) -> Literal[True]:
+        text = f"stdout:\n{self.stdout}"
+        if self.exception:
+            text += f"\nexception:\n{self.exception}"
+            text += f"\ntraceback:\n{'\n'.join(traceback.format_exception(*self.exc_info))}"
+
+        if self.exit_code != expected_code:
+            raise AssertionError(
+                f"Expected exit code {expected_code}, got {self.exit_code}\n{text}"
+            )
+        return True
 
 
 class ReuseCliRunner(CliRunner):
@@ -36,15 +58,17 @@ class ReuseCliRunner(CliRunner):
         catch_exceptions: bool = True,
         color: bool = False,
         **extra: Any,
-    ) -> Result:
-        return super().invoke(
-            self.app,
-            args=args,
-            input=input,
-            env=env,
-            catch_exceptions=catch_exceptions,
-            color=color,
-            **extra,
+    ) -> CLIResult:
+        return CLIResult(
+            super().invoke(
+                self.app,
+                args=args,
+                input=input,
+                env=env,
+                catch_exceptions=catch_exceptions,
+                color=color,
+                **extra,
+            )
         )
 
 

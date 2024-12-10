@@ -12,9 +12,16 @@ from chango.config import get_chango_instance
 
 
 def new(
-    slug: Annotated[str, typer.Argument(help="The slug of the change note.", show_default=False)],
+    slug: Annotated[
+        str, typer.Option("--slug", "-s", help="The slug of the change note.", show_default=False)
+    ],
     edit: Annotated[
-        bool, typer.Option(help="Whether to open the change note in the default editor.")
+        bool,
+        typer.Option(
+            "--edit/--no-edit",
+            "-e/-ne",
+            help="Whether to open the change note in the default editor.",
+        ),
     ] = True,
 ) -> None:
     """Create a new change note."""

@@ -18,8 +18,8 @@ class TestEdit:
 
         result = cli.invoke(args=["edit", "some_uid"])
 
+        assert result.check_exit_code()
+        assert result.stdout == ""
+
         mock_chango_instance.scanner.lookup_change_note.assert_called_once_with("some_uid")
         launch_mock.assert_called_once_with(test_path.as_posix())
-
-        assert result.exit_code == 0
-        assert result.stdout == ""
