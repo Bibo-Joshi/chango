@@ -11,11 +11,10 @@ from tests.cli.conftest import ReuseCliRunner
 
 
 class TestNew:
-    @pytest.mark.parametrize("edit", [True, False, None], ids=["Edit", "NoEdit", "DefaultEdit"])
     @pytest.mark.parametrize("slug_option", ["--slug", "-s"], ids=["LongSlug", "ShortSlug"])
-    @pytest.mark.parametrize("edit_option", ["--edit", "-e"], ids=["LongEdit", "ShortEdit"])
     @pytest.mark.parametrize(
-        "no_edit_option", ["--no-edit", "-ne"], ids=["LongNoEdit", "ShortNoEdit"]
+        ("edit", "edit_option"),
+        [(True, "--edit"), (True, "-e"), (False, "--no-edit"), (False, "-ne"), (None, None)],
     )
     def test_new(
         self,
@@ -25,7 +24,6 @@ class TestNew:
         edit,
         slug_option,
         edit_option,
-        no_edit_option,
     ):
         launch_mock = MagicMock()
         monkeypatch.setattr("typer.launch", launch_mock)
@@ -36,8 +34,8 @@ class TestNew:
         mock_chango_instance.write_change_note.return_value = test_path
 
         args = ["new", slug_option, "some_uid"]
-        if edit is not None:
-            args.extend([edit_option if edit else no_edit_option])
+        if edit_option is not None:
+            args.append(edit_option)
         result = cli.invoke(args=args)
 
         assert result.check_exit_code()

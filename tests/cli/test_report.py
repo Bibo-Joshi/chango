@@ -20,9 +20,8 @@ class TestReport:
     @pytest.mark.parametrize(
         "markup_option", ["--markup", "-m"], ids=["LongMarkup", "ShortMarkup"]
     )
-    @pytest.mark.parametrize("output", [None, True], ids=["NoOutput", "Output"])
     @pytest.mark.parametrize(
-        "output_option", ["--output", "-o"], ids=["LongOutput", "ShortOutput"]
+        ("output", "output_option"), [(None, None), (True, "--output"), (True, "-o")]
     )
     def test_report_version(
         self,
@@ -66,9 +65,8 @@ class TestReport:
     @pytest.mark.parametrize(
         "markup_option", ["--markup", "-m"], ids=["LongMarkup", "ShortMarkup"]
     )
-    @pytest.mark.parametrize("output", [None, True], ids=["NoOutput", "Output"])
     @pytest.mark.parametrize(
-        "output_option", ["--output", "-o"], ids=["LongOutput", "ShortOutput"]
+        ("output", "output_option"), [(None, None), (True, "--output"), (True, "-o")]
     )
     def test_report_history(
         self,
