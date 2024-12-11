@@ -2,8 +2,7 @@
 #
 #  SPDX-License-Identifier: MIT
 
-# pragma: no cover
-from ._cli import app
+from ._cli import app  # pragma: no cover
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     app()
