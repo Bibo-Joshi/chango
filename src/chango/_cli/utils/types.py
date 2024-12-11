@@ -17,7 +17,9 @@ def markup_callback(value: str) -> MarkupLanguage:
         raise typer.BadParameter(str(exc)) from exc
 
 
-def date(value: str) -> dtm.date:
+def date(value: str | dtm.date) -> dtm.date:
+    if isinstance(value, dtm.date):
+        return value
     try:
         return dtm.date.fromisoformat(value)
     except ValueError as exc:

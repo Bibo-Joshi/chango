@@ -35,3 +35,6 @@ class TestConfigModule:
 
         for _ in range(10):
             assert get_chango_instance() == 1, "The ChanGo instance should be cached!"
+
+        # to ensure that other tests still pass
+        get_chango_instance.cache_clear()

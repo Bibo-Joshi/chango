@@ -15,10 +15,21 @@ from chango.config import get_chango_instance
 from .utils.types import date as date_callback
 
 
+def _today() -> dtm.date:
+    return dtm.date.today()
+
+
 def release(
-    uid: Annotated[str, typer.Argument(help="The unique identifier of the version release.")],
+    uid: Annotated[
+        str, typer.Option(help="The unique identifier of the version release.", show_default=False)
+    ],
     date: Annotated[
-        dtm.date, typer.Argument(help="The date of the version release.", parser=date_callback)
+        dtm.date,
+        typer.Option(
+            help="The date of the version release. Defaults to today.",
+            parser=date_callback,
+            default_factory=_today,
+        ),
     ],
 ) -> None:
     """Release the unreleased changes to a new version."""

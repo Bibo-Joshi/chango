@@ -1,6 +1,8 @@
 #  SPDX-FileCopyrightText: 2024-present Hinrich Mahler <chango@mahlerhome.de>
 #
 #  SPDX-License-Identifier: MIT
+import os
+from contextlib import contextmanager
 from pathlib import Path
 
 from chango._utils.types import PathLike
@@ -17,3 +19,13 @@ def path_to_python_string(path: Path, output_type: type[str] | type[Path]) -> st
     if output_type is str:
         return f"'{path.as_posix()}'"
     return f"Path(r'{path}')"
+
+
+@contextmanager
+def temporary_chdir(path: Path):
+    current_dir = Path.cwd()
+    try:
+        os.chdir(path)
+        yield
+    finally:
+        os.chdir(current_dir)
