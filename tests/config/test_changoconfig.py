@@ -1,10 +1,9 @@
 #  SPDX-FileCopyrightText: 2024-present Hinrich Mahler <chango@mahlerhome.de>
 #
 #  SPDX-License-Identifier: MIT
-import os
 import sys
 from collections.abc import Collection
-from contextlib import contextmanager, nullcontext
+from contextlib import nullcontext
 from pathlib import Path
 from string import Template
 from types import SimpleNamespace
@@ -13,17 +12,7 @@ import pytest
 
 from chango.concrete import DirectoryChanGo
 from chango.config import ChanGoConfig, ChanGoInstanceConfig
-from tests.auxil.files import PROJECT_ROOT_PATH, data_path
-
-
-@contextmanager
-def temporary_chdir(path: Path):
-    current_dir = Path.cwd()
-    try:
-        os.chdir(path)
-        yield
-    finally:
-        os.chdir(current_dir)
+from tests.auxil.files import PROJECT_ROOT_PATH, data_path, temporary_chdir
 
 
 class TestChanGoInstanceConfig:

@@ -4,12 +4,12 @@
 
 __all__ = ["app"]
 
-import json
 from pathlib import Path
 from typing import Annotated, Optional
 
 import tomlkit
 import typer
+from pydantic import ValidationError
 from rich import print as rprint
 from rich.markdown import Markdown
 
@@ -55,7 +55,7 @@ def callback(context: typer.Context, path: _PATH_ANNOTATION = None) -> None:
 def show(context: typer.Context) -> None:
     """Show the configuration."""
     string = f"""
-Showing the configuration of the chango CLIas configured in ``{context.obj['path']}``.
+Showing the configuration of the chango CLI as configured in ``{context.obj['path']}``.
 ```toml
 {tomlkit.dumps(context.obj["data"])}
 ```
@@ -64,17 +64,11 @@ Showing the configuration of the chango CLIas configured in ``{context.obj['path
 
 
 @app.command()
-def schema() -> None:
-    """Show the JSON schema of the configuration."""
-    rprint(Markdown(f"```json\n{json.dumps(ChanGoConfig.model_json_schema(), indent=2)}\n```"))
-
-
-@app.command()
 def validate(context: typer.Context) -> None:
     """Validate the configuration."""
     try:
         config = ChanGoConfig.load(context.obj["path"])
-    except ValueError as exc:
+    except ValidationError as exc:
         raise typer.BadParameter(
             f"Validation of config file at {context.obj['path']} failed:\n{exc}"
         ) from exc
@@ -84,7 +78,7 @@ def validate(context: typer.Context) -> None:
     except ImportError as exc:
         raise typer.BadParameter(
             f"Config file at {context.obj['path']} is valid "
-            f"but importing the objects failed:\n{exc}"
+            f"but importing the ChanGo instance failed:\n{exc}"
         ) from exc
 
     rprint(f"The configuration in [code]{context.obj['path']}[/code] is valid.")
