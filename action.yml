@@ -21,13 +21,13 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       with:
         ref: ${{ github.head_ref }}
 
     - name: Set up Python
       id: setup-python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
       with:
         python-version: ${{ inputs.python-version }}
 
@@ -39,7 +39,7 @@ runs:
 
     - name: Create chango fragment
       id: create-chango-fragment
-      uses: jannekem/run-python-script-action@v1
+      uses: jannekem/run-python-script-action@bbfca66c612a28f3eeca0ae40e1f810265e2ea68 # v1.7
       with:
         script: |
           from chango.config import get_chango_instance
@@ -55,6 +55,6 @@ runs:
     - name: Commit and Push
       id: commit-and-push
       if: ${{ inputs.commit-and-push == 'true' }}
-      uses: stefanzweifel/git-auto-commit-action@v4
+      uses: stefanzweifel/git-auto-commit-action@8621497c8c39c72f3e2a999a26b4ca1b5058a842 # v5.0.1
       with:
         commit_message: "Add chango fragment for PR #${{ github.event.pull_request.number }}"
