@@ -33,8 +33,8 @@ You can configure it for example as follows:
         name: create-chango-fragment
         runs-on: ubuntu-latest
         steps:
-          - uses: actions/checkout@v4
-          - uses: Bibo-Joshi/chango@main
+          - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+          - uses: Bibo-Joshi/chango@<sha-of-latest-release>
             with:
               # Optional: Specify a Python version to use
               python-version: '3.13'
