@@ -1,0 +1,1 @@
+Update ``sphinx`` requirement from ~=8.0 to ~=8.1 (`#38 <https://github.com/Bibo-Joshi/chango/pull/38>`_)
