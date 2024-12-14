@@ -1,0 +1,1 @@
+Use ``git mv`` in ``ChanGo.release`` if Available (`#43 <https://github.com/Bibo-Joshi/chango/pull/43>`_)
