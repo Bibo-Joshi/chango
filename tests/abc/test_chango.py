@@ -4,9 +4,12 @@
 import datetime as dtm
 import functools
 import shutil
+import subprocess
+from pathlib import Path
 
 import pytest
 
+import chango as chango_module
 from chango import Version
 from chango.abc import ChanGo
 from chango.concrete import (
@@ -185,7 +188,29 @@ class TestChanGo:
         assert not chango_no_unreleased.scanner.is_available(version)
         assert not cache_invalidation_tracker.was_called
 
-    def test_release(self, chango, cache_invalidation_tracker, monkeypatch):
+    @pytest.mark.parametrize(
+        "has_git", [pytest.param(True, id="with-git"), pytest.param(False, id="without-git")]
+    )
+    def test_release(self, chango, cache_invalidation_tracker, monkeypatch, has_git):
+        # Unfortunately, testing the git-available part is not easily possible without using
+        # some of the internal utils and also not with directly running git. This is because
+        # a) the availability of git is cached and there is no public interface to reset it
+        # b) mocking subprocess before the module is imported is not easily possible
+        # c) actually running `git mv` is harder to reset than just using the pathlib move
+        # Since `chango._utils.files` is not part of the public API, we settle for testing
+        # with the private interfaces.
+        chango_module._utils.files._GIT_MOVER.git_available = None
+
+        def check_call(args, *_, **__):
+            assert args[:2] == ["git", "mv"]
+            if not has_git:
+                raise subprocess.CalledProcessError(1, "git mv")
+
+            source, destination = args[2], args[3]
+            Path(source).rename(destination)
+
+        monkeypatch.setattr("chango._utils.files.subprocess.check_call", check_call)
+
         version = Version("1.4", dtm.date(2024, 1, 4))
         expected_path = chango.scanner.base_directory / "1.4_2024-01-04"
         expected_files = {

@@ -5,7 +5,7 @@ import abc
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Optional
 
-from .._utils.files import UTF8
+from .._utils.files import UTF8, move_file
 from .._utils.types import VUIDInput
 from ._changenote import ChangeNote
 from ._versionhistory import VersionHistory
@@ -231,7 +231,7 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
             change_info = self.scanner.lookup_change_note(uid)
             write_dir = self.get_write_directory(uid, version)
             if change_info.file_path.parent != write_dir:
-                change_info.file_path.rename(write_dir / change_info.file_path.name)
+                move_file(change_info.file_path, write_dir / change_info.file_path.name)
 
         self.scanner.invalidate_caches()
 
