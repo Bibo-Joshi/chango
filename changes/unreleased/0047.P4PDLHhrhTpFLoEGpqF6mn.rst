@@ -1,0 +1,1 @@
+`SectionChangeNote` (`#47 <https://github.com/Bibo-Joshi/chango/pull/47>`_)
