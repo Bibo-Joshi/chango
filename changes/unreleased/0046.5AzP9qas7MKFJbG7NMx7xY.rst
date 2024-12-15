@@ -1,0 +1,1 @@
+FIx Sorting Direction in ``HeaderVersionHistory.render`` (`#46 <https://github.com/Bibo-Joshi/chango/pull/46>`_)
