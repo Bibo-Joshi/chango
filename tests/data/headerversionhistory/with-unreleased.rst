@@ -10,9 +10,9 @@ Unreleased
   comment 2
 - comment 3
 
-1.0.0
+1.0.2
 =====
-*2024-01-01*
+*2024-01-03*
 
 - comment 1
 - a
@@ -34,9 +34,9 @@ Unreleased
   comment 2
 - comment 3
 
-1.0.2
+1.0.0
 =====
-*2024-01-03*
+*2024-01-01*
 
 - comment 1
 - a
