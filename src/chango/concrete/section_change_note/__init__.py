@@ -15,14 +15,15 @@ Example:
 
         MySectionChangeNote = SectionChangeNote.with_sections(
             [
-                Section(uid="required-section", title="Required Section", is_required=True),
-                Section(uid="optional-section", title="Optional Section"),
+                Section(uid="required_section", title="Required Section", is_required=True),
+                Section(uid="optional_section", title="Optional Section"),
             ]
         )
 """
 
-__all__ = ["PullRequest", "Section", "SectionChangeNote"]
+__all__ = ["GitHubSectionChangeNote", "PullRequest", "Section", "SectionChangeNote"]
 
+from ._githubsectionchangenote import GitHubSectionChangeNote
 from ._pullrequest import PullRequest
 from ._section import Section
 from ._sectionchangenote import SectionChangeNote

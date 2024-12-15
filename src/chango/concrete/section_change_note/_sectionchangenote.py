@@ -3,7 +3,7 @@
 #  SPDX-License-Identifier: MIT
 #
 #  SPDX-License-Identifier: MIT
-
+import abc
 import tomllib
 from collections.abc import Collection
 from typing import Any, ClassVar, Final, Self, override
@@ -19,7 +19,7 @@ from chango.constants import MarkupLanguage
 from chango.error import ValidationError
 
 
-class SectionChangeNote(pydt.BaseModel, ChangeNote):
+class SectionChangeNote(pydt.BaseModel, ChangeNote, abc.ABC):
     """A change note that consists of multiple sections and includes references to pull requests
     that are related to the change.
 
@@ -160,3 +160,42 @@ class SectionChangeNote(pydt.BaseModel, ChangeNote):
             PullRequest(uid="pr-number-2", closes_threads=("thread3",), author_uid="author2"),
         )
         return cls(slug=slug, uid=uid, pull_requests=pull_requests, **required_sections)
+
+    @abc.abstractmethod
+    def get_pull_request_url(self, pr_uid: str) -> str:
+        """Get the URL of the pull request with the given UID.
+
+        Args:
+            pr_uid (:obj:`str`): The UID of the pull request as defined in
+                :attr:`chango.concrete.section_change_note.PullRequest.uid`.
+
+        Returns:
+            :obj:`str`: The URL of the pull request.
+
+        """
+
+    @abc.abstractmethod
+    def get_thread_url(self, thread_uid: str) -> str:
+        """Get the URL of the thread with the given UID.
+
+        Args:
+            thread_uid (:obj:`str`): The UID of the thread as defined in
+                :attr:`chango.concrete.section_change_note.PullRequest.closes_threads`.
+
+        Returns:
+            :obj:`str`: The URL of the thread.
+
+        """
+
+    @abc.abstractmethod
+    def get_author_url(self, author_uid: str) -> str:
+        """Get the URL of the author with the given UID.
+
+        Args:
+            author_uid (:obj:`str`): The UID of the author as defined in
+                :attr:`chango.concrete.section_change_note.PullRequest.author_uid`.
+
+        Returns:
+            :obj:`str`: The URL of the author.
+
+        """
