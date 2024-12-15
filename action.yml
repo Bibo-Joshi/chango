@@ -1,5 +1,5 @@
-name: chango
-description:
+name: chango-action
+description: Composite Action for automatically creating a chango fragment for a PR.
 branding:
   icon: book-open
   color: gray-dark
