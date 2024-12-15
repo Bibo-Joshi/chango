@@ -41,6 +41,7 @@ html_theme = "furo"
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
+    "pydantic": ("https://docs.pydantic.dev/latest/", None),
     "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
 }
 

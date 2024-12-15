@@ -11,4 +11,5 @@ concrete
     chango.concrete.directorychango
     chango.concrete.directoryversionscanner
     chango.concrete.headerversionhistory
+    chango.concrete.sectionchangenote
     

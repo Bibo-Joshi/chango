@@ -10,8 +10,10 @@ __all__ = [
     "DirectoryChanGo",
     "DirectoryVersionScanner",
     "HeaderVersionHistory",
+    "section_change_note",
 ]
 
+from . import section_change_note
 from ._commentchangenote import CommentChangeNote
 from ._commentversionnote import CommentVersionNote
 from ._directorychango import DirectoryChanGo
