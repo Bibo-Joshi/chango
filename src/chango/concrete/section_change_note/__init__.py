@@ -21,9 +21,16 @@ Example:
         )
 """
 
-__all__ = ["GitHubSectionChangeNote", "PullRequest", "Section", "SectionChangeNote"]
+__all__ = [
+    "GitHubSectionChangeNote",
+    "PullRequest",
+    "Section",
+    "SectionChangeNote",
+    "SectionVersionNote",
+]
 
 from ._githubsectionchangenote import GitHubSectionChangeNote
 from ._pullrequest import PullRequest
 from ._section import Section
 from ._sectionchangenote import SectionChangeNote
+from ._sectionversionnote import SectionVersionNote

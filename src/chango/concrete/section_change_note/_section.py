@@ -18,13 +18,17 @@ class Section(pydt.BaseModel):
 
             Tip:
                 At least one section must be required.
-
+        render_pr_details (:obj:`bool`, optional): Whether to include details about the pull
+            requests related to the change in the rendering for this section.
+            Defaults to :obj:`True`.
         sort_order (:obj:`int`, optional): The sort order of the section. Defaults to ``0``.
 
     Attributes:
         uid (:obj:`str`): The unique identifier for the section.
         title (:obj:`str`): The title of the section.
         is_required (:obj:`bool`): Whether the section is required.
+        render_pr_details (:obj:`bool`, optional): Whether to include details about the pull
+            requests related to the change in the rendering for this section.
         sort_order (:obj:`int`): The sort order of the section.
 
     """
@@ -34,4 +38,5 @@ class Section(pydt.BaseModel):
     uid: str
     title: str
     is_required: bool = False
+    render_pr_details: bool = True
     sort_order: int = 0

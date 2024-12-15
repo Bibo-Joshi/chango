@@ -43,9 +43,14 @@ class SectionChangeNote(pydt.BaseModel, ChangeNote, abc.ABC):
     """:obj:`str`: The markup language used in the sections.
     """
 
-    _SECTION_TITLES: Final[dict[str, str]] = pydt.PrivateAttr(default_factory=dict)
-    """Mapping of section UIDs to section titles.
-    This is set by the :meth:`with_sections` class method.
+    SECTIONS: Final[dict[str, Section]] = pydt.Field(default_factory=dict)
+    """dict[:obj:`str`, :class:`Section`]: The sections of the change note. Maps the UID of the
+    section to the :class:`Section` object containing the configuration for the section
+    """
+
+    _BUILT_BY_WITH_SECTIONS: Final[bool] = pydt.PrivateAttr(default=False)
+    """Internal attribute to check if the class was built by the :meth:`with_sections`
+    class method.
     """
 
     pull_requests: tuple[PullRequest, ...] = pydt.Field(default_factory=tuple)
@@ -68,7 +73,7 @@ class SectionChangeNote(pydt.BaseModel, ChangeNote, abc.ABC):
                 "SectionChangeNote.with_sections to create a suitable subclass."
             )
 
-        if not self._SECTION_TITLES:
+        if not self._BUILT_BY_WITH_SECTIONS:
             raise TypeError(
                 "SectionChangeNote must not be subclassed manually Please use"
                 "SectionChangeNote.with_sections to create a suitable subclass."
@@ -107,7 +112,9 @@ class SectionChangeNote(pydt.BaseModel, ChangeNote, abc.ABC):
             __doc__=f"SectionChangeNote with sections {doc_insert}",
             **config_fields,
         )
-        dynamic_model._SECTION_TITLES = {section.uid: section.title for section in sections}
+        dynamic_model.SECTIONS = {section.uid: section for section in sections}
+
+        dynamic_model._BUILT_BY_WITH_SECTIONS = True
         return dynamic_model
 
     @property
