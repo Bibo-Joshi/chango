@@ -1,6 +1,8 @@
 #  SPDX-FileCopyrightText: 2024-present Hinrich Mahler <chango@mahlerhome.de>
 #
 #  SPDX-License-Identifier: MIT
+from typing import ClassVar
+
 import pydantic as pydt
 
 
@@ -27,7 +29,7 @@ class Section(pydt.BaseModel):
 
     """
 
-    model_config = pydt.ConfigDict(frozen=True)
+    model_config: ClassVar[pydt.ConfigDict] = pydt.ConfigDict(frozen=True)
 
     uid: str
     title: str
