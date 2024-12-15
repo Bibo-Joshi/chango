@@ -41,6 +41,7 @@ class HeaderVersionHistory[VNT: VersionNote](VersionHistory[VNT]):
         changes = sorted(
             released_notes,
             key=lambda note: note.date,  # type: ignore[arg-type,return-value]
+            reverse=True,
         )
         match markup:
             case MarkupLanguage.MARKDOWN:
