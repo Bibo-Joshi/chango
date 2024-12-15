@@ -1,30 +1,8 @@
 #  SPDX-FileCopyrightText: 2024-present Hinrich Mahler <chango@mahlerhome.de>
 #
 #  SPDX-License-Identifier: MIT
-# fmt: off
-# see https://github.com/astral-sh/ruff/issues/14984
-"""This module contains an implementation of :class:`~chango.abc.ChangeNote` that consists of
-multiple sections and includes references to pull requests that are related to the change.
-The main class is :class:`SectionChangeNote`, while :class:`SectionConfiguration` and
-:class:`PullRequest` are used to define the sections and pull requests, respectively.
-
-Example:
-    To create a change note with two sections, one required and one optional, use
-
-    .. code-block:: python
-
-        from chango.concrete.section_change_note import SectionChangeNote, SectionConfiguration
-
-        MySectionChangeNote = SectionChangeNote.with_sections(
-            [
-                SectionConfiguration(
-                    uid="required-section", title="Required Section", is_required=True
-                ),
-                SectionConfiguration(uid="optional-section", title="Optional Section"),
-            ]
-        )
-"""
-# fmt: on
+#
+#  SPDX-License-Identifier: MIT
 
 import tomllib
 from collections.abc import Collection
@@ -33,67 +11,12 @@ from typing import Any, ClassVar, Final, Self, override
 import pydantic as pydt
 import tomlkit
 
-from .._utils.files import UTF8
-from ..abc import ChangeNote
-from ..constants import MarkupLanguage
-from ..error import ValidationError
-
-__all__ = ["PullRequest", "SectionChangeNote", "SectionConfiguration"]
-
-
-class PullRequest(pydt.BaseModel):
-    """Simple data structure to represent a pull/merge request.
-
-    Args:
-        uid (:obj:`str`): The unique identifier for the pull request. For example, the pull request
-            number.
-        author_uid (:obj:`str`): The unique identifier of the author of the pull request.
-            For example, the author's username.
-        closes_threads (tuple[:obj:`str`], optional): The threads that are closed by this pull
-            request.
-
-    Attributes:
-        uid (:obj:`str`): The unique identifier for the pull request.
-        author_uid (:obj:`str`): The unique identifier of the author of the pull request.
-        closes_threads (tuple[:obj:`str`]): The threads that are closed by this pull request.
-            May be empty.
-
-    """
-
-    uid: str
-    author_uid: str
-    closes_threads: tuple[str, ...] = pydt.Field(default_factory=tuple)
-
-
-class SectionConfiguration(pydt.BaseModel):
-    """Configuration for a section in a :class:`SectionChangeNote`.
-
-    Args:
-        uid (:obj:`str`): The unique identifier for the section. This is used as the field name
-            in the change note.
-        title (:obj:`str`): The title of the section.
-        is_required (:obj:`bool`, optional): Whether the section is required. Defaults
-            to :obj:`False`.
-
-            Tip:
-                At least one section must be required.
-
-        sort_order (:obj:`int`, optional): The sort order of the section. Defaults to ``0``.
-
-    Attributes:
-        uid (:obj:`str`): The unique identifier for the section.
-        title (:obj:`str`): The title of the section.
-        is_required (:obj:`bool`): Whether the section is required.
-        sort_order (:obj:`int`): The sort order of the section.
-
-    """
-
-    model_config = pydt.ConfigDict(frozen=True)
-
-    uid: str
-    title: str
-    is_required: bool = False
-    sort_order: int = 0
+from chango._utils.files import UTF8
+from chango.abc import ChangeNote
+from chango.concrete.section_change_note._pullrequest import PullRequest
+from chango.concrete.section_change_note._section import Section
+from chango.constants import MarkupLanguage
+from chango.error import ValidationError
 
 
 class SectionChangeNote(pydt.BaseModel, ChangeNote):
@@ -112,8 +35,8 @@ class SectionChangeNote(pydt.BaseModel, ChangeNote):
             to the change.
 
     Attributes:
-        pull_requests (tuple[:class:`PullRequest`]): The pull requests that are related to the
-            change
+        pull_requests (tuple[:class:`~chango.concrete.section_change_note.PullRequest`]): The pull
+            requests that are related to the change
     """
 
     MARKUP: ClassVar[str] = MarkupLanguage.RESTRUCTUREDTEXT
@@ -154,13 +77,11 @@ class SectionChangeNote(pydt.BaseModel, ChangeNote):
         return self
 
     @classmethod
-    def with_sections(
-        cls, sections: Collection[SectionConfiguration], name: str | None = None
-    ) -> type[Self]:
+    def with_sections(cls, sections: Collection[Section], name: str | None = None) -> type[Self]:
         """Create a new subclass of :class:`SectionChangeNote` with the given sections.
 
         Args:
-            sections (Collection[:class:`SectionConfiguration`]): The sections to include in the
+            sections (Collection[:class:`Section`]): The sections to include in the
                 change note.
             name (:obj:`str`, optional): The name of the new class. Defaults to
                 ``DynamicSectionChangeNote``.
