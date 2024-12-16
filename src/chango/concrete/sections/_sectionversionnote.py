@@ -17,14 +17,14 @@ if TYPE_CHECKING:
 
 class SectionVersionNote[V: (Version, None), SCN: SectionChangeNote](VersionNote[SCN, V]):
     """An implementation of :class:`~chango.abc.VersionNote` that works with
-    :class:`~chango.concrete.section_change_note.SectionChangeNote`.
+    :class:`~chango.concrete.sections.SectionChangeNote`.
 
     Important:
         Currently, only :attr:`~chango.constants.MarkupLanguage.RESTRUCTUREDTEXT` is supported.
 
     Args:
         section_change_note_type (\
-            type[:class:`~chango.concrete.section_change_note.SectionChangeNote`]): The type of
+            type[:class:`~chango.concrete.sections.SectionChangeNote`]): The type of
             the section change note to use.
 
             Hint:
@@ -84,7 +84,7 @@ class SectionVersionNote[V: (Version, None), SCN: SectionChangeNote](VersionNote
     def render(self, markup: str) -> str:
         """Render the version note to a string by listing all contained change notes.
         Aggregates the content of all change notes for each section and renders them in the order
-        defined by :attr:`~chango.concrete.section_change_note.Section.sort_order`.
+        defined by :attr:`~chango.concrete.sections.Section.sort_order`.
 
         Important:
             Currently, only :attr:`~chango.constants.MarkupLanguage.RESTRUCTUREDTEXT` is supported.

@@ -11,7 +11,7 @@ Example:
 
     .. code-block:: python
 
-        from chango.concrete.section_change_note import SectionChangeNote, Section
+        from chango.concrete.sections import SectionChangeNote, Section
 
         MySectionChangeNote = SectionChangeNote.with_sections(
             [

@@ -13,8 +13,8 @@ import tomlkit
 
 from chango._utils.files import UTF8
 from chango.abc import ChangeNote
-from chango.concrete.section_change_note._pullrequest import PullRequest
-from chango.concrete.section_change_note._section import Section
+from chango.concrete.sections._pullrequest import PullRequest
+from chango.concrete.sections._section import Section
 from chango.constants import MarkupLanguage
 from chango.error import ValidationError
 
@@ -35,7 +35,7 @@ class SectionChangeNote(pydt.BaseModel, ChangeNote, abc.ABC):
             to the change.
 
     Attributes:
-        pull_requests (tuple[:class:`~chango.concrete.section_change_note.PullRequest`]): The pull
+        pull_requests (tuple[:class:`~chango.concrete.sections.PullRequest`]): The pull
             requests that are related to the change
     """
 
@@ -175,7 +175,7 @@ class SectionChangeNote(pydt.BaseModel, ChangeNote, abc.ABC):
 
         Args:
             pr_uid (:obj:`str`): The UID of the pull request as defined in
-                :attr:`chango.concrete.section_change_note.PullRequest.uid`.
+                :attr:`chango.concrete.sections.PullRequest.uid`.
 
         Returns:
             :obj:`str`: The URL of the pull request.
@@ -189,7 +189,7 @@ class SectionChangeNote(pydt.BaseModel, ChangeNote, abc.ABC):
 
         Args:
             thread_uid (:obj:`str`): The UID of the thread as defined in
-                :attr:`chango.concrete.section_change_note.PullRequest.closes_threads`.
+                :attr:`chango.concrete.sections.PullRequest.closes_threads`.
 
         Returns:
             :obj:`str`: The URL of the thread.
@@ -203,7 +203,7 @@ class SectionChangeNote(pydt.BaseModel, ChangeNote, abc.ABC):
 
         Args:
             author_uid (:obj:`str`): The UID of the author as defined in
-                :attr:`chango.concrete.section_change_note.PullRequest.author_uid`.
+                :attr:`chango.concrete.sections.PullRequest.author_uid`.
 
         Returns:
             :obj:`str`: The URL of the author.

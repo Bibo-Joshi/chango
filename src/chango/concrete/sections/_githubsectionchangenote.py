@@ -9,13 +9,13 @@ from ._sectionchangenote import SectionChangeNote
 
 
 class GitHubSectionChangeNote(SectionChangeNote):
-    """Specialization of :class:`~chango.concrete.section_change_note.SectionChangeNote` for
+    """Specialization of :class:`~chango.concrete.sections.SectionChangeNote` for
     projects hosted on GitHub.
 
     Example:
         .. code-block:: python
 
-            from chango.concrete.section_change_note import GitHubSectionChangeNote, Section
+            from chango.concrete.sections import GitHubSectionChangeNote, Section
 
 
             class MySectionChangeNote(
@@ -71,7 +71,7 @@ class GitHubSectionChangeNote(SectionChangeNote):
 
         Args:
             author_uid (:obj:`str`): The UID of the author as defined in
-                :attr:`chango.concrete.section_change_note.PullRequest.author_uid`.
+                :attr:`chango.concrete.sections.PullRequest.author_uid`.
 
         Returns:
             :obj:`str`: The URL of the author.
