@@ -36,34 +36,37 @@ class GitHubSectionChangeNote(SectionChangeNote):
     REPOSITORY: ClassVar[str | None] = None
     """:obj:`str`: The name of the repository on GitHub. This must be set as a class variable."""
 
-    @property
-    def _owner(self) -> str:
-        if self.OWNER is None:
+    @classmethod
+    def _get_owner(cls) -> str:
+        if cls.OWNER is None:
             raise ValueError("OWNER must be set as class variable.")
-        return self.OWNER
+        return cls.OWNER
 
-    @property
-    def _repository(self) -> str:
-        if self.REPOSITORY is None:
+    @classmethod
+    def _get_repository(cls) -> str:
+        if cls.REPOSITORY is None:
             raise ValueError("REPOSITORY must be set as class variable.")
-        return self.REPOSITORY
+        return cls.REPOSITORY
 
+    @classmethod
     @override
-    def get_pull_request_url(self, pr_uid: str) -> str:
+    def get_pull_request_url(cls, pr_uid: str) -> str:
         """Implementation of :meth:`SectionChangeNote.get_pull_request_url` based on
         :attr:`OWNER` and :attr:`REPOSITORY`.
         """
-        return f"https://github.com/{self._owner}/{self._repository}/pull/{pr_uid}"
+        return f"https://github.com/{cls._get_owner()}/{cls._get_repository()}/pull/{pr_uid}"
 
+    @classmethod
     @override
-    def get_thread_url(self, thread_uid: str) -> str:
+    def get_thread_url(cls, thread_uid: str) -> str:
         """Implementation of :meth:`SectionChangeNote.get_pull_request_url` based on
         :attr:`OWNER` and :attr:`REPOSITORY`.
         """
-        return f"https://github.com/{self._owner}/{self._repository}/issue/{thread_uid}"
+        return f"https://github.com/{cls._get_owner()}/{cls._get_repository()}/issue/{thread_uid}"
 
+    @classmethod
     @override
-    def get_author_url(self, author_uid: str) -> str:
+    def get_author_url(cls, author_uid: str) -> str:
         """Get the URL of the author with the given UID.
 
         Args:

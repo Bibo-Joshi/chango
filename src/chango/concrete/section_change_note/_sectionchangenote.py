@@ -168,8 +168,9 @@ class SectionChangeNote(pydt.BaseModel, ChangeNote, abc.ABC):
         )
         return cls(slug=slug, uid=uid, pull_requests=pull_requests, **required_sections)
 
+    @classmethod
     @abc.abstractmethod
-    def get_pull_request_url(self, pr_uid: str) -> str:
+    def get_pull_request_url(cls, pr_uid: str) -> str:
         """Get the URL of the pull request with the given UID.
 
         Args:
@@ -181,8 +182,9 @@ class SectionChangeNote(pydt.BaseModel, ChangeNote, abc.ABC):
 
         """
 
+    @classmethod
     @abc.abstractmethod
-    def get_thread_url(self, thread_uid: str) -> str:
+    def get_thread_url(cls, thread_uid: str) -> str:
         """Get the URL of the thread with the given UID.
 
         Args:
@@ -194,8 +196,9 @@ class SectionChangeNote(pydt.BaseModel, ChangeNote, abc.ABC):
 
         """
 
+    @classmethod
     @abc.abstractmethod
-    def get_author_url(self, author_uid: str) -> str:
+    def get_author_url(cls, author_uid: str) -> str:
         """Get the URL of the author with the given UID.
 
         Args:
