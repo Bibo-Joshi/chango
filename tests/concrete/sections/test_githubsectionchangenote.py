@@ -1,20 +1,28 @@
 #  SPDX-FileCopyrightText: 2024-present Hinrich Mahler <chango@mahlerhome.de>
 #
 #  SPDX-License-Identifier: MIT
+import pytest
 
 from chango.concrete.sections import GitHubSectionChangeNote, Section
 
 
 class DummyChangNote(
-    GitHubSectionChangeNote.with_sections(
-        [
-            Section(uid="req_section", title="Required Section", is_required=True),
-            Section(uid="opt_section", title="Optional Section"),
-        ]
-    )
+    GitHubSectionChangeNote.with_sections([Section(uid="req", title="Req", is_required=True)])
 ):
     OWNER = "my-username"
     REPOSITORY = "my-repo"
+
+
+class DummyChangNoteNoOwner(
+    GitHubSectionChangeNote.with_sections([Section(uid="req", title="Req", is_required=True)])
+):
+    REPOSITORY = "my-repo"
+
+
+class DummyChangNoteNoRepository(
+    GitHubSectionChangeNote.with_sections([Section(uid="req", title="Req", is_required=True)])
+):
+    OWNER = "my-username"
 
 
 class TestGitHubSectionChangeNote:
@@ -35,11 +43,23 @@ class TestGitHubSectionChangeNote:
             == "https://github.com/my-username/my-repo/pull/123"
         )
 
-    def test_get_thread_ulr(self):
+    def test_get_pull_request_url_invalid(self):
+        with pytest.raises(ValueError, match="OWNER must be set as class variable."):
+            DummyChangNoteNoOwner.get_pull_request_url("123")
+        with pytest.raises(ValueError, match="REPOSITORY must be set as class variable."):
+            DummyChangNoteNoRepository.get_pull_request_url("123")
+
+    def test_get_thread_url(self):
         assert (
             DummyChangNote.get_thread_url("123")
             == "https://github.com/my-username/my-repo/issue/123"
         )
+
+    def test_get_thread_url_invalid(self):
+        with pytest.raises(ValueError, match="OWNER must be set as class variable."):
+            DummyChangNoteNoOwner.get_thread_url("123")
+        with pytest.raises(ValueError, match="REPOSITORY must be set as class variable."):
+            DummyChangNoteNoRepository.get_thread_url("123")
 
     def test_get_author_url(self):
         assert DummyChangNote.get_author_url("123") == "https://github.com/123"
