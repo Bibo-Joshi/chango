@@ -1,0 +1,1 @@
+Add ``chango.concrete.sections`` (`#47 <https://github.com/Bibo-Joshi/chango/pull/47>`_)
