@@ -11,14 +11,19 @@ Example:
 
     .. code-block:: python
 
-        from chango.concrete.sections import SectionChangeNote, Section
+        from chango.concrete.sections import GitHubSectionChangeNote, Section
 
-        MySectionChangeNote = SectionChangeNote.with_sections(
-            [
-                Section(uid="required_section", title="Required Section", is_required=True),
-                Section(uid="optional_section", title="Optional Section"),
-            ]
-        )
+
+        class MySectionChangeNote(
+            GitHubSectionChangeNote.with_sections(
+                [
+                    Section(uid="required_section", title="Required Section", is_required=True),
+                    Section(uid="optional_section", title="Optional Section"),
+                ]
+            )
+        ):
+            OWNER = "my-username"
+            REPOSITORY = "my-repo"
 """
 
 __all__ = [

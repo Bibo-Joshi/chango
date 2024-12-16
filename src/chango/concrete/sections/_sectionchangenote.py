@@ -33,7 +33,7 @@ class SectionChangeNote(pydt.BaseModel, ChangeNote, abc.ABC):
           base class and must be subclassed to be used. However, only the methods
           :meth:`get_pull_request_url`, :meth:`get_thread_url`, and :meth:`get_author_url` must be
           implemented in the subclass. A concrete subclass is provided in
-          :class:`~chango.concrete.section_change_note.GitHubSectionChangeNote`.
+          :class:`~chango.concrete.sections.GitHubSectionChangeNote`.
 
     Args:
         pull_requests (tuple[:class:`PullRequest`], optional): The pull requests that are related
