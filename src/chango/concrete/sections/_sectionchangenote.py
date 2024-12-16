@@ -26,9 +26,14 @@ class SectionChangeNote(pydt.BaseModel, ChangeNote, abc.ABC):
     Uses the `toml <https://toml.io/>`_ format for specifying the content.
 
     Important:
-        This class does not contain any specified sections by default and must not be instantiated
-        directly. Use :meth:`with_sections` to create a suitable subclass with the desired
-        sections.
+        * This class does not contain any specified sections by default and must not be
+          instantiated directly. Use :meth:`with_sections` to create a suitable subclass with the
+          desired sections.
+        * Even though this class is in the :mod:`~chango.concrete` module, it is still an abstract
+          base class and must be subclassed to be used. However, only the methods
+          :meth:`get_pull_request_url`, :meth:`get_thread_url`, and :meth:`get_author_url` must be
+          implemented in the subclass. A concrete subclass is provided in
+          :class:`~chango.concrete.section_change_note.GitHubSectionChangeNote`.
 
     Args:
         pull_requests (tuple[:class:`PullRequest`], optional): The pull requests that are related
@@ -67,15 +72,9 @@ class SectionChangeNote(pydt.BaseModel, ChangeNote, abc.ABC):
     def _validate_section_configuration(self) -> Self:
         # Runs after the pydantic validation. Adds some additional checks in case someone is
         # trying to manually build subclasses of SectionChangeNote.
-        if self.__class__ is SectionChangeNote:
-            raise TypeError(
-                "SectionChangeNote must not be instantiated directly. Please use "
-                "SectionChangeNote.with_sections to create a suitable subclass."
-            )
-
         if not self._BUILT_BY_WITH_SECTIONS:
             raise TypeError(
-                "SectionChangeNote must not be subclassed manually Please use"
+                "SectionChangeNote must not be subclassed manually. Please use"
                 "SectionChangeNote.with_sections to create a suitable subclass."
             )
 
