@@ -26,7 +26,7 @@ jobs:
             const octokit = context.octokit;
             
             # Fetch the linked issues
-            const { data } = await octokit.graphql(`
+            const { data } = await github.graphql(`
               query {
                 pullRequest(number: ${pullRequest.number}, repositoryOwner: "${context.repo.owner}", repositoryName: "${context.repo.repo}") {
                   closingIssuesReferences {
@@ -53,7 +53,7 @@ jobs:
             });
             
             # Fetch the parent PR
-            const { data } = await octokit.graphql(`
+            const { data } = await github.graphql(`
               query {
                 search(type: ISSUE, query: "is:open is:pr base:main head:${context.payload.pull_request.base.ref}", first: 100) {
                   issueCount
