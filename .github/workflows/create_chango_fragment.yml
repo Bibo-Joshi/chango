@@ -25,7 +25,7 @@ jobs:
             const pullRequest = context.payload.pull_request;
             const octokit = context.octokit;
             
-            # Fetch the linked issues
+            // Fetch the linked issues
             const { data } = await github.graphql(`
               query {
                 pullRequest(number: ${pullRequest.number}, repositoryOwner: "${context.repo.owner}", repositoryName: "${context.repo.repo}") {
@@ -52,7 +52,7 @@ jobs:
               };
             });
             
-            # Fetch the parent PR
+            // Fetch the parent PR
             const { data } = await github.graphql(`
               query {
                 search(type: ISSUE, query: "is:open is:pr base:main head:${context.payload.pull_request.base.ref}", first: 100) {
@@ -71,7 +71,7 @@ jobs:
             const prs = data.search.nodes;
             const parentPR = prs.length > 0 ? prs[0] : null;
             
-            # Combine the linked issues and the parent PR to a single JSON object
+            // Combine the linked issues and the parent PR to a single JSON object
             const linkedIssuesAndParentPR = {
               linked_issues: closingIssues,
               parent_pull_request: parentPR
