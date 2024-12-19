@@ -3,9 +3,9 @@ on:
   pull_request:
     branches:
       - main
-    types:
-      - opened
-      - reopened
+    # types:
+    #   - opened
+    #   - reopened
 
 jobs:
   create-chango-fragment:
@@ -53,7 +53,7 @@ jobs:
             });
             
             // Fetch the parent PR
-            const { data } = await github.graphql(`
+            const { response } = await github.graphql(`
               query {
                 search(type: ISSUE, query: "is:open is:pr base:main head:${context.payload.pull_request.base.ref}", first: 100) {
                   issueCount
@@ -68,7 +68,7 @@ jobs:
                 }
               }
             `);
-            const prs = data.search.nodes;
+            const prs = response.search.nodes;
             const parentPR = prs.length > 0 ? prs[0] : null;
             
             // Combine the linked issues and the parent PR to a single JSON object
