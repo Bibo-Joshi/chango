@@ -98,9 +98,11 @@ class DirectoryChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
         return directory
 
     @override
-    def build_github_event_change_note(self, event: dict[str, Any]) -> CNT:
+    def build_github_event_change_note(
+        self, event: dict[str, Any], data: dict[str, Any] | None = None
+    ) -> CNT:
         """Implementation of :meth:`~chango.abc.ChanGo.build_github_event_change_note`.
         Will always call :meth:`chango.abc.ChangeNote.build_from_github_event` and does not check
         if a new change note is necessary.
         """
-        return self.change_note_type.build_from_github_event(event)
+        return self.change_note_type.build_from_github_event(event=event, data=data)

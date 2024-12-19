@@ -67,3 +67,7 @@ The following inputs can be used to configure the action using the ``with`` keyw
      - Path to the ``pyproject.toml`` file. Takes the same input as :func:`chango.config.get_chango_instance`.
      - No
      - :obj:`None`
+   * - data
+     - Additional JSON data to pass to the parameter :paramref:`~chango.abc.ChanGo.build_from_github_event.data` of  :meth:`chango.abc.ChanGo.build_from_github_event`.
+     - No
+     - :obj:`None`

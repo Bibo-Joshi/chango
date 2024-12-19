@@ -48,7 +48,9 @@ class CommentChangeNote(ChangeNote):
 
     @classmethod
     @override
-    def build_from_github_event(cls, event: dict[str, Any]) -> Self:
+    def build_from_github_event(
+        cls, event: dict[str, Any], data: dict[str, Any] | None = None
+    ) -> Self:
         """Implementation of :meth:`~chango.abc.ChangeNote.build_from_github_event`.
 
         Considers only events of type ``pull_request`` and ``pull_request_target``.
