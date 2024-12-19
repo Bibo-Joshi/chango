@@ -58,7 +58,9 @@ class ChangeNote(abc.ABC):
         """
 
     @classmethod
-    def build_from_github_event(cls, event: dict[str, Any]) -> Self:
+    def build_from_github_event(
+        cls, event: dict[str, Any], data: dict[str, Any] | None = None
+    ) -> Self:
         """Build a change note from a GitHub event.
 
         Important:
@@ -76,6 +78,8 @@ class ChangeNote(abc.ABC):
             event (Dict[:obj:`str`, :obj:`~typing.Any`]): The GitHub event data. This should be one
               of the `events that trigger workflows <ettw>`_. The event is represented as a
               JSON dictionary.
+            data (Dict[:obj:`str`, :obj:`~typing.Any`], optional): Additional data that may be
+                required to build the change note.
 
         Returns:
             :class:`CNT <typing.TypeVar>`: The change note or :obj:`None`.
