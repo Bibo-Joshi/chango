@@ -28,14 +28,16 @@ jobs:
             // Fetch the linked issues
             const { data } = await github.graphql(`
               query {
-                pullRequest(number: ${pullRequest.number}, repositoryOwner: "${context.repo.owner}", repositoryName: "${context.repo.repo}") {
-                  closingIssuesReferences {
-                    nodes {
-                      issue {
+                repository(owner:"${context.repo.owner}", name:"${context.repo.repo}") {
+                  pullRequest(number:${github.event.number}) {
+                    closingIssuesReferences(first: 100) {
+                      nodes {
                         number
+                        title
                         labels(first: 100) {
                           nodes {
                             name
+                            id
                           }
                         }
                       }
@@ -44,11 +46,11 @@ jobs:
                 }
               }
             `);
-            const closingIssues = data.pullRequest.closingIssuesReferences.nodes.map(node => {
-              const issue = node.issue;
-                return {
-                number: issue.number,
-                labels: issue.labels.nodes.map(label => label.name)
+            const closingIssues = data.repository.pullRequest.closingIssuesReferences.nodes.map(node => {
+              return {
+                number: node.number,
+                title: node.title,
+                labels: node.labels.nodes.map(label => label.name)
               };
             });
             
