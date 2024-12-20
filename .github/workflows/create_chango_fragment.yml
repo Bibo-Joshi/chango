@@ -47,8 +47,6 @@ jobs:
               }
             `);
             
-            // debug-print the context
-            console.log(JSON.stringify(data, null, 2));
             const closingIssues = data.repository.pullRequest.closingIssuesReferences.nodes.map(node => {
               return {
                 number: node.number,
@@ -58,7 +56,7 @@ jobs:
             });
             
             // Fetch the parent PR
-            const { response } = await github.graphql(`
+            const response = await github.graphql(`
               query {
                 search(type: ISSUE, query: "is:open is:pr base:main head:${context.payload.pull_request.base.ref}", first: 100) {
                   issueCount
@@ -81,6 +79,8 @@ jobs:
               linked_issues: closingIssues,
               parent_pull_request: parentPR
             };
+            // debug-print the context
+            console.log(JSON.stringify(linkedIssuesAndParentPR, null, 2));
             core.setOutput('data', JSON.stringify(linkedIssuesAndParentPR));
 
       # Create the new fragment
