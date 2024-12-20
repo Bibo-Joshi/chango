@@ -1,1 +1,1 @@
-feature/#48-gh-events (`#50 <https://github.com/Bibo-Joshi/chango/pull/50>`_)
+Implement ``GitHubSectionsChangeNote.build_from_github_event`` (`#50 <https://github.com/Bibo-Joshi/chango/pull/50>`_)
