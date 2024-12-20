@@ -1,8 +1,6 @@
 name: Create Chango Fragment
 on:
   pull_request:
-    branches:
-      - main
     # types:
     #   - opened
     #   - reopened
