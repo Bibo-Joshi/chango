@@ -53,11 +53,6 @@ runs:
           false = False
           true = True
           
-          from pprint import pprint
-          pprint(${{ toJson(github.event) }})
-          print("========================================")
-          pprint(None or ${{ inputs.data }})
-
           change_note = chango_instance.build_github_event_change_note(
               event=${{ toJson(github.event) }},
               data=None or ${{ inputs.data }}

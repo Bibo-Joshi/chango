@@ -58,7 +58,11 @@ jobs:
             // Fetch the parent PR
             const response = await github.graphql(`
               query {
-                search(type: ISSUE, query: "is:open is:pr base:main head:${context.payload.pull_request.base.ref}", first: 100) {
+                search(
+                  type: ISSUE,
+                  query: "org:${context.repo.owner} repo:${context.repo.repo} is:pr base:main head:${context.payload.pull_request.base.ref}"
+                  first: 100
+                ) {
                   issueCount
                   nodes {
                     ... on PullRequest {
