@@ -25,6 +25,9 @@ jobs:
             const pullRequest = context.payload.pull_request;
             const octokit = context.octokit;
             
+            // debug-print the context
+            console.log(JSON.stringify(context, null, 2));
+            
             // Fetch the linked issues
             const { data } = await github.graphql(`
               query {
