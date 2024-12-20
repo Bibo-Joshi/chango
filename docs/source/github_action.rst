@@ -44,6 +44,8 @@ This will automatically use your ``chango`` configuration to create a change not
 Inputs
 ------
 
+dummy change
+
 The following inputs can be used to configure the action using the ``with`` keyword.
 
 .. list-table::
