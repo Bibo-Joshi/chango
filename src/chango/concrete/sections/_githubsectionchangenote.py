@@ -93,7 +93,7 @@ class GitHubSectionChangeNote(SectionChangeNote):
             This method can be overridden to provide custom logic for determining the
             section based on the labels and issue types.
             By default, it returns the UID of the first (in terms of
-            :attr:`~chango.concrete.sections.Section.sorting_order`) required section.
+            :attr:`~chango.concrete.sections.Section.sort_order`) required section.
 
         Args:
             labels (Collection[:obj:`str`]): The combined set of labels of the pull request and
@@ -119,7 +119,7 @@ class GitHubSectionChangeNote(SectionChangeNote):
     def build_from_github_event(
         cls, event: dict[str, Any], data: dict[str, Any] | None = None
     ) -> Self:
-        """Implementation of :meth:`SectionChangeNote.build_from_github_event`.
+        """Implementation of :meth:`chango.abc.ChangeNote.build_from_github_event`.
 
         This writes the pull request title to the section determined by :meth:`get_section`.
         Uses the pull request number as slug.

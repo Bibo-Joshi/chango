@@ -68,6 +68,6 @@ The following inputs can be used to configure the action using the ``with`` keyw
      - No
      - :obj:`None`
    * - data
-     - Additional JSON data to pass to the parameter :paramref:`~chango.abc.ChanGo.build_from_github_event.data` of  :meth:`chango.abc.ChanGo.build_from_github_event`.
+     - Additional JSON data to pass to the parameter :paramref:`~chango.abc.ChanGo.build_github_event_change_note.data` of  :meth:`chango.abc.ChanGo.build_github_event_change_note`.
      - No
      - :obj:`None`
