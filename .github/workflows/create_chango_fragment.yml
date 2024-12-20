@@ -25,9 +25,6 @@ jobs:
             const pullRequest = context.payload.pull_request;
             const octokit = context.octokit;
             
-            // debug-print the context
-            console.log(JSON.stringify(context, null, 2));
-            
             // Fetch the linked issues
             const { data } = await github.graphql(`
               query {
@@ -49,6 +46,9 @@ jobs:
                 }
               }
             `);
+            
+            // debug-print the context
+            console.log(JSON.stringify(data, null, 2));
             const closingIssues = data.repository.pullRequest.closingIssuesReferences.nodes.map(node => {
               return {
                 number: node.number,
