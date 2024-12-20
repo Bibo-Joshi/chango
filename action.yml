@@ -46,7 +46,6 @@ runs:
       uses: jannekem/run-python-script-action@bbfca66c612a28f3eeca0ae40e1f810265e2ea68 # v1.7
       with:
         script: |
-          import json
           from chango.config import get_chango_instance
           chango_instance = get_chango_instance(${{ inputs.pyproject-toml }})
           
@@ -57,11 +56,11 @@ runs:
           from pprint import pprint
           pprint(${{ toJson(github.event) }})
           print("========================================")
-          pprint(json.loads(${{ inputs.data }}) if ${{ inputs.data }} else None)
+          pprint(None or ${{ inputs.data }})
 
           change_note = chango_instance.build_github_event_change_note(
               event=${{ toJson(github.event) }},
-              data=json.loads(${{ inputs.data }}) if ${{ inputs.data }} else None
+              data=None or ${{ inputs.data }}
           )
           chango_instance.write_change_note(change_note, version=None)
 
