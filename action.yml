@@ -17,6 +17,10 @@ inputs:
     required: false
     # Using python naming here ensures that we can directly use this value below.
     default: None
+  data:
+    description: Additional JSON data to pass to the parameter ``data`` of ``chango.abc.ChanGo.build_from_github_event()``.
+    required: false
+    default: None
 
 runs:
   using: composite
@@ -48,8 +52,11 @@ runs:
           null = None
           false = False
           true = True
-
-          change_note = chango_instance.build_github_event_change_note(${{ toJson(github.event) }})
+          
+          change_note = chango_instance.build_github_event_change_note(
+              event=${{ toJson(github.event) }},
+              data=None or ${{ inputs.data }}
+          )
           chango_instance.write_change_note(change_note, version=None)
 
     - name: Commit and Push
