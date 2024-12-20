@@ -29,7 +29,7 @@ jobs:
             const { data } = await github.graphql(`
               query {
                 repository(owner:"${context.repo.owner}", name:"${context.repo.repo}") {
-                  pullRequest(number:${github.event.pullRequest.number}) {
+                  pullRequest(number:${context.payload.pullRequest.number}) {
                     closingIssuesReferences(first: 100) {
                       nodes {
                         number
