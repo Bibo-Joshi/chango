@@ -1,0 +1,1 @@
+Bump github/codeql-action from 3.27.9 to 3.28.0 (`#54 <https://github.com/Bibo-Joshi/chango/pull/54>`_)
