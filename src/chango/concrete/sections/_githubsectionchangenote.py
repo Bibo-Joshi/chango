@@ -6,6 +6,7 @@
 from collections.abc import Collection
 from typing import Any, ClassVar, Self, override
 
+from ._pullrequest import PullRequest
 from ._sectionchangenote import SectionChangeNote
 
 
@@ -124,6 +125,28 @@ class GitHubSectionChangeNote(SectionChangeNote):
         This writes the pull request title to the section determined by :meth:`get_section`.
         Uses the pull request number as slug.
 
+        Hint:
+            If passed, the ``data`` argument is expected to have the following structure:
+
+            .. code-block:: python
+
+                    {
+                        "linked_issues": [
+                            {
+                                "number": 123,
+                                "type": "type1",
+                                "labels": ["label1", "label2"],
+                            },
+                            {
+                                "number": 456,
+                                "type": "type2",
+                                "labels": ["label3", "label4"],
+                            }
+                        ]
+                    }
+
+            where all fields are optional.
+
         Caution:
             Does not consider any formatting in the pull request title!
 
@@ -138,10 +161,23 @@ class GitHubSectionChangeNote(SectionChangeNote):
 
         number = pull_request["number"]
         title = pull_request["title"]
-        labels = {label["name"] for label in pull_request["labels"]} | {
-            label["name"] for issue in linked_issues or [] for label in issue["labels"]
-        }
-        issue_types = {issue["type"] for issue in linked_issues or []}
+        labels = {label["name"] for label in pull_request["labels"]}.union(
+            *(set(issue.get("labels", [])) for issue in linked_issues or [])
+        )
+        issue_types = {type_ for issue in linked_issues or [] if (type_ := issue.get("type"))}
+        closes_threads = tuple(
+            thread_id for issue in linked_issues or [] if (thread_id := issue.get("number"))
+        )
 
         section = cls.get_section(labels, issue_types)
-        return cls(slug=f"{number:04}", **{section: title})  # type: ignore[call-arg]
+        return cls(
+            slug=f"{number:04}",  # type: ignore[call-arg]
+            pull_requests = (  # type: ignore[call-arg]
+                PullRequest(
+                    uid=pull_request.get("user", {}).get("login", "unknown"),
+                    author_uid="author",
+                    closes_threads=closes_threads,
+                ),
+            ),
+            **{section: title}
+        )
