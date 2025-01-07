@@ -42,23 +42,23 @@ class VersionNote[CNT: ChangeNote, V: (Version, None)](MutableMapping[str, CNT],
         self.version: V = version
         self._change_notes: dict[str, CNT] = {}
 
-    def __delitem__(self, __key: str) -> None:
+    def __delitem__(self, key: str, /) -> None:
         try:
-            del self._change_notes[__key]
+            del self._change_notes[key]
         except KeyError:
             try:
-                del self._change_notes[FileName.from_string(__key).uid]
+                del self._change_notes[FileName.from_string(key).uid]
             except ValidationError:
-                raise KeyError(__key) from None
+                raise KeyError(key) from None
 
-    def __getitem__(self, __key: str) -> CNT:
+    def __getitem__(self, key: str, /) -> CNT:
         try:
-            return self._change_notes[__key]
+            return self._change_notes[key]
         except KeyError:
             try:
-                return self._change_notes[FileName.from_string(__key).uid]
+                return self._change_notes[FileName.from_string(key).uid]
             except ValidationError:
-                raise KeyError(__key) from None
+                raise KeyError(key) from None
 
     def __iter__(self) -> Iterator[str]:
         return iter(self._change_notes)
@@ -66,14 +66,14 @@ class VersionNote[CNT: ChangeNote, V: (Version, None)](MutableMapping[str, CNT],
     def __len__(self) -> int:
         return len(self._change_notes)
 
-    def __setitem__(self, __key: str, __value: CNT) -> None:
-        if __key != __value.uid:
+    def __setitem__(self, key: str, value: CNT, /) -> None:
+        if key != value.uid:
             warnings.warn(
-                f"Key {__key!r} does not match change note UID {__value.uid!r}. "
+                f"Key {key!r} does not match change note UID {value.uid!r}. "
                 "Using the UID as key.",
                 stacklevel=2,
             )
-        self._change_notes[__value.uid] = __value
+        self._change_notes[value.uid] = value
 
     @overload
     def uid(self: "VersionNote[CNT, Version]") -> str: ...

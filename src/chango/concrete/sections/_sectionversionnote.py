@@ -46,12 +46,12 @@ class SectionVersionNote[V: (Version, None), SCN: SectionChangeNote](VersionNote
         )
 
     @override
-    def __setitem__(self, __key: str, __value: SCN) -> None:
-        if not isinstance(__value, self._section_change_note_type):
+    def __setitem__(self, key: str, value: SCN, /) -> None:
+        if not isinstance(value, self._section_change_note_type):
             raise TypeError(
-                f"Expected a {self._section_change_note_type} instance, got {type(__value)}"
+                f"Expected a {self._section_change_note_type} instance, got {type(value)}"
             )
-        super().__setitem__(__key, __value)
+        super().__setitem__(key, value)
 
     def _render_pr(self, pr: PullRequest) -> str:
         pr_url = self._section_change_note_type.get_pull_request_url(pr.uid)
