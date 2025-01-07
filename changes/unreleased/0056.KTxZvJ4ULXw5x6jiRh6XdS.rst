@@ -1,0 +1,1 @@
+Bump `pre-commit` Dependency Versions (`#56 <https://github.com/Bibo-Joshi/chango/pull/56>`_)
