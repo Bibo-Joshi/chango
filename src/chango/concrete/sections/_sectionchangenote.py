@@ -61,12 +61,15 @@ class SectionChangeNote(pydt.BaseModel, ChangeNote, abc.ABC):
     pull_requests: tuple[PullRequest, ...] = pydt.Field(default_factory=tuple)
 
     def __init__(self, slug: str, *args: Any, uid: str | None = None, **kwargs: Any) -> None:
-        # Maxing pydantic with non-pydantic base classes is a bit tricky.
+        # Mixing pydantic with non-pydantic base classes is a bit tricky.
         # Unfortunately, we have to call the __init__ methods of both classes manually and also
         # don't get an overly nice signature. However, this class should rarely be instantiated
         # directly, so this should be acceptable.
         super().__init__(*args, **kwargs)
         ChangeNote.__init__(self, slug=slug, uid=uid)
+
+        if not any(getattr(self, name) for name in self.SECTIONS):
+            raise ValidationError("At least one section must be specified")
 
     @pydt.model_validator(mode="after")
     def _validate_section_configuration(self) -> Self:
@@ -95,8 +98,8 @@ class SectionChangeNote(pydt.BaseModel, ChangeNote, abc.ABC):
 
         """
         # This also covers the case of `sections` being an empty collection
-        if not any(section.is_required for section in sections):
-            raise ValueError("At least one section must be required.")
+        if not sections:
+            raise ValueError("Class must have at least one section")
 
         config_fields = {
             section.uid: (str, pydt.Field(...)) if section.is_required else (str | None, None)
