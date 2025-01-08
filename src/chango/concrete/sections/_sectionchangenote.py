@@ -90,6 +90,11 @@ class SectionChangeNote(pydt.BaseModel, ChangeNote, abc.ABC):
         Args:
             sections (Collection[:class:`Section`]): The sections to include in the
                 change note.
+
+                Tip:
+                    All sections may be optional, but at least one section must be specified
+                    on instantiation. That is, a change note without content in any section is
+                    not allowed.
             name (:obj:`str`, optional): The name of the new class. Defaults to
                 ``DynamicSectionChangeNote``.
 
