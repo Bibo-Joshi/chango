@@ -96,22 +96,24 @@ class RichConverter:
             if span in parsed_spans:
                 continue
 
-            span_text = plain_text[span.start : span.end]
+            span_start = span.start - offset
+            span_end = span.end - offset
+            span_text = plain_text[span_start:span_end]
             nested_spans = [
                 s
                 for s in sorted_spans
-                if s.start >= span.start and s.end <= span.end and s != span
+                if s.start >= span_start and s.end <= span_end and s != span
             ]
             parsed_spans.extend(nested_spans)
 
             if nested_spans:
                 span_text = cls._render_rst_text(
-                    plain_text=span_text, spans=nested_spans, offset=span.start
+                    plain_text=span_text, spans=nested_spans, offset=span_start
                 )
 
             insert = cls.process_rich_span(span_text, span.style)
-            rst_text += plain_text[last_offset : span.start] + insert
-            last_offset = span.start - offset + (span.end - span.start)
+            rst_text += plain_text[last_offset:span_start] + insert
+            last_offset = span_start + (span.end - span.start)
 
         rst_text += plain_text[last_offset:]
         return rst_text
