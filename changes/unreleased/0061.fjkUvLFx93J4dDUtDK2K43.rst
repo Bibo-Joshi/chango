@@ -1,0 +1,1 @@
+Bump actions/setup-python from 5.3.0 to 5.4.0 (`#61 <https://github.com/Bibo-Joshi/chango/pull/61>`_)
