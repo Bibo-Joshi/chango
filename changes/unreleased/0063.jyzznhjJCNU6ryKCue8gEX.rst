@@ -1,0 +1,1 @@
+Bump codecov/codecov-action from 5.1.2 to 5.3.1 (`#63 <https://github.com/Bibo-Joshi/chango/pull/63>`_)
