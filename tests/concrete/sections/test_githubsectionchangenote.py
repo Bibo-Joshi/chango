@@ -3,7 +3,7 @@
 #  SPDX-License-Identifier: MIT
 import pytest
 
-from chango.concrete.sections import GitHubSectionChangeNote, Section, PullRequest
+from chango.concrete.sections import GitHubSectionChangeNote, PullRequest, Section
 
 
 class DummyChangNote(
@@ -27,12 +27,12 @@ class DummyChangNoteNoRepository(
 
 class FromGitHubEvent(
     GitHubSectionChangeNote.with_sections(
-            [
-                Section(uid="opt_0", title="Opt", is_required=False, sort_order=0),
-                Section(uid="req_1", title="Req", is_required=True, sort_order=1),
-                Section(uid="req_0", title="Req", is_required=True, sort_order=0),
-            ]
-        )
+        [
+            Section(uid="opt_0", title="Opt", is_required=False, sort_order=0),
+            Section(uid="req_1", title="Req", is_required=True, sort_order=1),
+            Section(uid="req_0", title="Req", is_required=True, sort_order=0),
+        ]
+    )
 ):
     pass
 
@@ -91,10 +91,7 @@ class TestGitHubSectionChangeNote:
                 "number": 42,
                 "title": "example title",
                 "user": {"login": "author_uid"},
-                "labels": [
-                    {"name": "label1"},
-                    {"name": "label2"}
-                ]
+                "labels": [{"name": "label1"}, {"name": "label2"}],
             }
         }
 

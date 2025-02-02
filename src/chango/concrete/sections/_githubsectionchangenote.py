@@ -132,16 +132,8 @@ class GitHubSectionChangeNote(SectionChangeNote):
 
                     {
                         "linked_issues": [
-                            {
-                                "number": 123,
-                                "type": "type1",
-                                "labels": ["label1", "label2"],
-                            },
-                            {
-                                "number": 456,
-                                "type": "type2",
-                                "labels": ["label3", "label4"],
-                            }
+                            {"number": 123, "type": "type1", "labels": ["label1", "label2"]},
+                            {"number": 456, "type": "type2", "labels": ["label3", "label4"]},
                         ]
                     }
 
@@ -172,12 +164,12 @@ class GitHubSectionChangeNote(SectionChangeNote):
         section = cls.get_section(labels, issue_types)
         return cls(
             slug=f"{number:04}",  # type: ignore[call-arg]
-            pull_requests = (  # type: ignore[call-arg]
+            pull_requests=(  # type: ignore[call-arg]
                 PullRequest(
                     uid=pull_request.get("user", {}).get("login", "unknown"),
                     author_uid="author",
                     closes_threads=closes_threads,
                 ),
             ),
-            **{section: title}
+            **{section: title},
         )
