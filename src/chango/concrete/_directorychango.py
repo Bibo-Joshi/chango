@@ -67,9 +67,9 @@ class DirectoryChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
     @override
     def build_version_note(self, version: Optional["Version"]) -> VNT:
         """Implementation of :meth:`~chango.abc.ChanGo.build_version_note`.
-        Includes special handling for :class:`~change.concrete.sections.SectionVersionNote`, which
+        Includes special handling for :class:`~chango.concrete.sections.SectionVersionNote`, which
         has the required argument
-        :paramref:`~change.concrete.sections.SectionVersionNote.section_change_note_type`.
+        :paramref:`~chango.concrete.sections.SectionVersionNote.section_change_note_type`.
         """
         if issubclass(self.version_note_type, SectionVersionNote):
             return self.version_note_type(  # type: ignore[return-value]
