@@ -20,6 +20,7 @@ inputs:
   data:
     description: Additional JSON data to pass to the parameter ``data`` of ``chango.abc.ChanGo.build_from_github_event()``. Defaults to an instance of ``chango.action.ChanGoActionData``.
     required: false
+    default: None
   github-token:
     description: GitHub Token or Personal Access Token (PAT) used to authenticate with GitHub. Defaults to the ``GITHUB_TOKEN``.
     required: false
