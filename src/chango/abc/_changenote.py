@@ -41,6 +41,15 @@ class ChangeNote(abc.ABC):
         extension must *not* include the leading dot.
         """
 
+    def update_uid(self, uid: str) -> None:
+        """Update the UID of the change note.
+        Use with caution.
+
+        Args:
+            uid (:obj:`str`): The new UID to use.
+        """
+        self._file_name = FileName(slug=self.slug, uid=uid)
+
     @classmethod
     @abc.abstractmethod
     def build_template(cls, slug: str, uid: str | None = None) -> Self:

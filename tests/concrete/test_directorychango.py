@@ -180,7 +180,25 @@ class TestDirectoryChango:
             )
             assert note.req_0 == "example title"
 
-        def test_section_change_note_with_existing(self, section_chango, monkeypatch):
+        def test_section_change_note_with_existing(self, section_chango):
+            event = {
+                "pull_request": {
+                    "html_url": "https://example.com/pull/42",
+                    "number": 43,
+                    "title": "example title",
+                    "user": {"login": "author"},
+                }
+            }
+            note = section_chango.build_github_event_change_note(event, None)
+            assert isinstance(note, DummySectionChangeNote)
+            assert note.slug == "0043"
+            assert note.uid == "Zhpuc4HVWKycYccXAcM3xc"
+            assert note.pull_requests == (
+                PullRequest(uid="43", author_uid="author", closes_threads=()),
+            )
+            assert note.req_0 == "example title"
+
+        def test_section_change_note_with_existing_parent(self, section_chango, monkeypatch):
             def get_sections(*args, **kwargs):  # noqa: ARG001
                 return {"req_0", "opt_0"}
 

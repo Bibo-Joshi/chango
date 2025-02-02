@@ -118,18 +118,18 @@ class DirectoryChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
             By default, this will always call :meth:`chango.abc.ChangeNote.build_from_github_event`
             and does not check if a new change note is necessary.
             The only exception is when :paramref:`~DirectoryChanGo.change_note_type` is a subclass
-            of :class:`~chango.concrete.sections.SectionChangeNote` and the ``data`` parameter is
-            an instance of :class:`~chango.action.ChanGoActionData` with a parent pull request.
-            In this case, the method will try to find an existing *unreleased* change note for the
-            parent pull request and append the new information to it.
+            of :class:`~chango.concrete.sections.SectionChangeNote`:
+
+            * If there already is a change note for the current pull request, it is updated with
+              the new information.
+            * If the ``data`` parameter is
+              an instance of :class:`~chango.action.ChanGoActionData` with a parent pull request,
+              then this method will try to find an existing *unreleased* change note for the
+              parent pull request and append the new information to it.
         """
         change_note = self.change_note_type.build_from_github_event(event=event, data=data)
 
-        if (
-            not isinstance(data, ChanGoActionData)
-            or not data.parent_pull_request
-            or not issubclass(self.change_note_type, SectionChangeNote)
-        ):
+        if not issubclass(self.change_note_type, SectionChangeNote):
             return change_note
 
         if not isinstance(change_note, SectionChangeNote):
@@ -138,10 +138,26 @@ class DirectoryChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
             )
 
         # Special handling for SectionChangeNote
+        existing_change_notes = self.load_version_note(None).values()
+
+        # First check if we can override any existing change notes
+        pr_ids = [pr.uid for pr in change_note.pull_requests]
+        for existing_change_note in existing_change_notes:
+            if not any(
+                uid in pr_ids for uid in (pr.uid for pr in existing_change_note.pull_requests)
+            ):
+                continue
+
+            change_note.update_uid(existing_change_note.uid)
+
+        # Handle Parent PRs
+        if not isinstance(data, ChanGoActionData) or not data.parent_pull_request:
+            return change_note  # type: ignore[return-value]
+
         parent_pr = data.parent_pull_request
 
         # load all unreleased change notes and find the one for the parent pull request
-        for existing_change_note in self.load_version_note(None).values():
+        for existing_change_note in existing_change_notes:
             if str(parent_pr.number) not in (pr.uid for pr in existing_change_note.pull_requests):
                 continue
 
