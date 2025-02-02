@@ -47,19 +47,20 @@ class LinkedIssue(_FrozenModel):
     Args:
         number (:obj:`int`): The issue number.
         title (:obj:`str`): The title of the issue.
-        labels (tuple[:obj:`str`] | :obj:`None`): The labels of the issue.
-        issue_type (:obj:`str` | :obj:`None`): The type of the issue.
+        labels (tuple[:obj:`str`], optional): The labels of the issue.
+        issue_type (:obj:`str`, optional): The type of the issue.
 
     Attributes:
         number (:obj:`int`): The issue number.
         title (:obj:`str`): The title of the issue.
         labels (tuple[:obj:`str`]): Optional. The labels of the issue.
+        issue_type (:obj:`str`): Optional. The type of the issue.
     """
 
     number: int
     title: str
     labels: tuple[str, ...] | None
-    issue_type: str | None
+    issue_type: str | None = None
 
 
 class ChanGoActionData(_FrozenModel):
