@@ -27,6 +27,7 @@ class ParentPullRequest(_FrozenModel):
 
     Attributes:
         number (:obj:`int`): The pull request number.
+        author_login (:obj:`str`): The login of the author of the pull request.
         title (:obj:`str`): The title of the pull request.
         url (:obj:`str`): The URL of the pull request.
         state (:obj:`str`): The state of the pull request. Possible values are ``open``,
@@ -34,6 +35,7 @@ class ParentPullRequest(_FrozenModel):
     """
 
     number: int
+    author_login: str
     title: str
     url: AnyHttpUrl
     state: Literal["open", "closed", "merged"]

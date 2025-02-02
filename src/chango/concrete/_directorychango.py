@@ -8,6 +8,7 @@ from .._utils.types import VUIDInput
 from ..abc import ChangeNote, ChanGo, VersionHistory, VersionNote
 from ..action import ChanGoActionData
 from ._directoryversionscanner import DirectoryVersionScanner
+from .sections import PullRequest, SectionChangeNote
 
 if TYPE_CHECKING:
     from chango import Version
@@ -103,7 +104,57 @@ class DirectoryChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
         self, event: dict[str, Any], data: dict[str, Any] | ChanGoActionData | None = None
     ) -> CNT:
         """Implementation of :meth:`~chango.abc.ChanGo.build_github_event_change_note`.
-        Will always call :meth:`chango.abc.ChangeNote.build_from_github_event` and does not check
-        if a new change note is necessary.
+
+        Important:
+            By default, this will always call :meth:`chango.abc.ChangeNote.build_from_github_event`
+            and does not check if a new change note is necessary.
+            The only exception is when :paramref:`~DirectoryChanGo.change_note_type` is a subclass
+            of :class:`~chango.concrete.sections.SectionChangeNote` and the ``data`` parameter is
+            an instance of :class:`~chango.action.ChanGoActionData` with a parent pull request.
+            In this case, the method will try to find an existing *unreleased* change note for the
+            parent pull request and append the new information to it.
         """
-        return self.change_note_type.build_from_github_event(event=event, data=data)
+        if (
+            (change_note := self.change_note_type.build_from_github_event(event=event, data=data))
+            is None
+            or not isinstance(data, ChanGoActionData)
+            or not data.parent_pull_request
+            or not issubclass(self.change_note_type, SectionChangeNote)
+        ):
+            return change_note
+
+        if not isinstance(change_note, SectionChangeNote):
+            raise TypeError(
+                f"Expected change note of type {SectionChangeNote}, got {type(change_note)}"
+            )
+
+        # Special handling for SectionChangeNote
+        parent_pr = data.parent_pull_request
+
+        # load all unreleased change notes and find the one for the parent pull request
+        for existing_change_note in self.load_version_note(None).values():
+            if parent_pr.number not in (pr.uid for pr in existing_change_note.pull_requests):
+                continue
+
+            # Append the PR information to the existing change note
+            existing_change_note.pull_requests.append(
+                PullRequest(
+                    uid=str(parent_pr.number),
+                    author_uid=data.parent_pull_request.author_login,
+                    closes_threads=tuple(str(issue.number) for issue in data.linked_issues or ()),
+                )
+            )
+
+            for section_name in change_note.SECTIONS:
+                if not (new_value := getattr(change_note, section_name)):
+                    continue
+                if not (existing_value := getattr(existing_change_note, section_name)):
+                    setattr(existing_change_note, section_name, new_value)
+                else:
+                    setattr(existing_change_note, section_name, f"{existing_value}\n{new_value}")
+
+            return existing_change_note
+
+        # return unchanged change note if no parent pull request found
+        # mypy doesn't quite get that self.change_note_type is the same as CNT
+        return change_note  # type: ignore[return-value]

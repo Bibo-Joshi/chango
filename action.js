@@ -66,6 +66,9 @@ module.exports = async function (github, context, core, inputs) {
                         title
                         url
                         state
+                        author {
+                            login
+                        }
                     }
                 }
             }
@@ -73,6 +76,10 @@ module.exports = async function (github, context, core, inputs) {
     `);
     const prs = response.search.nodes;
     const parentPR = prs.length > 0 ? prs[0] : null;
+    if (parentPR) {
+        parentPR.author_login = parentPR.author.login;
+        delete parentPR.author;
+    }
 
     // Combine the linked issues and the parent PR to a single JSON object
     const linkedIssuesAndParentPR = {
