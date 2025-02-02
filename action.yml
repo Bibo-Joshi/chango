@@ -31,8 +31,6 @@ inputs:
 
 runs:
   using: composite
-  env:
-    github_token: ${{ inputs.github-token }}
   steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       with:
@@ -53,6 +51,8 @@ runs:
     - name: Fetch Linked Issues & Parent PR (Custom GitHub Token)
       id: fetch-linked-issues
       uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+      env:
+        github_token: ${{ inputs.github-token }}
       if: ${{ env.github_token != null && env.github_token != '' }}
       with:
         github-token: ${{ env.github_token }}
@@ -62,6 +62,8 @@ runs:
     - name: Fetch Linked Issues & Parent PR (Default GitHub Token)
       id: fetch-linked-issues
       uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+      env:
+        github_token: ${{ inputs.github-token }}
       if: ${{ env.github_token == null || env.github_token == '' }}
       with:
         script: |
