@@ -68,7 +68,7 @@ runs:
       with:
         script: |
           const script = require('./action.js');
-          await script({github, context, core, ${{ toJson(inputs) }});
+          await script({github, context, core, ...JSON.parse('${{ toJson(inputs) }}')});
 
     - name: Create chango fragment
       id: create-chango-fragment
