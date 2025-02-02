@@ -1,0 +1,1 @@
+Bump codecov/test-results-action from 1.0.1 to 1.0.2 (`#60 <https://github.com/Bibo-Joshi/chango/pull/60>`_)

@@ -1,0 +1,1 @@
+Fix Nesting Bug in Parsing ``rich`` to ``sphinx`` Syntax (`#58 <https://github.com/Bibo-Joshi/chango/pull/58>`_)

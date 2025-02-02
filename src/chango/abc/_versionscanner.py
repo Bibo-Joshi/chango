@@ -17,12 +17,12 @@ class VersionScanner(Collection[Version]):
         as returned by the :meth:`get_available_versions` method.
     """
 
-    def __contains__(self, __x: object) -> bool:
-        if __x is None:
+    def __contains__(self, x: object, /) -> bool:
+        if x is None:
             return self.has_unreleased_changes()
-        if not isinstance(__x, str | Version):
+        if not isinstance(x, str | Version):
             return False
-        return self.is_available(__x)
+        return self.is_available(x)
 
     def __iter__(self) -> Iterator[Version]:
         return iter(self.get_available_versions())

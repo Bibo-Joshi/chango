@@ -76,11 +76,16 @@ class TestSectionChangeNote:
         assert cls.SECTIONS["opt_section"] is self.sections[1]
         assert cls.__name__ == (name or "DynamicSectionChangeNote")
 
-    def test_with_sections_no_required(self):
-        with pytest.raises(ValueError, match="At least one section must be required"):
-            SectionChangeNote.with_sections([Section(uid="opt_section", title="Optional Section")])
-        with pytest.raises(ValueError, match="At least one section must be required"):
+    def test_with_sections_empty_sequence(self):
+        with pytest.raises(ValueError, match="Class must have at least one section"):
             SectionChangeNote.with_sections([])
+
+    def test_empty_init(self):
+        cls = GitHubSectionChangeNote.with_sections(
+            [Section(uid=f"opt_{i}", title=f"Optional {i}") for i in range(10)]
+        )
+        with pytest.raises(ValidationError, match="At least one section must be specified"):
+            cls(slug="slug", opt_0="", opt_1=None)
 
     def test_constants(self, section_change_note):
         assert section_change_note.file_extension == "toml"

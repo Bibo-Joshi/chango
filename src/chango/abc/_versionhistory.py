@@ -23,11 +23,11 @@ class VersionHistory[VNT: VersionNote](MutableMapping[VersionUID, VNT], abc.ABC)
     def __init__(self) -> None:
         self._version_notes: dict[VersionUID, VNT] = {}
 
-    def __delitem__(self, __key: VUIDInput) -> None:
-        del self._version_notes[ensure_uid(__key)]
+    def __delitem__(self, key: VUIDInput, /) -> None:
+        del self._version_notes[ensure_uid(key)]
 
-    def __getitem__(self, __key: VUIDInput) -> VNT:
-        return self._version_notes[ensure_uid(__key)]
+    def __getitem__(self, key: VUIDInput, /) -> VNT:
+        return self._version_notes[ensure_uid(key)]
 
     def __iter__(self) -> Iterator[VersionUID]:
         return iter(self._version_notes)
@@ -35,14 +35,14 @@ class VersionHistory[VNT: VersionNote](MutableMapping[VersionUID, VNT], abc.ABC)
     def __len__(self) -> int:
         return len(self._version_notes)
 
-    def __setitem__(self, __key: VUIDInput, __value: VNT) -> None:
-        if ensure_uid(__key) != __value.uid:
+    def __setitem__(self, key: VUIDInput, value: VNT, /) -> None:
+        if ensure_uid(key) != value.uid:
             warnings.warn(
-                f"Key {__key!r} does not match version note UID {__value.uid!r}. "
+                f"Key {key!r} does not match version note UID {value.uid!r}. "
                 "Using the version UID as key.",
                 stacklevel=2,
             )
-        self._version_notes[__value.uid] = __value  # type: ignore[index]
+        self._version_notes[value.uid] = value  # type: ignore[index]
 
     def add_version_note(self, version_note: VNT) -> None:
         """Add a version note to the version note.

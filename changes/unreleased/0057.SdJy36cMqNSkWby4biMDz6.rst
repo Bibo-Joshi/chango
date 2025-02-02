@@ -1,0 +1,1 @@
+Don't Enforce One Required Section in ``SectionChangeNote`` (`#57 <https://github.com/Bibo-Joshi/chango/pull/57>`_)
