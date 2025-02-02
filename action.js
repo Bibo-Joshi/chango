@@ -55,7 +55,7 @@ module.exports = async ({github, context, core, query_issue_types}) => {
         query {
             search(
                 type: ISSUE,
-                query: "org:${context.repo.owner} repo:${context.repo.repo} is:pr base:main head:${context.payload.pull_request.base.ref}"
+                query: "org:${context.repo.owner} repo:${context.repo.repo} is:pr head:${context.payload.pull_request.base.ref}"
                 first: 100
             ) {
                 issueCount
