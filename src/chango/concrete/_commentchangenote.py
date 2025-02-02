@@ -75,9 +75,6 @@ class CommentChangeNote(ChangeNote):
             html_url = pull_request["html_url"]
         except KeyError as exc:
             raise ValueError("Unable to extract required data from event.") from exc
-        pull_request = event.get("pull_request") or event.get("pull_request_target")
-        if pull_request is None:
-            raise ValueError("Event is not a pull request event.")
 
         match cls.MARKUP:
             case MarkupLanguage.TEXT:
