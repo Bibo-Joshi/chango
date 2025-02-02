@@ -53,22 +53,25 @@ runs:
       uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
       env:
         github_token: ${{ inputs.github-token }}
+        query_issue_types: ${{ inputs.query-issue-types }}
       if: ${{ env.github_token != null && env.github_token != '' }}
       with:
         github-token: ${{ env.github_token }}
         script: |
           const script = require('./action.js');
+          const query_issue_types = ${query_issue_types};
           await script({github, context, core, inputs});
     - name: Fetch Linked Issues & Parent PR (Default GitHub Token)
       id: fetch-linked-issues-default-token
       uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
       env:
         github_token: ${{ inputs.github-token }}
+        query_issue_types: ${{ inputs.query-issue-types }}
       if: ${{ env.github_token == null || env.github_token == '' }}
       with:
         script: |
           const script = require('./action.js');
-          const query_issue_types = ${{ inputs.query-issue-types }};
+          const query_issue_types = ${query_issue_types};
           await script({github, context, core, query_issue_types);
 
     - name: Create chango fragment
