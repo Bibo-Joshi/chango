@@ -1,1 +1,0 @@
-Implement ``GitHubSectionsChangeNote.build_from_github_event`` (`#50 <https://github.com/Bibo-Joshi/chango/pull/50>`_)
