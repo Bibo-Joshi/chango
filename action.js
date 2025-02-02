@@ -8,16 +8,14 @@
 // }
 
 module.exports = async ({github, context, core, query_issue_types})  => {
-    console.log(github, context);
-}
-//     const pullRequest = context.payload.pull_request;
-//     if (!pullRequest) {
-//         // This action only runs on pull_request events. Skip with debug message but
-//         // do not fail the action.
-//         console.log('No pull request found in the context. Not fetching additional data.');
-//         return;
-//     }
-//
+    const pullRequest = context.payload.pull_request;
+    if (!pullRequest) {
+        // This action only runs on pull_request events. Skip with debug message but
+        // do not fail the action.
+        console.log('No pull request found in the context. Not fetching additional data.');
+        return;
+    }
+
 //     // // Fetch the linked issues
 //     // const data = await github.graphql(`
 //     //     query {
@@ -88,4 +86,4 @@ module.exports = async ({github, context, core, query_issue_types})  => {
 //     // // debug-print the context
 //     // console.log(JSON.stringify(linkedIssuesAndParentPR, null, 2));
 //     // core.setOutput('data', JSON.stringify(linkedIssuesAndParentPR));
-// };
+};
