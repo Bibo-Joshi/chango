@@ -17,39 +17,113 @@ inputs:
     required: false
     # Using python naming here ensures that we can directly use this value below.
     default: None
+  data:
+    description: Additional JSON data to pass to the parameter ``data`` of ``chango.abc.ChanGo.build_from_github_event()``. Defaults to an instance of ``chango.action.ChanGoActionData``.
+    required: false
+    default: None
+  github-token:
+    description: GitHub Token or Personal Access Token (PAT) used to authenticate with GitHub. Defaults to the ``GITHUB_TOKEN``.
+    required: false
+  query-issue-types:
+    description: Whether to query the issue types of the linked issues. Can only be used on organizations with issue types enabled. In this case, an organization scoped PAT is required.
+    required: false
+    default: false
 
 runs:
   using: composite
   steps:
-    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+    - name: Checkout action repository
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      env:
+        ACTION_REPO: ${{ github.action_repository }}
+        ACTION_REF: ${{ github.action_ref }}
+      with:
+        repository: ${{ env.ACTION_REPO }}
+        ref: ${{ env.ACTION_REF }}
+        path: ./.chango-action
+
+    - name: Checkout target repository
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       with:
         ref: ${{ github.head_ref }}
+        path: ./target-repo
 
     - name: Set up Python
       id: setup-python
       uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
       with:
         python-version: ${{ inputs.python-version }}
+        cache: 'pip'
+        cache-dependency-path: |
+          **/requirements*.txt
+          pyproject.toml
 
     - name: Install chango
       id: install-chango
       shell: bash
       run: |
-        python -W ignore -m pip install .
+        python -W ignore -m pip install ./.chango-action
+
+    - name: Fetch Linked Issues & Parent PR (Custom GitHub Token)
+      id: fetch-linked-issues-custom-token
+      uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+      env:
+        github_token: ${{ inputs.github-token }}
+        query_issue_types: ${{ inputs.query-issue-types }}
+      if: ${{ env.github_token != null && env.github_token != '' }}
+      with:
+        github-token: ${{ env.github_token }}
+        script: |
+          const script = require('./.chango-action/action.js');
+          const query_issue_types = `${process.env.query_issue_types}`;
+          await script({github, context, core, query_issue_types});
+    - name: Fetch Linked Issues & Parent PR (Default GitHub Token)
+      id: fetch-linked-issues-default-token
+      uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+      env:
+        github_token: ${{ inputs.github-token }}
+        query_issue_types: ${{ inputs.query-issue-types }}
+      if: ${{ env.github_token == null || env.github_token == '' }}
+      with:
+        script: |
+          const script = require('./.chango-action/action.js');
+          const query_issue_types = `${process.env.query_issue_types}`;
+          await script({github, context, core, query_issue_types});
 
     - name: Create chango fragment
       id: create-chango-fragment
       uses: jannekem/run-python-script-action@bbfca66c612a28f3eeca0ae40e1f810265e2ea68 # v1.7
+      env:
+        CUSTOM_OUTPUT: ${{ steps.fetch-linked-issues-custom-token.outputs.data }}
+        DEFAULT_OUTPUT: ${{ steps.fetch-linked-issues-default-token.outputs.data }}
       with:
         script: |
+          import os
           from chango.config import get_chango_instance
+          from chango.action import ChanGoActionData
+          
+          os.chdir('./target-repo')
+          
           chango_instance = get_chango_instance(${{ inputs.pyproject-toml }})
           
           null = None
           false = False
           true = True
-
-          change_note = chango_instance.build_github_event_change_note(${{ toJson(github.event) }})
+          
+          # Merge additionally fetched data into the data passed by the user
+          output = (
+              ${{ toJson(env.CUSTOM_OUTPUT) }}
+              or ${{ toJson(env.DEFAULT_OUTPUT) }}
+          )
+          data = (
+              ${{ inputs.data }}
+              or ChanGoActionData.model_validate_json(output)
+          )
+          
+          change_note = chango_instance.build_github_event_change_note(
+              event=${{ toJson(github.event) }},
+              data=data
+          )
           chango_instance.write_change_note(change_note, version=None)
 
     - name: Commit and Push
@@ -58,3 +132,4 @@ runs:
       uses: stefanzweifel/git-auto-commit-action@8621497c8c39c72f3e2a999a26b4ca1b5058a842 # v5.0.1
       with:
         commit_message: "Add chango fragment for PR #${{ github.event.pull_request.number }}"
+        repository: ./target-repo

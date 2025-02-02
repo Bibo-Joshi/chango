@@ -134,3 +134,11 @@ class TestChangeNote:
         )
         with pytest.raises(NotImplementedError):
             self.change_note.build_from_github_event({})
+
+    def test_update_uid(self):
+        change_note = CommentChangeNote(slug="slug", comment="this is a comment", uid="uid")
+        assert change_note.uid == "uid"
+        change_note.update_uid("abc")
+        assert change_note.uid == "abc"
+        assert change_note.slug == "slug"
+        assert change_note.file_name == "slug.abc.txt"

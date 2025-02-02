@@ -8,6 +8,7 @@ from typing import Any, Self
 from .._utils.filename import FileName
 from .._utils.files import UTF8
 from .._utils.types import PathLike
+from ..action import ChanGoActionData
 
 
 class ChangeNote(abc.ABC):
@@ -40,6 +41,15 @@ class ChangeNote(abc.ABC):
         extension must *not* include the leading dot.
         """
 
+    def update_uid(self, uid: str) -> None:
+        """Update the UID of the change note.
+        Use with caution.
+
+        Args:
+            uid (:obj:`str`): The new UID to use.
+        """
+        self._file_name = FileName(slug=self.slug, uid=uid)
+
     @classmethod
     @abc.abstractmethod
     def build_template(cls, slug: str, uid: str | None = None) -> Self:
@@ -58,7 +68,9 @@ class ChangeNote(abc.ABC):
         """
 
     @classmethod
-    def build_from_github_event(cls, event: dict[str, Any]) -> Self:
+    def build_from_github_event(
+        cls, event: dict[str, Any], data: dict[str, Any] | ChanGoActionData | None = None
+    ) -> Self:
         """Build a change note from a GitHub event.
 
         Important:
@@ -76,6 +88,8 @@ class ChangeNote(abc.ABC):
             event (Dict[:obj:`str`, :obj:`~typing.Any`]): The GitHub event data. This should be one
               of the `events that trigger workflows <ettw>`_. The event is represented as a
               JSON dictionary.
+            data (Dict[:obj:`str`, :obj:`~typing.Any`] | :class:`chango.action.ChanGoActionData`, \
+               optional): Additional data that may be required to build the change note.
 
         Returns:
             :class:`CNT <typing.TypeVar>`: The change note or :obj:`None`.

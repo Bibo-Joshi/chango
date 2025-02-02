@@ -48,8 +48,8 @@ class TestCommentChangeNote:
         assert isinstance(change_note.uid, str)
         assert len(change_note.uid) > 0
 
-    def test_build_from_github_event_unsupported_event(self):
-        with pytest.raises(ValueError, match="not a pull request event"):
+    def test_build_from_github_event_missing_data(self):
+        with pytest.raises(ValueError, match="required data"):
             CommentChangeNote.build_from_github_event({})
 
     def test_build_from_github_event_unsupported_language(self, monkeypatch):
@@ -77,11 +77,10 @@ class TestCommentChangeNote:
             (MarkupLanguage.HTML, 'example title (<a href="https://example.com/pull/42">#42</a>)'),
         ],
     )
-    @pytest.mark.parametrize("event_type", ["pull_request", "pull_request_target"])
-    def test_build_from_github_event(self, event_type, language, expected, monkeypatch):
+    def test_build_from_github_event(self, language, expected, monkeypatch):
         monkeypatch.setattr(CommentChangeNote, "MARKUP", language)
         event_data = {
-            event_type: {
+            "pull_request": {
                 "html_url": "https://example.com/pull/42",
                 "number": 42,
                 "title": "example title",

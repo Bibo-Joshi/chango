@@ -1,0 +1,10 @@
+req_0 = "existing_req_0"
+opt_1 = "existing_opt_1"
+[[pull_requests]]
+uid = "43"
+author_uid = "parent_author"
+closes_threads = ["existing_thread1", "existing_thread2"]
+[[pull_requests]]
+uid = "45"
+author_uid = "unknown"
+closes_threads = []
