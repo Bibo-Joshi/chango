@@ -8,12 +8,19 @@ import pytest
 import shortuuid
 
 from chango import Version
+from chango.action import ChanGoActionData, ParentPullRequest
 from chango.concrete import (
     CommentChangeNote,
     CommentVersionNote,
     DirectoryChanGo,
     DirectoryVersionScanner,
     HeaderVersionHistory,
+)
+from chango.concrete.sections import (
+    GitHubSectionChangeNote,
+    PullRequest,
+    Section,
+    SectionVersionNote,
 )
 from chango.helpers import ensure_uid
 from tests.auxil.files import data_path
@@ -34,8 +41,33 @@ def chango(scanner) -> DirectoryChanGo:
     )
 
 
+DummySectionChangeNote = GitHubSectionChangeNote.with_sections(
+    [
+        Section(uid="req_0", title="req_0", is_required=True),
+        Section(uid="opt_0", title="opt_0", is_required=False),
+        Section(uid="opt_1", title="opt_1", is_required=False),
+    ]
+)
+
+
+@pytest.fixture(scope="module")
+def section_scanner() -> DirectoryVersionScanner:
+    return DirectoryVersionScanner(TestDirectoryChango.SECTION_DATA_ROOT, "unreleased")
+
+
+@pytest.fixture(scope="module")
+def section_chango(section_scanner) -> DirectoryChanGo:
+    return DirectoryChanGo(
+        change_note_type=DummySectionChangeNote,
+        version_note_type=SectionVersionNote,
+        version_history_type=HeaderVersionHistory,
+        scanner=section_scanner,
+    )
+
+
 class TestDirectoryChango:
     DATA_ROOT = data_path("directoryversionscanner")
+    SECTION_DATA_ROOT = data_path("directoryversionscanner-sections")
 
     def test_init_basic(self, chango, scanner):
         assert chango.directory_format == "{uid}_{date}"
@@ -65,18 +97,127 @@ class TestDirectoryChango:
             assert isinstance(note.uid, str)
             assert len(note.uid) == len(shortuuid.ShortUUID().uuid())
 
-    def test_build_github_event_change_note(self, chango):
-        event = {
-            "pull_request": {
-                "html_url": "https://example.com/pull/42",
-                "number": 42,
-                "title": "example title",
+    class TestBuildGitHubEeventChangeNote:
+        def test_basic(self, chango):
+            event = {
+                "pull_request": {
+                    "html_url": "https://example.com/pull/42",
+                    "number": 42,
+                    "title": "example title",
+                }
             }
-        }
-        note = chango.build_github_event_change_note(event)
-        assert isinstance(note, CommentChangeNote)
-        assert isinstance(note.uid, str)
-        assert len(note.uid) == len(shortuuid.ShortUUID().uuid())
+            note = chango.build_github_event_change_note(event)
+            assert isinstance(note, CommentChangeNote)
+            assert isinstance(note.uid, str)
+            assert len(note.uid) == len(shortuuid.ShortUUID().uuid())
+
+        @pytest.mark.parametrize(
+            "data",
+            [
+                pytest.param(None, id="None"),
+                pytest.param({"some": "dict"}, id="dict"),
+                pytest.param(
+                    ChanGoActionData(parent_pull_request=None, linked_issues=None),
+                    id="ChanGoActionData without parent PR",
+                ),
+            ],
+        )
+        def test_section_change_note_early_exit(self, chango, data):
+            event = {
+                "pull_request": {
+                    "html_url": "https://example.com/pull/42",
+                    "number": 42,
+                    "title": "example title",
+                }
+            }
+            note = chango.build_github_event_change_note(event, data)
+            assert isinstance(note, CommentChangeNote)
+            assert isinstance(note.uid, str)
+            assert len(note.uid) == len(shortuuid.ShortUUID().uuid())
+
+        def test_section_change_note_invalid_type(self, section_chango, monkeypatch):
+            monkeypatch.setattr(
+                DummySectionChangeNote, "build_from_github_event", lambda *args, **kwargs: None
+            )
+
+            data = ChanGoActionData(
+                parent_pull_request=ParentPullRequest(
+                    url="https://example.com/pull/42",
+                    number=42,
+                    title="example title",
+                    state="open",
+                    author_login="author",
+                ),
+                linked_issues=None,
+            )
+            with pytest.raises(TypeError, match="Expected change note of type"):
+                section_chango.build_github_event_change_note({}, data)
+
+        def test_section_change_note_no_existing(self, section_chango):
+            event = {
+                "pull_request": {
+                    "html_url": "https://example.com/pull/42",
+                    "number": 42,
+                    "title": "example title",
+                    "user": {"login": "author"},
+                }
+            }
+            data = ChanGoActionData(
+                parent_pull_request=ParentPullRequest(
+                    url="https://example.com/pull/43",
+                    number=45,
+                    title="example title",
+                    state="open",
+                    author_login="author",
+                ),
+                linked_issues=None,
+            )
+            note = section_chango.build_github_event_change_note(event, data)
+            assert isinstance(note, DummySectionChangeNote)
+            assert note.slug == "0042"
+            assert note.pull_requests == (
+                PullRequest(uid="42", author_uid="author", closes_threads=()),
+            )
+            assert note.req_0 == "example title"
+
+        def test_section_change_note_with_existing(self, section_chango, monkeypatch):
+            def get_sections(*args, **kwargs):  # noqa: ARG001
+                return {"req_0", "opt_0"}
+
+            monkeypatch.setattr(DummySectionChangeNote, "get_sections", get_sections)
+
+            event = {
+                "pull_request": {
+                    "html_url": "https://example.com/pull/42",
+                    "number": 42,
+                    "title": "example title",
+                    "user": {"login": "author"},
+                }
+            }
+            data = ChanGoActionData(
+                parent_pull_request=ParentPullRequest(
+                    url="https://example.com/pull/43",
+                    number=43,
+                    title="example title",
+                    state="open",
+                    author_login="author",
+                ),
+                linked_issues=None,
+            )
+            note = section_chango.build_github_event_change_note(event, data)
+            assert isinstance(note, DummySectionChangeNote)
+            assert note.slug == "0043"
+            assert note.pull_requests == (
+                PullRequest(
+                    uid="43",
+                    author_uid="parent_author",
+                    closes_threads=("existing_thread1", "existing_thread2"),
+                ),
+                PullRequest(uid="42", author_uid="author", closes_threads=()),
+            )
+            assert note.req_0 == "existing_req_0\nexample title"
+            assert note.opt_0 == "example title"
+            assert note.opt_1 == "existing_opt_1"
 
     def test_build_version_note_version(self, chango):
         version = Version("uid", dtm.date.today())
@@ -87,6 +228,11 @@ class TestDirectoryChango:
     def test_build_version_note_none(self, chango):
         note = chango.build_version_note(None)
         assert isinstance(note, CommentVersionNote)
+        assert note.version is None
+
+    def test_build_version_note_sections(self, section_chango):
+        note = section_chango.build_version_note(None)
+        assert isinstance(note, SectionVersionNote)
         assert note.version is None
 
     def test_build_version_history(self, chango):

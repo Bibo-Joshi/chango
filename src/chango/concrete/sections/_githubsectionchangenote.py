@@ -142,7 +142,7 @@ class GitHubSectionChangeNote(SectionChangeNote):
             pull_request = event["pull_request"]
             pr_number = pull_request["number"]
             pr_title = pull_request["title"]
-            pr_labels = {label["name"] for label in pull_request["labels"]}
+            pr_labels = {label["name"] for label in pull_request.get("labels", [])}
             author_uid = pull_request["user"]["login"]
         except (KeyError, TypeError) as exc:
             raise ValueError("Unable to extract required data from event.") from exc

@@ -8,7 +8,7 @@ from .._utils.types import VUIDInput
 from ..abc import ChangeNote, ChanGo, VersionHistory, VersionNote
 from ..action import ChanGoActionData
 from ._directoryversionscanner import DirectoryVersionScanner
-from .sections import PullRequest, SectionChangeNote
+from .sections import SectionChangeNote, SectionVersionNote
 
 if TYPE_CHECKING:
     from chango import Version
@@ -66,6 +66,15 @@ class DirectoryChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
 
     @override
     def build_version_note(self, version: Optional["Version"]) -> VNT:
+        """Implementation of :meth:`~chango.abc.ChanGo.build_version_note`.
+        Includes special handling for :class:`~change.concrete.sections.SectionVersionNote`, which
+        has the required argument
+        :paramref:`~change.concrete.sections.SectionVersionNote.section_change_note_type`.
+        """
+        if issubclass(self.version_note_type, SectionVersionNote):
+            return self.version_note_type(  # type: ignore[return-value]
+                section_change_note_type=self.change_note_type, version=version
+            )
         return self.version_note_type(version=version)
 
     @override
@@ -114,10 +123,10 @@ class DirectoryChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
             In this case, the method will try to find an existing *unreleased* change note for the
             parent pull request and append the new information to it.
         """
+        change_note = self.change_note_type.build_from_github_event(event=event, data=data)
+
         if (
-            (change_note := self.change_note_type.build_from_github_event(event=event, data=data))
-            is None
-            or not isinstance(data, ChanGoActionData)
+            not isinstance(data, ChanGoActionData)
             or not data.parent_pull_request
             or not issubclass(self.change_note_type, SectionChangeNote)
         ):
@@ -133,17 +142,11 @@ class DirectoryChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
 
         # load all unreleased change notes and find the one for the parent pull request
         for existing_change_note in self.load_version_note(None).values():
-            if parent_pr.number not in (pr.uid for pr in existing_change_note.pull_requests):
+            if str(parent_pr.number) not in (pr.uid for pr in existing_change_note.pull_requests):
                 continue
 
             # Append the PR information to the existing change note
-            existing_change_note.pull_requests.append(
-                PullRequest(
-                    uid=str(parent_pr.number),
-                    author_uid=data.parent_pull_request.author_login,
-                    closes_threads=tuple(str(issue.number) for issue in data.linked_issues or ()),
-                )
-            )
+            existing_change_note.pull_requests += change_note.pull_requests
 
             for section_name in change_note.SECTIONS:
                 if not (new_value := getattr(change_note, section_name)):
