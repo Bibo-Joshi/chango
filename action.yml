@@ -89,14 +89,17 @@ runs:
     - name: Create chango fragment
       id: create-chango-fragment
       uses: jannekem/run-python-script-action@bbfca66c612a28f3eeca0ae40e1f810265e2ea68 # v1.7
-      working-directory: ./target-repo
       env:
         CUSTOM_OUTPUT: ${{ steps.fetch-linked-issues-custom-token.outputs.data }}
         DEFAULT_OUTPUT: ${{ steps.fetch-linked-issues-default-token.outputs.data }}
       with:
         script: |
+          import os
           from chango.config import get_chango_instance
           from chango.action import ChanGoActionData
+          
+          os.chdir('./target-repo')
+          
           chango_instance = get_chango_instance(${{ inputs.pyproject-toml }})
           
           null = None
@@ -123,6 +126,6 @@ runs:
       id: commit-and-push
       if: ${{ inputs.commit-and-push == 'true' }}
       uses: stefanzweifel/git-auto-commit-action@8621497c8c39c72f3e2a999a26b4ca1b5058a842 # v5.0.1
-      working-directory: ./target-repo
       with:
         commit_message: "Add chango fragment for PR #${{ github.event.pull_request.number }}"
+        repository: ./target-repo
