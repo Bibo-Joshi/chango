@@ -1,1 +1,0 @@
-feature/#48-gh-events (`#50 <https://github.com/Bibo-Joshi/chango/pull/50>`_)
