@@ -69,8 +69,6 @@ runs:
       if: ${{ env.github_token == null || env.github_token == '' }}
       with:
         script: |
-#          const script = require('./action.js')
-#          console.log(await script({github, context}))
           const script = require('./action.js');
           const query_issue_types = ${query_issue_types};
           await script({github, context, core, query_issue_types});
