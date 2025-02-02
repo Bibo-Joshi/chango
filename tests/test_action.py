@@ -11,7 +11,7 @@ from chango.action import ChanGoActionData, LinkedIssue, ParentPullRequest
 @pytest.fixture(scope="module")
 def parent_pull_request():
     return ParentPullRequest(
-        number=1, author_login="author", title="title", url="http://example.com", state="open"
+        number=1, author_login="author", title="title", url="http://example.com", state="OPEN"
     )
 
 
@@ -26,7 +26,7 @@ class TestParentPullRequest:
         assert parent_pull_request.author_login == "author"
         assert parent_pull_request.title == "title"
         assert str(parent_pull_request.url) == "http://example.com/"
-        assert parent_pull_request.state == "open"
+        assert parent_pull_request.state == "OPEN"
 
     def test_frozen(self, parent_pull_request):
         with pytest.raises(ValidationError, match="frozen"):
@@ -54,6 +54,12 @@ class TestLinkedIssue:
         assert linked_issue.number == 1
         assert linked_issue.title == "title"
         assert linked_issue.labels == ("label1", "label2")
+        assert linked_issue.issue_type == "type"
+
+    def test_init_no_optional(self):
+        linked_issue = LinkedIssue(number=1, title="title", labels=None)
+        assert linked_issue.labels is None
+        assert linked_issue.issue_type is None
 
     def test_frozen(self, linked_issue):
         with pytest.raises(ValidationError, match="frozen"):
