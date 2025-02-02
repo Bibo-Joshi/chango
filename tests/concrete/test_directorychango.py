@@ -157,7 +157,7 @@ class TestDirectoryChango:
             event = {
                 "pull_request": {
                     "html_url": "https://example.com/pull/42",
-                    "number": 42,
+                    "number": 33,
                     "title": "example title",
                     "user": {"login": "author"},
                 }
@@ -165,7 +165,7 @@ class TestDirectoryChango:
             data = ChanGoActionData(
                 parent_pull_request=ParentPullRequest(
                     url="https://example.com/pull/43",
-                    number=45,
+                    number=50,
                     title="example title",
                     state="OPEN",
                     author_login="author",
@@ -174,9 +174,9 @@ class TestDirectoryChango:
             )
             note = section_chango.build_github_event_change_note(event, data)
             assert isinstance(note, DummySectionChangeNote)
-            assert note.slug == "0042"
+            assert note.slug == "0033"
             assert note.pull_requests == (
-                PullRequest(uid="42", author_uid="author", closes_threads=()),
+                PullRequest(uid="33", author_uid="author", closes_threads=()),
             )
             assert note.req_0 == "example title"
 
@@ -207,7 +207,7 @@ class TestDirectoryChango:
             event = {
                 "pull_request": {
                     "html_url": "https://example.com/pull/42",
-                    "number": 42,
+                    "number": 45,
                     "title": "example title",
                     "user": {"login": "author"},
                 }
@@ -231,7 +231,7 @@ class TestDirectoryChango:
                     author_uid="parent_author",
                     closes_threads=("existing_thread1", "existing_thread2"),
                 ),
-                PullRequest(uid="42", author_uid="author", closes_threads=()),
+                PullRequest(uid="45", author_uid="author", closes_threads=()),
             )
             assert note.req_0 == "existing_req_0\nexample title"
             assert note.opt_0 == "example title"
