@@ -3,10 +3,6 @@
 *
 * SPDX-License-Identifier: MIT
 */
-// module.exports = async ({github, context}) => {
-//     console.log(github, context);
-// }
-
 module.exports = async ({github, context, core, query_issue_types})  => {
     const pullRequest = context.payload.pull_request;
     if (!pullRequest) {
