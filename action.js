@@ -12,7 +12,7 @@ module.exports = async ({github, context, core, query_issue_types})  => {
         return;
     }
 
-    query_issue_types = false;
+    console.log("query_issue_types", query_issue_types);
 
     // Fetch the linked issues
     const data = await github.graphql(`
