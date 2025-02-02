@@ -20,10 +20,19 @@ inputs:
   data:
     description: Additional JSON data to pass to the parameter ``data`` of ``chango.abc.ChanGo.build_from_github_event()``.
     required: false
-    default: None
+    default: chango.action.ChanGoActionData
+  github-token:
+    description: GitHub Token or Personal Access Token (PAT) used to authenticate with GitHub. Defaults to the ``GITHUB_TOKEN``.
+    required: false
+  query-issue-types:
+    description: Whether to query the issue types of the linked issues. Can only be used on organizations with issue types enabled. In this case, an organization scoped PAT is required.
+    required: false
+    default: false
 
 runs:
   using: composite
+  env:
+    github_token: ${{ inputs.github-token }}
   steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       with:
@@ -41,21 +50,46 @@ runs:
       run: |
         python -W ignore -m pip install .
 
+    - name: Fetch Linked Issues & Parent PR (Custom GitHub Token)
+      id: fetch-linked-issues
+      uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+      if: ${{ env.github_token != null && env.github_token != '' }}
+      with:
+        github-token: ${{ env.github_token }}
+        script: |
+          const script = require('./action.js');
+          await script({github, context, core, inputs});
+    - name: Fetch Linked Issues & Parent PR (Default GitHub Token)
+      id: fetch-linked-issues
+      uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+      if: ${{ env.github_token == null || env.github_token == '' }}
+      with:
+        script: |
+          const script = require('./action.js');
+          await script({github, context, core, inputs});
+
     - name: Create chango fragment
       id: create-chango-fragment
       uses: jannekem/run-python-script-action@bbfca66c612a28f3eeca0ae40e1f810265e2ea68 # v1.7
       with:
         script: |
           from chango.config import get_chango_instance
+          from chango.action import ChanGoActionData
           chango_instance = get_chango_instance(${{ inputs.pyproject-toml }})
           
           null = None
           false = False
           true = True
           
+          # Merge additionally fetched data into the data passed by the user
+          data = (
+              ${{ inputs.data }}
+              or ChanGoActionData.model_validate_json(${{ steps.fetch-linked-issues.outputs.data }})
+          )
+          
           change_note = chango_instance.build_github_event_change_note(
               event=${{ toJson(github.event) }},
-              data=None or ${{ inputs.data }}
+              data=data
           )
           chango_instance.write_change_note(change_note, version=None)
 

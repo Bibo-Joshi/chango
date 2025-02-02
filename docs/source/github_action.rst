@@ -70,4 +70,13 @@ The following inputs can be used to configure the action using the ``with`` keyw
    * - data
      - Additional JSON data to pass to the parameter :paramref:`~chango.abc.ChanGo.build_github_event_change_note.data` of  :meth:`chango.abc.ChanGo.build_github_event_change_note`.
      - No
-     - :obj:`None`
+     - An instance of :class:`chango.action.ChanGoActionData`
+   * - github-token:
+     - GitHub Token or Personal Access Token (PAT) used to authenticate with GitHub.
+     - No
+     - ``GITHUB_TOKEN``
+   * - query-issue-types:
+     - Whether to query the issue types of the linked issues. Can only be used on organizations with issue types enabled. In this case, an organization scoped PAT is required.
+     - No
+     - :obj:`False`
+

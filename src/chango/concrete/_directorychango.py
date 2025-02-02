@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Any, Optional, override
 
 from .._utils.types import VUIDInput
 from ..abc import ChangeNote, ChanGo, VersionHistory, VersionNote
+from ..action import ChanGoActionData
 from ._directoryversionscanner import DirectoryVersionScanner
 
 if TYPE_CHECKING:
@@ -99,7 +100,7 @@ class DirectoryChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
 
     @override
     def build_github_event_change_note(
-        self, event: dict[str, Any], data: dict[str, Any] | None = None
+        self, event: dict[str, Any], data: dict[str, Any] | ChanGoActionData | None = None
     ) -> CNT:
         """Implementation of :meth:`~chango.abc.ChanGo.build_github_event_change_note`.
         Will always call :meth:`chango.abc.ChangeNote.build_from_github_event` and does not check

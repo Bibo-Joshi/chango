@@ -6,6 +6,7 @@
 from collections.abc import Collection
 from typing import Any, ClassVar, Self, override
 
+from ...action import ChanGoActionData
 from ._pullrequest import PullRequest
 from ._sectionchangenote import SectionChangeNote
 
@@ -85,7 +86,7 @@ class GitHubSectionChangeNote(SectionChangeNote):
     def get_section(
         cls,
         labels: Collection[str],  # noqa: ARG003
-        issue_types: Collection[str],  # noqa: ARG003
+        issue_types: Collection[str] | None,  # noqa: ARG003
     ) -> str:
         """Determine an appropriate section based on the labels of a pull request as well as
         the labels and types of the issues closed by the pull request.
@@ -101,6 +102,11 @@ class GitHubSectionChangeNote(SectionChangeNote):
                 the issues closed by the pull request.
             issue_types (Collection[:obj:`str`]): The types of the issues closed by the pull
                 request.
+
+                Caution:
+                    Since issue types are currently in
+                    `public preview <https://github.com/orgs/community/discussions/139933>`_,
+                    this set may be empty.
 
         Returns:
             :obj:`str`: The UID of the section.
@@ -118,58 +124,48 @@ class GitHubSectionChangeNote(SectionChangeNote):
     @classmethod
     @override
     def build_from_github_event(
-        cls, event: dict[str, Any], data: dict[str, Any] | None = None
+        cls, event: dict[str, Any], data: dict[str, Any] | ChanGoActionData | None = None
     ) -> Self:
         """Implementation of :meth:`chango.abc.ChangeNote.build_from_github_event`.
 
         This writes the pull request title to the section determined by :meth:`get_section`.
         Uses the pull request number as slug.
 
-        Hint:
-            If passed, the ``data`` argument is expected to have the following structure:
-
-            .. code-block:: python
-
-                    {
-                        "linked_issues": [
-                            {"number": 123, "type": "type1", "labels": ["label1", "label2"]},
-                            {"number": 456, "type": "type2", "labels": ["label3", "label4"]},
-                        ]
-                    }
-
-            where all fields are optional.
-
         Caution:
-            Does not consider any formatting in the pull request title!
+            * Does not consider any formatting in the pull request title!
+            * Considers the ``data`` argument only if it is an instance of
+              :class:`~chango.action.ChanGoActionData`.
 
         Raises:
-            ValueError: If the event is not a ``pull_request`` or ``pull_request_target``.
+            ValueError: If required data is missing or not in the expected format.
         """
-        pull_request = event.get("pull_request") or event.get("pull_request_target")
-        if pull_request is None:
-            raise ValueError("Event is not a pull request event.")
+        try:
+            pull_request = event["pull_request"]
+            pr_number = pull_request["number"]
+            pr_title = pull_request["title"]
+            pr_labels = {label["name"] for label in pull_request["labels"]}
+        except KeyError as exc:
+            raise ValueError("Unable to extract required data from event.") from exc
 
-        linked_issues = (data or {}).get("linked_issues", [])
+        issue_types: set[str] = set()
+        closes_threads: set[int] = set()
+        labels = pr_labels
 
-        number = pull_request["number"]
-        title = pull_request["title"]
-        labels = {label["name"] for label in pull_request["labels"]}.union(
-            *(set(issue.get("labels", [])) for issue in linked_issues or [])
-        )
-        issue_types = {type_ for issue in linked_issues or [] if (type_ := issue.get("type"))}
-        closes_threads = tuple(
-            thread_id for issue in linked_issues or [] if (thread_id := issue.get("number"))
-        )
+        if isinstance(data, ChanGoActionData) and data.linked_issues:
+            for issue in data.linked_issues:
+                closes_threads.add(issue.number)
+                if issue.labels:
+                    labels.update(issue.labels)
 
         section = cls.get_section(labels, issue_types)
         return cls(
-            slug=f"{number:04}",  # type: ignore[call-arg]
-            pull_requests=(  # type: ignore[call-arg]
+            slug=f"{pr_number:04}",  # type: ignore[call-arg]
+            pull_requests=(
                 PullRequest(
                     uid=pull_request.get("user", {}).get("login", "unknown"),
                     author_uid="author",
-                    closes_threads=closes_threads,
+                    closes_threads=tuple(map(str, closes_threads)),
                 ),
             ),
-            **{section: title},
+            **{section: pr_title},
         )

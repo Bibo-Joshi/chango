@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Any, Optional
 
 from .._utils.files import UTF8, move_file
 from .._utils.types import VUIDInput
+from ..action import ChanGoActionData
 from ._changenote import ChangeNote
 from ._versionhistory import VersionHistory
 from ._versionnote import VersionNote
@@ -97,7 +98,7 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
         """
 
     def build_github_event_change_note(
-        self, event: dict[str, Any], data: dict[str, Any] | None = None
+        self, event: dict[str, Any], data: dict[str, Any] | ChanGoActionData | None = None
     ) -> CNT | None:
         """Build a change note from a GitHub event.
 
@@ -116,8 +117,8 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
             event (Dict[:obj:`str`, :obj:`~typing.Any`]): The GitHub event data. This should be one
               of the `events that trigger workflows <ettw>`_. The event is represented as a
               JSON dictionary.
-            data (Dict[:obj:`str`, :obj:`~typing.Any`], optional): Additional data that may be
-                required to build the change note.
+            data (Dict[:obj:`str`, :obj:`~typing.Any`] | :class:`chango.action.ChanGoActionData`,
+                optional): Additional data that may be required to build the change note.
 
         Returns:
             :class:`CNT <typing.TypeVar>` | :obj:`None`: The change note or :obj:`None` if no

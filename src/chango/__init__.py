@@ -7,6 +7,7 @@ __all__ = [
     "Version",
     "__version__",
     "abc",
+    "action",
     "concrete",
     "config",
     "constants",
@@ -14,7 +15,7 @@ __all__ = [
     "helpers",
 ]
 
-from . import __about__, abc, concrete, config, constants, error, helpers
+from . import __about__, abc, action, concrete, config, constants, error, helpers
 from ._changenoteinfo import ChangeNoteInfo
 from ._version import Version
 
