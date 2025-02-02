@@ -3,14 +3,7 @@
 *
 * SPDX-License-Identifier: MIT
 */
-module.exports = async function (github, context, core, inputs) {
-// if issue types are requested but no organization scoped PAT is provided, fail the action
-    if ((inputs["query-issue-types"]) && !inputs["github-token"])
-    {
-        core.setFailed('Cannot query issue types without an organization scoped PAT.');
-        return;
-    }
-
+module.exports = async function (github, context, core, query_issue_types) {
     const pullRequest = context.payload.pull_request;
     if (!pullRequest) {
         // This action only runs on pull_request events. Skip with debug message but
@@ -28,7 +21,7 @@ module.exports = async function (github, context, core, inputs) {
                         nodes {
                             number
                             title
-                            ${inputs.query-issue-types ? 'issueType { name }' : ''}
+                            ${query_issue_types ? 'issueType { name }' : ''}
                         labels(first: 100) {
                             nodes {
                                 name
