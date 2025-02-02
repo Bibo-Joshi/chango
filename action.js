@@ -81,7 +81,5 @@ module.exports = async ({github, context, core, query_issue_types})  => {
         linked_issues: closingIssues,
         parent_pull_request: parentPR
     };
-    // debug-print the context
-    console.log(JSON.stringify(linkedIssuesAndParentPR, null, 2));
     core.setOutput('data', JSON.stringify(linkedIssuesAndParentPR));
 };
