@@ -3,7 +3,7 @@
 *
 * SPDX-License-Identifier: MIT
 */
-module.exports = async function (github, context, core, query_issue_types) {
+async function main (github, context, core, query_issue_types) {
     const pullRequest = context.payload.pull_request;
     if (!pullRequest) {
         // This action only runs on pull_request events. Skip with debug message but
@@ -22,16 +22,16 @@ module.exports = async function (github, context, core, query_issue_types) {
                             number
                             title
                             ${query_issue_types ? 'issueType { name }' : ''}
-                        labels(first: 100) {
-                            nodes {
-                                name
-                                id
+                            labels(first: 100) {
+                                nodes {
+                                    name
+                                    id
+                                }
                             }
                         }
                     }
                 }
             }
-        }
         }
     `);
 
@@ -83,3 +83,5 @@ module.exports = async function (github, context, core, query_issue_types) {
     console.log(JSON.stringify(linkedIssuesAndParentPR, null, 2));
     core.setOutput('data', JSON.stringify(linkedIssuesAndParentPR));
 }
+
+module.exports = main;
