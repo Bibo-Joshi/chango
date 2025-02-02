@@ -3,8 +3,8 @@
 *
 * SPDX-License-Identifier: MIT
 */
-module.exports = ({github, context, core, query_issue_types}) => {
-    console.log(github, context, core, query_issue_types);
+module.exports = async ({github, context}) => {
+    console.log(github, context);
 }
 
 // async function main (github, context, core, query_issue_types) {
