@@ -3,6 +3,7 @@
 #  SPDX-License-Identifier: MIT
 import pytest
 
+from chango.action import ChanGoActionData, LinkedIssue
 from chango.concrete.sections import GitHubSectionChangeNote, PullRequest, Section
 
 
@@ -76,17 +77,26 @@ class TestGitHubSectionChangeNote:
     def test_get_author_url(self):
         assert DummyChangNote.get_author_url("123") == "https://github.com/123"
 
-    def test_get_section(self):
-        assert FromGitHubEvent.get_section(None, None) == "req_0"
+    def test_get_sections_has_required(self):
+        assert FromGitHubEvent.get_sections(None, None) == {"req_0", "req_1"}
 
-    def test_build_from_github_event_unsupported_event(self):
-        with pytest.raises(ValueError, match="not a pull request event"):
+    def test_get_sections_no_required(self):
+        NoRequired = GitHubSectionChangeNote.with_sections(
+            [
+                Section(uid="opt_0", title="Opt", is_required=False, sort_order=5),
+                Section(uid="opt_1", title="Opt", is_required=False, sort_order=42),
+                Section(uid="opt_2", title="Opt", is_required=False, sort_order=-3),
+            ]
+        )
+        assert NoRequired.get_sections(None, None) == {"opt_2"}
+
+    def test_build_from_github_event_missing_data(self):
+        with pytest.raises(ValueError, match="required data"):
             FromGitHubEvent.build_from_github_event({})
 
-    @pytest.mark.parametrize("event_type", ["pull_request", "pull_request_target"])
-    def test_build_from_github_event_basic(self, event_type):
+    def test_build_from_github_event_basic(self):
         event_data = {
-            event_type: {
+            "pull_request": {
                 "html_url": "https://example.com/pull/42",
                 "number": 42,
                 "title": "example title",
@@ -98,6 +108,97 @@ class TestGitHubSectionChangeNote:
         change_note = FromGitHubEvent.build_from_github_event(event_data)
         assert change_note.req_0 == "example title"
         assert change_note.pull_requests == (
-            PullRequest(uid="42", author_uid="author_uid", closes_threads=())
+            PullRequest(uid="42", author_uid="author_uid", closes_threads=()),
         )
         assert change_note.slug == "0042"
+
+    def test_build_from_github_event_custom_get_sections(self):
+        class CustomGetSections(FromGitHubEvent):
+            @classmethod
+            def get_sections(cls, event_data, sections):  # noqa: ARG003
+                return {"opt_0", "req_1", "req_0"}
+
+        event_data = {
+            "pull_request": {
+                "html_url": "https://example.com/pull/42",
+                "number": 42,
+                "title": "example title",
+                "user": {"login": "author_uid"},
+                "labels": [{"name": "label1"}, {"name": "label2"}],
+            }
+        }
+
+        change_note = CustomGetSections.build_from_github_event(event_data)
+        assert change_note.req_0 == "example title"
+        assert change_note.req_1 == "example title"
+        assert change_note.opt_0 == "example title"
+        assert change_note.pull_requests == (
+            PullRequest(uid="42", author_uid="author_uid", closes_threads=()),
+        )
+        assert change_note.slug == "0042"
+
+    def test_build_from_github_event_chango_action_data_no_linked_issues(self, monkeypatch):
+        received_data = {}
+
+        def get_sections(labels, issue_types):
+            received_data["labels"] = labels
+            received_data["issue_types"] = issue_types
+            return {"req_0", "req_1"}
+
+        monkeypatch.setattr(FromGitHubEvent, "get_sections", get_sections)
+
+        event_data = {
+            "pull_request": {
+                "html_url": "https://example.com/pull/42",
+                "number": 42,
+                "title": "example title",
+                "user": {"login": "author_uid"},
+                "labels": [],
+            }
+        }
+        data = ChanGoActionData(linked_issues=None, parent_pull_request=None)
+
+        FromGitHubEvent.build_from_github_event(event_data, data)
+        assert received_data["labels"] == set()
+        assert received_data["issue_types"] == set()
+
+    def test_build_from_github_event_chango_action_data(self, monkeypatch):
+        received_data = {}
+
+        def get_sections(labels, issue_types):
+            received_data["labels"] = labels
+            received_data["issue_types"] = issue_types
+            return {"req_0", "req_1"}
+
+        monkeypatch.setattr(FromGitHubEvent, "get_sections", get_sections)
+
+        event_data = {
+            "pull_request": {
+                "html_url": "https://example.com/pull/42",
+                "number": 42,
+                "title": "example title",
+                "user": {"login": "author_uid"},
+                "labels": [{"name": "pr_label1"}, {"name": "pr_label2"}],
+            }
+        }
+        data = ChanGoActionData(
+            linked_issues=(
+                LinkedIssue(number=1, title="issue_title", labels=None, issue_type="issue_type"),
+                LinkedIssue(
+                    number=2,
+                    title="issue_title",
+                    labels=("issue_label1", "issue_label2"),
+                    issue_type=None,
+                ),
+            ),
+            parent_pull_request=None,
+        )
+
+        FromGitHubEvent.build_from_github_event(event_data, data)
+        assert received_data["labels"] == {
+            "pr_label1",
+            "pr_label2",
+            "issue_label1",
+            "issue_label2",
+        }
+        assert received_data["issue_types"] == {"issue_type"}
