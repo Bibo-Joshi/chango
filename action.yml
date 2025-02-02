@@ -62,7 +62,7 @@ runs:
       id: install-chango
       shell: bash
       run: |
-        python -W ignore -m pip install .
+        python -W ignore -m pip install ./.chango-action
 
     - name: Fetch Linked Issues & Parent PR (Custom GitHub Token)
       id: fetch-linked-issues-custom-token
