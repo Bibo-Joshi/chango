@@ -3,7 +3,7 @@
 *
 * SPDX-License-Identifier: MIT
 */
-module.exports = async ({github, context, core, query_issue_types})  => {
+module.exports = async ({github, context, core, query_issue_types}) => {
     const pullRequest = context.payload.pull_request;
     if (!pullRequest) {
         // This action only runs on pull_request events. Skip with debug message but
@@ -35,7 +35,11 @@ module.exports = async ({github, context, core, query_issue_types})  => {
                 }
             }
         }
-    `);
+    `, {
+        headers: {
+            "GraphQL-Features": "issue_types"
+        }
+    });
 
     const closingIssues = data.repository.pullRequest.closingIssuesReferences.nodes.map(node => {
         return {
