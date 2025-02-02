@@ -4,3 +4,7 @@ opt_1 = "existing_opt_1"
 uid = "43"
 author_uid = "parent_author"
 closes_threads = ["existing_thread1", "existing_thread2"]
+[[pull_requests]]
+uid = "42"
+author_uid = "unknown"
+closes_threads = []

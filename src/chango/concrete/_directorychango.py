@@ -161,8 +161,10 @@ class DirectoryChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
             if str(parent_pr.number) not in (pr.uid for pr in existing_change_note.pull_requests):
                 continue
 
-            # Append the PR information to the existing change note
-            existing_change_note.pull_requests += change_note.pull_requests
+            # Combine the PRs on existing and new change notes. Override with new PRs if necessary
+            existing_prs = {pr.uid: pr for pr in existing_change_note.pull_requests}
+            existing_prs.update({pr.uid: pr for pr in change_note.pull_requests})
+            existing_change_note.pull_requests = tuple(existing_prs.values())
 
             for section_name in change_note.SECTIONS:
                 if not (new_value := getattr(change_note, section_name)):
