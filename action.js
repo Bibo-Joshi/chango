@@ -5,7 +5,7 @@
 */
 module.exports = async function (github, context, core, inputs) {
 // if issue types are requested but no organization scoped PAT is provided, fail the action
-    if ((inputs.query - issue - types) && !inputs.github - token))
+    if ((inputs["query-issue-types"]) && !inputs["github-token"])
     {
         core.setFailed('Cannot query issue types without an organization scoped PAT.');
         return;
