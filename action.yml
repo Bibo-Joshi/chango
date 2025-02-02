@@ -36,6 +36,7 @@ runs:
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       with:
         repository: Bibo-Joshi/chango
+        ref: c2ba65d1429b815b165dc04b00313c5c9de56da6
         path: ./.chango-action
 
     - name: Checkout target repository
