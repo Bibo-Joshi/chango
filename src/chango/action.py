@@ -3,7 +3,7 @@
 #  SPDX-License-Identifier: MIT
 """This module contains functionality required when using chango in :ref:`action`."""
 
-from typing import Literal
+from typing import ClassVar, Literal
 
 from pydantic import AnyHttpUrl, BaseModel, ConfigDict
 
@@ -11,7 +11,7 @@ __all__ = ["ChanGoActionData", "LinkedIssue", "ParentPullRequest"]
 
 
 class _FrozenModel(BaseModel):
-    model_config = ConfigDict(frozen=True)
+    model_config: ClassVar[ConfigDict] = ConfigDict(frozen=True)
 
 
 class ParentPullRequest(_FrozenModel):
@@ -62,7 +62,7 @@ class LinkedIssue(_FrozenModel):
     issue_type: str | None
 
 
-class ChanGoActionData(BaseModel):
+class ChanGoActionData(_FrozenModel):
     """Data structure for the additional information that the ``chango`` action automatically
     provides in addition to the GitHub event payload.
 
@@ -81,6 +81,5 @@ class ChanGoActionData(BaseModel):
             i.e., issues that will be closed when the current pull request is merged.
     """
 
-    model_config = ConfigDict(frozen=True)
     parent_pull_request: ParentPullRequest | None
     linked_issues: tuple[LinkedIssue, ...] | None
