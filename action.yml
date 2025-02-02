@@ -71,7 +71,7 @@ runs:
         script: |
           const script = require('./action.js');
           // const query_issue_types = ${query_issue_types};
-          await script({github, context, core, 'false'});
+          await script({github, context, core});
 
     - name: Create chango fragment
       id: create-chango-fragment
