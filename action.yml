@@ -18,9 +18,8 @@ inputs:
     # Using python naming here ensures that we can directly use this value below.
     default: None
   data:
-    description: Additional JSON data to pass to the parameter ``data`` of ``chango.abc.ChanGo.build_from_github_event()``.
+    description: Additional JSON data to pass to the parameter ``data`` of ``chango.abc.ChanGo.build_from_github_event()``. Defaults to an instance of ``chango.action.ChanGoActionData``.
     required: false
-    default: chango.action.ChanGoActionData
   github-token:
     description: GitHub Token or Personal Access Token (PAT) used to authenticate with GitHub. Defaults to the ``GITHUB_TOKEN``.
     required: false
@@ -70,15 +69,18 @@ runs:
       if: ${{ env.github_token == null || env.github_token == '' }}
       with:
         script: |
-          const script = require('./action.js')
-          console.log(await script({github, context}))
-#          const script = require('./action.js');
-#          const query_issue_types = ${query_issue_types};
-#          await script({github, context, core, query_issue_types});
+#          const script = require('./action.js')
+#          console.log(await script({github, context}))
+          const script = require('./action.js');
+          const query_issue_types = ${query_issue_types};
+          await script({github, context, core, query_issue_types});
 
     - name: Create chango fragment
       id: create-chango-fragment
       uses: jannekem/run-python-script-action@bbfca66c612a28f3eeca0ae40e1f810265e2ea68 # v1.7
+      env:
+        CUSTOM_OUTPUT: ${{ steps.fetch-linked-issues-custom-token.outputs.data }}
+        DEFAULT_OUTPUT: ${{ steps.fetch-linked-issues-default-token.outputs.data }}
       with:
         script: |
           from chango.config import get_chango_instance
@@ -91,8 +93,8 @@ runs:
           
           # Merge additionally fetched data into the data passed by the user
           output = (
-              ${{ steps.fetch-linked-issues-custom-token.outputs.data }}
-              or ${{ steps.fetch-linked-issues-default-token.outputs.data }}
+              ${{ toJson(env.CUSTOM_OUTPUT) }}
+              or ${{ toJson(env.DEFAULT_OUTPUT) }}
           )
           data = (
               ${{ inputs.data }}
