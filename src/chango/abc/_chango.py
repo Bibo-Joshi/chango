@@ -117,8 +117,8 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
             event (Dict[:obj:`str`, :obj:`~typing.Any`]): The GitHub event data. This should be one
               of the `events that trigger workflows <ettw>`_. The event is represented as a
               JSON dictionary.
-            data (Dict[:obj:`str`, :obj:`~typing.Any`] | :class:`chango.action.ChanGoActionData`,
-                optional): Additional data that may be required to build the change note.
+            data (Dict[:obj:`str`, :obj:`~typing.Any`] | :class:`chango.action.ChanGoActionData`, \
+               optional): Additional data that may be required to build the change note.
 
         Returns:
             :class:`CNT <typing.TypeVar>` | :obj:`None`: The change note or :obj:`None` if no
