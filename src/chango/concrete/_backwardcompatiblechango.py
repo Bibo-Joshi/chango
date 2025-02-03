@@ -2,12 +2,12 @@
 #
 #  SPDX-License-Identifier: MIT
 import contextlib
-from collections.abc import Collection, Iterator
+from collections.abc import Collection
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Optional, override
 
 from .._utils.types import VUIDInput
-from ..abc import ChangeNote, ChanGo, VersionHistory, VersionNote, VersionScanner
+from ..abc import ChangeNote, ChanGo, VersionHistory, VersionNote
 from ..action import ChanGoActionData
 from ..error import ChanGoError
 from ._backwardcompatibleversionscanner import BackwardCompatibleVersionScanner
@@ -25,68 +25,68 @@ class BackwardCompatibleChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: Chang
     a project.
 
     Args:
-        scanner (:class:`~chango.concrete.BackwardCompatibleVersionScanner`): The version scanner
-            to use.
-        main_chango (:class:`~chango.abc.ChanGo`): The main :class:`~chango.abc.ChanGo` instance
-            to use for creating new changes.
-        legacy_changos (Collection[:class:`~chango.abc.ChanGo`]): A collection of legacy
-            :class:`~chango.abc.ChanGo` instances to use for loading old changes.
-
+        main_instance(:class:`~chango.abc.ChanGo`): The :class:`~chango.abc.ChanGo` instance that
+            should be used for new version notes.
+        legacy_instances(Collection[:class:`~chango.abc.ChanGo`]): A collection of
+            :class:`~chango.abc.ChanGo` instances that should be used for loading older version
+            notes.
     """
 
     def __init__(
         self,
-        main_chango: "ChanGo[Any,VHT, VNT, CNT]",
-        main_scanner: VersionScanner,
-        legacy: Collection[tuple[ChanGo[Any, Any, Any, Any], VersionScanner]],
+        main_instance: "ChanGo[Any,VHT, VNT, CNT]",
+        legacy_instances: Collection[ChanGo[Any, Any, Any, Any]],
     ):
-        self._main_chango = main_chango
-        self._main_scanner = main_scanner
-        self._legacy = tuple(legacy)
+        self._main_instance = main_instance
+        self._legacy_instances = tuple(legacy_instances)
         self._scanner = BackwardCompatibleVersionScanner(
-            (main_scanner, *tuple(x[1] for x in legacy))
+            (main_instance.scanner, *(chango.scanner for chango in self._legacy_instances))
         )
-
-    @property
-    def _legacy_changos(self) -> Iterator[ChanGo[Any, Any, Any, Any]]:
-        return (x[0] for x in self._legacy)
 
     @property
     @override
     def scanner(self) -> "BackwardCompatibleVersionScanner":
+        """The :class:`~chango.abc.BackwardCompatibleVersionScanner` instance that is used
+        by this :class:`~chango.abc.BackwardCompatibleChanGo`.
+
+        Hint:
+            The scanner is a composite of the scanners of
+            :paramref:`~chango.abc.BackwardCompatibleChanGo.main_instance` and
+            :paramref:`~chango.abc.BackwardCompatibleChanGo.legacy_instance`.
+        """
         return self._scanner
 
     @override
     def build_template_change_note(self, slug: str, uid: str | None = None) -> CNT:
         """Calls :meth:`~chango.abc.ChanGo.build_template_change_note` on
-        :paramref:`~chango.abc.BackwardCompatibleChanGo.main_chango`.
+        :paramref:`~chango.abc.BackwardCompatibleChanGo.main_instance`.
         """
-        return self._main_chango.build_template_change_note(slug, uid)
+        return self._main_instance.build_template_change_note(slug, uid)
 
     @override
     def build_version_note(self, version: Optional["Version"]) -> VNT:
         """Calls :meth:`~chango.abc.ChanGo.build_version_note`
-        on :paramref:`~chango.abc.BackwardCompatibleChanGo.main_chango` or one of the legacy
-        changos depending on the result of :meth:`~chango.abc.VersionScanner.is_available`.
+        on :paramref:`~chango.abc.BackwardCompatibleChanGo.main_instance` or one of the legacy
+        instances depending on the result of :meth:`~chango.abc.VersionScanner.is_available`.
         """
-        for chango, scanner in ((self._main_chango, self._main_scanner), *self._legacy):
-            if scanner.is_available(version):
+        for chango in (self._main_instance, *self._legacy_instances):
+            if chango.scanner.is_available(version):
                 return chango.build_version_note(version)
         raise ChanGoError(f"Version {version} not found")
 
     @override
     def build_version_history(self) -> VHT:
         """Calls :meth:`~chango.abc.ChanGo.build_version_history`
-        on :paramref:`~chango.abc.BackwardCompatibleChanGo.main_chango`.
+        on :paramref:`~chango.abc.BackwardCompatibleChanGo.main_instance`.
         """
-        return self._main_chango.build_version_history()
+        return self._main_instance.build_version_history()
 
     @override
     def load_change_note(self, uid: str) -> CNT:
         """Load a change note with the given identifier.
         Tries to load the change note from the main chango first and then from the legacy changos.
         """
-        for chango in (self._main_chango, *self._legacy_changos):
+        for chango in (self._main_instance, *self._legacy_instances):
             with contextlib.suppress(ChanGoError):
                 try:
                     return chango.load_change_note(uid)
@@ -97,14 +97,14 @@ class BackwardCompatibleChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: Chang
     @override
     def get_write_directory(self, change_note: CNT | str, version: VUIDInput) -> Path:
         """Calls :meth:`~chango.abc.ChanGo.get_write_directory`
-        on :paramref:`~chango.abc.BackwardCompatibleChanGo.main_chango`.
+        on :paramref:`~chango.abc.BackwardCompatibleChanGo.main_instance`.
         """
-        return self._main_chango.get_write_directory(change_note, version)
+        return self._main_instance.get_write_directory(change_note, version)
 
     def build_github_event_change_note(
         self, event: dict[str, Any], data: dict[str, Any] | ChanGoActionData | None = None
     ) -> CNT | None:
         """Calls :meth:`~chango.abc.ChanGo.build_github_event_change_note`
-        on :paramref:`~chango.abc.BackwardCompatibleChanGo.main_chango`.
+        on :paramref:`~chango.abc.BackwardCompatibleChanGo.main_instance`.
         """
-        return self._main_chango.build_github_event_change_note(event, data)
+        return self._main_instance.build_github_event_change_note(event, data)

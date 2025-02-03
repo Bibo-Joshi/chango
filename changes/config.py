@@ -62,9 +62,7 @@ version_scanner = BackwardCompatibleVersionScanner(
     scanners=(new_version_scanner, legacy_version_scanner)
 )
 chango_instance = BackwardCompatibleChanGo(
-    main_chango=new_chango_instance,
-    main_scanner=new_version_scanner,
-    legacy=((legacy_chango_instance, legacy_version_scanner),),
+    main_instance=new_chango_instance, legacy_instances=(legacy_chango_instance,)
 )
 
 if __name__ == "__main__":
