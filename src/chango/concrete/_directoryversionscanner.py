@@ -14,7 +14,7 @@ from .._utils.filename import FileName
 from .._utils.types import PathLike, VUIDInput
 from .._version import Version
 from ..abc import VersionScanner
-from ..error import ValidationError
+from ..error import ChanGoError, ValidationError
 from ..helpers import ensure_uid
 
 _DEFAULT_PATTERN = re.compile(r"(?P<uid>[^_]+)_(?P<date>[\d-]+)")
@@ -198,7 +198,7 @@ class DirectoryVersionScanner(VersionScanner):
                 else self.unreleased_directory
             )
         except KeyError as exc:
-            raise ValueError(f"Version '{uid}' not available.") from exc
+            raise ChanGoError(f"Version '{uid}' not available.") from exc
 
         out = []
         # Sorting is an undocumented implementation detail for now!
@@ -230,7 +230,7 @@ class DirectoryVersionScanner(VersionScanner):
                 else self.unreleased_directory
             )
         except StopIteration as exc:
-            raise ValueError(f"Change note '{uid}' not found in any version.") from exc
+            raise ChanGoError(f"Change note '{uid}' not found in any version.") from exc
 
         return ChangeNoteInfo(uid, version, directory / file_name)
 

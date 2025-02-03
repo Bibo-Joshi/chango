@@ -73,6 +73,10 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
 
         Returns:
             :class:`CNT <typing.TypeVar>`: The :class:`~chango.abc.ChangeNote` object.
+
+        Raises:
+            ~chango.error.ChanGoError: If the change note with the given identifier is not
+                available.
         """
 
     @abc.abstractmethod

@@ -89,6 +89,10 @@ class VersionScanner(Collection[Version]):
         Returns:
             :class:`chango.ChangeNoteInfo`: The metadata about the change note specifying the file
                 path and version it belongs to.
+
+        Raises:
+            ~chango.error.ChanGoError: If the change note with the given identifier is not
+                available.
         """
 
     def get_version(self, uid: str) -> Version:
@@ -132,7 +136,7 @@ class VersionScanner(Collection[Version]):
             Tuple[:obj:`str`]: UIDs of the changes corresponding to the version identifier.
 
         Raises:
-            ValueError: If the version with the given identifier is not available.
+            ~chango.error.ChanGoError: If the version with the given identifier is not available.
         """
 
     def invalidate_caches(self) -> None:

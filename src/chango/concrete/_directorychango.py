@@ -129,7 +129,7 @@ class DirectoryChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
         """
         change_note = self.change_note_type.build_from_github_event(event=event, data=data)
 
-        if not issubclass(self.change_note_type, SectionChangeNote):
+        if not isinstance(change_note, SectionChangeNote):
             return change_note
 
         if not isinstance(change_note, SectionChangeNote):
