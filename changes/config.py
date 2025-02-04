@@ -36,16 +36,16 @@ new_version_scanner = DirectoryVersionScanner(
 )
 ChangoSectionChangeNote = GitHubSectionChangeNote.with_sections(
     [
-        Section(uid="internal", title="Internal Changes", sort_order=0),
-        Section(uid="dependencies", title="Dependencies", sort_order=1),
-        Section(uid="features", title="New Features", sort_order=2),
-        Section(uid="bugfixes", title="Bug Fixes", sort_order=3),
-        Section(uid="deprecations", title="Deprecations", sort_order=4),
-        Section(uid="breaking", title="Breaking Changes", sort_order=5),
-        Section(uid="security", title="Security Changes", sort_order=6),
+        Section(uid="highlights", title="Highlights", sort_order=0),
+        Section(uid="breaking", title="Breaking Changes", sort_order=1),
+        Section(uid="security", title="Security Changes", sort_order=2),
+        Section(uid="deprecations", title="Deprecations", sort_order=3),
+        Section(uid="features", title="New Features", sort_order=4),
+        Section(uid="bugfixes", title="Bug Fixes", sort_order=5),
+        Section(uid="dependencies", title="Dependencies", sort_order=6),
         Section(uid="other", title="Other Changes", sort_order=7),
         Section(uid="documentation", title="Documentation", sort_order=8),
-        Section(uid="highlights", title="Highlights", sort_order=9),
+        Section(uid="internal", title="Internal Changes", sort_order=9),
     ]
 )
 ChangoSectionChangeNote.OWNER = "Bibo-Joshi"

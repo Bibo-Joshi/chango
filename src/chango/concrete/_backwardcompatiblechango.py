@@ -46,27 +46,27 @@ class BackwardCompatibleChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: Chang
     @property
     @override
     def scanner(self) -> "BackwardCompatibleVersionScanner":
-        """The :class:`~chango.abc.BackwardCompatibleVersionScanner` instance that is used
-        by this :class:`~chango.abc.BackwardCompatibleChanGo`.
+        """The :class:`~chango.concrete.BackwardCompatibleVersionScanner` instance that is used
+        by this :class:`BackwardCompatibleChanGo`.
 
         Hint:
             The scanner is a composite of the scanners of
-            :paramref:`~chango.abc.BackwardCompatibleChanGo.main_instance` and
-            :paramref:`~chango.abc.BackwardCompatibleChanGo.legacy_instance`.
+            :paramref:`~BackwardCompatibleChanGo.main_instance` and
+            :paramref:`~BackwardCompatibleChanGo.legacy_instance`.
         """
         return self._scanner
 
     @override
     def build_template_change_note(self, slug: str, uid: str | None = None) -> CNT:
         """Calls :meth:`~chango.abc.ChanGo.build_template_change_note` on
-        :paramref:`~chango.abc.BackwardCompatibleChanGo.main_instance`.
+        :paramref:`~BackwardCompatibleChanGo.main_instance`.
         """
         return self._main_instance.build_template_change_note(slug, uid)
 
     @override
     def build_version_note(self, version: Optional["Version"]) -> VNT:
         """Calls :meth:`~chango.abc.ChanGo.build_version_note`
-        on :paramref:`~chango.abc.BackwardCompatibleChanGo.main_instance` or one of the legacy
+        on :paramref:`~BackwardCompatibleChanGo.main_instance` or one of the legacy
         instances depending on the result of :meth:`~chango.abc.VersionScanner.is_available`.
         """
         for chango in (self._main_instance, *self._legacy_instances):
@@ -77,7 +77,7 @@ class BackwardCompatibleChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: Chang
     @override
     def build_version_history(self) -> VHT:
         """Calls :meth:`~chango.abc.ChanGo.build_version_history`
-        on :paramref:`~chango.abc.BackwardCompatibleChanGo.main_instance`.
+        on :paramref:`~BackwardCompatibleChanGo.main_instance`.
         """
         return self._main_instance.build_version_history()
 
@@ -94,7 +94,7 @@ class BackwardCompatibleChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: Chang
     @override
     def get_write_directory(self, change_note: CNT | str, version: VUIDInput) -> Path:
         """Calls :meth:`~chango.abc.ChanGo.get_write_directory`
-        on :paramref:`~chango.abc.BackwardCompatibleChanGo.main_instance`.
+        on :paramref:`~BackwardCompatibleChanGo.main_instance`.
         """
         return self._main_instance.get_write_directory(change_note, version)
 
@@ -102,6 +102,6 @@ class BackwardCompatibleChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: Chang
         self, event: dict[str, Any], data: dict[str, Any] | ChanGoActionData | None = None
     ) -> CNT | None:
         """Calls :meth:`~chango.abc.ChanGo.build_github_event_change_note`
-        on :paramref:`~chango.abc.BackwardCompatibleChanGo.main_instance`.
+        on :paramref:`~BackwardCompatibleChanGo.main_instance`.
         """
         return self._main_instance.build_github_event_change_note(event, data)
