@@ -73,6 +73,10 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
 
         Returns:
             :class:`CNT <typing.TypeVar>`: The :class:`~chango.abc.ChangeNote` object.
+
+        Raises:
+            ~chango.error.ChanGoError: If the change note with the given identifier is not
+                available.
         """
 
     @abc.abstractmethod
@@ -94,7 +98,8 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
             :class:`pathlib.Path`: The directory to write the change note to.
 
         Raises:
-            TypeError: If the :paramref:`version` is a :obj:`str` but not yet available.
+            ~chango.error.ChanGoError: If the :paramref:`version` is a :obj:`str` but not yet
+                available.
         """
 
     def build_github_event_change_note(
@@ -156,7 +161,8 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
             :class:`pathlib.Path`: The file path the change note was written to.
 
         Raises:
-            TypeError: If the :paramref:`version` is a :obj:`str` but not yet available.
+            ~chango.error.ChanGoError: If the :paramref:`version` is a :obj:`str` but not yet
+                available.
         """
         path = change_note.to_file(
             directory=self.get_write_directory(change_note=change_note, version=version),
@@ -177,7 +183,7 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
             :class:`VNT <typing.TypeVar>`: The loaded :class:`~chango.abc.VersionNote`.
 
         Raises:
-            ValueError: If the version is not available.
+            ~chango.error.ChanGoError: If the version is not available.
         """
         changes = self.scanner.get_changes(version)
         version_obj = self.scanner.get_version(version) if isinstance(version, str) else version

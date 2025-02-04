@@ -19,6 +19,7 @@ from chango.concrete import (
     DirectoryVersionScanner,
     HeaderVersionHistory,
 )
+from chango.error import ChanGoError
 from chango.helpers import ensure_uid
 from tests.auxil.files import data_path
 
@@ -125,11 +126,11 @@ class TestChanGo:
 
     def test_write_change_note_new_string_version(self, chango):
         note = chango.build_template_change_note("this-is-a-new-slug")
-        with pytest.raises(TypeError, match="Version 'new-version-uid' not available yet."):
+        with pytest.raises(ChanGoError, match="'new-version-uid' not available"):
             chango.write_change_note(note, "new-version-uid")
 
     def test_load_version_note_unavailable(self, chango):
-        with pytest.raises(ValueError, match="Version '1.4' not available."):
+        with pytest.raises(ChanGoError, match="Version '1.4' not available."):
             chango.load_version_note("1.4")
 
     @pytest.mark.parametrize(

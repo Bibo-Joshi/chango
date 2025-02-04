@@ -5,6 +5,8 @@
 :mod:`~chango.abc` module that are shipped with this package."""
 
 __all__ = [
+    "BackwardCompatibleChanGo",
+    "BackwardCompatibleVersionScanner",
     "CommentChangeNote",
     "CommentVersionNote",
     "DirectoryChanGo",
@@ -14,6 +16,8 @@ __all__ = [
 ]
 
 from . import sections
+from ._backwardcompatiblechango import BackwardCompatibleChanGo
+from ._backwardcompatibleversionscanner import BackwardCompatibleVersionScanner
 from ._commentchangenote import CommentChangeNote
 from ._commentversionnote import CommentVersionNote
 from ._directorychango import DirectoryChanGo

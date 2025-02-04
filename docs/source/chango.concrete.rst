@@ -6,6 +6,8 @@ concrete
 .. toctree::
     :titlesonly:
 
+    chango.concrete.backwardcompatiblechango
+    chango.concrete.backwardcompatibleversionscanner
     chango.concrete.commentchangenote
     chango.concrete.commentversionnote
     chango.concrete.directorychango

@@ -8,6 +8,7 @@ import pytest
 from chango import Version
 from chango.abc import VersionScanner
 from chango.concrete import DirectoryVersionScanner
+from chango.error import ChanGoError
 from tests.auxil.files import data_path
 
 
@@ -81,7 +82,7 @@ class TestVersionScanner:
         assert version.date == dtm.date(2024, 1, idx)
 
     def test_get_version_not_found(self, scanner):
-        with pytest.raises(ValueError, match="not available"):
+        with pytest.raises(ChanGoError, match="not available"):
             scanner.get_version("1.4")
 
     def test_invalidates_caches(self, scanner):
