@@ -88,10 +88,7 @@ class BackwardCompatibleChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: Chang
         """
         for chango in (self._main_instance, *self._legacy_instances):
             with contextlib.suppress(ChanGoError):
-                try:
-                    return chango.load_change_note(uid)
-                except ChanGoError as exc:
-                    raise exc
+                return chango.load_change_note(uid)
         raise ChanGoError(f"Change note with uid {uid} not found")
 
     @override
