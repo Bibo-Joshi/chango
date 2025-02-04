@@ -183,7 +183,7 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
             :class:`VNT <typing.TypeVar>`: The loaded :class:`~chango.abc.VersionNote`.
 
         Raises:
-            ValueError: If the version is not available.
+            ~chango.error.ChanGoError: If the version is not available.
         """
         changes = self.scanner.get_changes(version)
         version_obj = self.scanner.get_version(version) if isinstance(version, str) else version

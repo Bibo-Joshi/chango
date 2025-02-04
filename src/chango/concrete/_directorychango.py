@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Any, Optional, override
 from .._utils.types import VUIDInput
 from ..abc import ChangeNote, ChanGo, VersionHistory, VersionNote
 from ..action import ChanGoActionData
+from ..error import ChanGoError
 from ._directoryversionscanner import DirectoryVersionScanner
 from .sections import SectionChangeNote, SectionVersionNote
 
@@ -93,8 +94,8 @@ class DirectoryChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
             if isinstance(version, str):
                 try:
                     version_obj = self.scanner.get_version(version)
-                except ValueError as exc:
-                    raise TypeError(
+                except ChanGoError as exc:
+                    raise ChanGoError(
                         f"Version '{version}' not available yet. To get the write directory for a "
                         "new version, pass the version as `change.Version` object."
                     ) from exc

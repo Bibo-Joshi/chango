@@ -7,6 +7,7 @@ from collections.abc import Collection, Iterator
 from .._changenoteinfo import ChangeNoteInfo
 from .._utils.types import VUIDInput
 from .._version import Version
+from ..error import ChanGoError
 
 
 class VersionScanner(Collection[Version]):
@@ -112,12 +113,12 @@ class VersionScanner(Collection[Version]):
             :class:`~chango.Version`: The version.
 
         Raises:
-            ValueError: If the version with the given identifier is not available.
+            ~chango.error.ChanGoError: If the version with the given identifier is not available.
         """
         try:
             return next(version for version in self if version.uid == uid)
         except StopIteration as exc:
-            raise ValueError(f"Version '{uid}' not available.") from exc
+            raise ChanGoError(f"Version '{uid}' not available.") from exc
 
     @abc.abstractmethod
     def get_changes(self, uid: VUIDInput) -> tuple[str, ...]:
