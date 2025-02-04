@@ -1,4 +1,5 @@
-internal = "Add ``BackwardCompatible(VersionScanner|Chango)``"
+features = "Add Classes :class:`~chango.concrete.BackwardCompatibleVersionScanner` and :class:`~chango.concrete.BackwardCompatibleChanGo` allowing to easily transition between change not formats"
+internal = "Switch to using :class:`~chango.concrete.sections.GitHubSectionChangeNote`"
 [[pull_requests]]
 uid = "64"
 author_uid = "Bibo-Joshi"
