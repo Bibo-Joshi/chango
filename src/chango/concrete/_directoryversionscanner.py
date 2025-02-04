@@ -161,6 +161,8 @@ class DirectoryVersionScanner(VersionScanner):
         Returns:
             :class:`~chango.Version`: The latest version
         """
+        if not self._available_versions:
+            raise ChanGoError("No versions available.")
         return self._get_available_version(
             max(
                 self._available_versions, key=lambda uid: (self._available_versions[uid].date, uid)

@@ -57,6 +57,9 @@ class VersionScanner(Collection[Version]):
 
         Returns:
             :class:`~chango.Version`: The latest version
+
+        Raises:
+            ~chango.error.ChanGoError: If no versions are available.
         """
 
     @abc.abstractmethod

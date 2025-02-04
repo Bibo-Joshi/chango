@@ -9,6 +9,7 @@ import pytest
 
 from chango import Version
 from chango.concrete import DirectoryVersionScanner
+from chango.error import ChanGoError
 from tests.auxil.files import data_path
 
 
@@ -83,6 +84,11 @@ class TestDirectoryVersionScanner:
         latest = scanner.get_latest_version()
         assert latest.uid == "1.3.1"
         assert latest.date == dtm.date(2024, 1, 3)
+
+    def test_get_latest_version_nothing_released(self):
+        scanner = DirectoryVersionScanner(self.DATA_ROOT / "no-released", "unreleased")
+        with pytest.raises(ChanGoError, match="No versions available"):
+            scanner.get_latest_version()
 
     def test_get_available_versions(self, scanner):
         assert set(scanner.get_available_versions()) == {

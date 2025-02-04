@@ -55,9 +55,13 @@ class BackwardCompatibleVersionScanner(VersionScanner):
         Returns:
             :class:`~chango.Version`: The latest version
         """
-        return max(
-            (scanner.get_latest_version() for scanner in self._scanners), key=lambda v: v.date
-        )
+        versions = []
+        for scanner in self._scanners:
+            with contextlib.suppress(ChanGoError):
+                versions.append(scanner.get_latest_version())
+        if not versions:
+            raise ChanGoError("No versions available.")
+        return max(versions, key=lambda v: v.date)
 
     @override
     def get_available_versions(
