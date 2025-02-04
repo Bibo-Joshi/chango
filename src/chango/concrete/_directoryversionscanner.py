@@ -122,7 +122,7 @@ class DirectoryVersionScanner(VersionScanner):
         try:
             return Version(uid=uid, date=self._available_versions[uid].date)
         except KeyError as exc:
-            raise ValueError(f"Version '{uid}' not available.") from exc
+            raise ChanGoError(f"Version '{uid}' not available.") from exc
 
     def invalidate_caches(self) -> None:
         self.__available_versions = None

@@ -22,6 +22,7 @@ from chango.concrete.sections import (
     Section,
     SectionVersionNote,
 )
+from chango.error import ChanGoError
 from chango.helpers import ensure_uid
 from tests.auxil.files import data_path
 
@@ -134,24 +135,6 @@ class TestDirectoryChango:
             assert isinstance(note, CommentChangeNote)
             assert isinstance(note.uid, str)
             assert len(note.uid) == len(shortuuid.ShortUUID().uuid())
-
-        def test_section_change_note_invalid_type(self, section_chango, monkeypatch):
-            monkeypatch.setattr(
-                DummySectionChangeNote, "build_from_github_event", lambda *args, **kwargs: None
-            )
-
-            data = ChanGoActionData(
-                parent_pull_request=ParentPullRequest(
-                    url="https://example.com/pull/42",
-                    number=42,
-                    title="example title",
-                    state="OPEN",
-                    author_login="author",
-                ),
-                linked_issues=None,
-            )
-            with pytest.raises(TypeError, match="Expected change note of type"):
-                section_chango.build_github_event_change_note({}, data)
 
         def test_section_change_note_no_existing(self, section_chango):
             event = {
@@ -318,5 +301,5 @@ class TestDirectoryChango:
         "change_note", ["str_change_note", CommentChangeNote.build_template("slug", "uid")]
     )
     def test_get_write_directory_new_str_version(self, chango, change_note):
-        with pytest.raises(TypeError, match="Version 'new-version' not available yet."):
+        with pytest.raises(ChanGoError, match="'new-version' not available."):
             chango.get_write_directory(change_note, "new-version")

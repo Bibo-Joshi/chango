@@ -132,11 +132,6 @@ class DirectoryChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
         if not isinstance(change_note, SectionChangeNote):
             return change_note
 
-        if not isinstance(change_note, SectionChangeNote):
-            raise TypeError(
-                f"Expected change note of type {SectionChangeNote}, got {type(change_note)}"
-            )
-
         # Special handling for SectionChangeNote
         existing_change_notes = self.load_version_note(None).values()
 

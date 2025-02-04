@@ -10,7 +10,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from chango.concrete import DirectoryChanGo
+from chango.concrete import BackwardCompatibleChanGo
 from chango.config import ChanGoConfig, ChanGoInstanceConfig
 from tests.auxil.files import PROJECT_ROOT_PATH, data_path, temporary_chdir
 
@@ -94,7 +94,7 @@ class TestChanGoInstanceConfig:
         with temporary_chdir(PROJECT_ROOT_PATH):
             config = ChanGoConfig.load()
             chango_instance = config.import_chango_instance()
-            assert isinstance(chango_instance, DirectoryChanGo)
+            assert isinstance(chango_instance, BackwardCompatibleChanGo)
 
     @pytest.mark.parametrize(
         ("sys_path", "expected"),

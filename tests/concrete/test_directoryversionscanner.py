@@ -133,7 +133,7 @@ class TestDirectoryVersionScanner:
         )
 
     def test_lookup_change_note_not_found(self, scanner):
-        with pytest.raises(ValueError, match="not found in any version"):
+        with pytest.raises(ChanGoError, match="not found in any version"):
             scanner.lookup_change_note("unknown_uid")
 
     @pytest.mark.parametrize("idx", [1, 2, 3])
@@ -143,7 +143,7 @@ class TestDirectoryVersionScanner:
         assert version.date == dtm.date(2024, 1, idx)
 
     def test_get_version_not_found(self, scanner):
-        with pytest.raises(ValueError, match="not available"):
+        with pytest.raises(ChanGoError, match="not available"):
             scanner.get_version("1.4")
 
     @pytest.mark.parametrize(
@@ -168,7 +168,7 @@ class TestDirectoryVersionScanner:
         assert changes == {f"uid_{uid.replace('.', '-')}_{idx}" for idx in range(3)}
 
     def test_get_changes_not_found(self, scanner):
-        with pytest.raises(ValueError, match="not available"):
+        with pytest.raises(ChanGoError, match="not available"):
             scanner.get_changes("1.4")
 
     def test_invalidate_caches(self, scanner):

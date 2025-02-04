@@ -98,7 +98,8 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
             :class:`pathlib.Path`: The directory to write the change note to.
 
         Raises:
-            TypeError: If the :paramref:`version` is a :obj:`str` but not yet available.
+            ~chango.error.ChanGoError: If the :paramref:`version` is a :obj:`str` but not yet
+                available.
         """
 
     def build_github_event_change_note(
@@ -160,7 +161,8 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
             :class:`pathlib.Path`: The file path the change note was written to.
 
         Raises:
-            TypeError: If the :paramref:`version` is a :obj:`str` but not yet available.
+            ~chango.error.ChanGoError: If the :paramref:`version` is a :obj:`str` but not yet
+                available.
         """
         path = change_note.to_file(
             directory=self.get_write_directory(change_note=change_note, version=version),
