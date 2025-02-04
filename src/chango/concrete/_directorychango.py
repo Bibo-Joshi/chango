@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Any, Optional, override
 from .._utils.types import VUIDInput
 from ..abc import ChangeNote, ChanGo, VersionHistory, VersionNote
 from ..action import ChanGoActionData
+from ..error import ChanGoError
 from ._directoryversionscanner import DirectoryVersionScanner
 from .sections import SectionChangeNote, SectionVersionNote
 
@@ -93,8 +94,8 @@ class DirectoryChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
             if isinstance(version, str):
                 try:
                     version_obj = self.scanner.get_version(version)
-                except ValueError as exc:
-                    raise TypeError(
+                except ChanGoError as exc:
+                    raise ChanGoError(
                         f"Version '{version}' not available yet. To get the write directory for a "
                         "new version, pass the version as `change.Version` object."
                     ) from exc
@@ -129,13 +130,8 @@ class DirectoryChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
         """
         change_note = self.change_note_type.build_from_github_event(event=event, data=data)
 
-        if not issubclass(self.change_note_type, SectionChangeNote):
-            return change_note
-
         if not isinstance(change_note, SectionChangeNote):
-            raise TypeError(
-                f"Expected change note of type {SectionChangeNote}, got {type(change_note)}"
-            )
+            return change_note
 
         # Special handling for SectionChangeNote
         existing_change_notes = self.load_version_note(None).values()

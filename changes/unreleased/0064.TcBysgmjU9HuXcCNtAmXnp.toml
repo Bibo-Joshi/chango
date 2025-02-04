@@ -1,0 +1,7 @@
+features = "Add Classes :class:`~chango.concrete.BackwardCompatibleVersionScanner` and :class:`~chango.concrete.BackwardCompatibleChanGo` allowing to easily transition between change not formats"
+breaking = "Adapt expected exceptions in :class:`~chango.abc.ChanGo` and :class:`~chango.abc.VersionScanner` to use :class:`~chango.error.ChanGoError`"
+internal = "Switch to using :class:`~chango.concrete.sections.GitHubSectionChangeNote`"
+[[pull_requests]]
+uid = "64"
+author_uid = "Bibo-Joshi"
+closes_threads = []
