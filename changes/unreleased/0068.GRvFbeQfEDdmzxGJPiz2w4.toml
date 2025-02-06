@@ -1,4 +1,4 @@
-highlights = "Fix Faulty Build Configuration"
+bugfixes = "Fix Faulty Build Configuration"
 [[pull_requests]]
 uid = "68"
 author_uid = "Bibo-Joshi"
