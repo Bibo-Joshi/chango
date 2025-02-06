@@ -64,6 +64,3 @@ version_scanner = BackwardCompatibleVersionScanner(
 chango_instance = BackwardCompatibleChanGo(
     main_instance=new_chango_instance, legacy_instances=(legacy_chango_instance,)
 )
-
-if __name__ == "__main__":
-    chango_instance.load_version_history().render(MarkupLanguage.RESTRUCTUREDTEXT)
