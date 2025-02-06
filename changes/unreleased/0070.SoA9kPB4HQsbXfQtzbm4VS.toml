@@ -1,4 +1,4 @@
-highlights = "Remove Debugging Content"
+internal = "Remove Debugging Content"
 [[pull_requests]]
 uid = "70"
 author_uid = "Bibo-Joshi"
