@@ -46,7 +46,12 @@ chango = "chango._cli:app"
 [tool.hatch.version]
 path = "src/chango/__about__.py"
 
-[tool.hatch.build]
+# See also https://github.com/pypa/hatch/issues/1230 for discussion
+# the source distribution will include most of the files in the root directory
+[tool.hatch.build.targets.sdist]
+exclude = [".venv*", ".github"]
+# the wheel will only include the src/chango package
+[tool.hatch.build.targets.wheel]
 packages = ["src/chango"]
 
 # RUFF:
