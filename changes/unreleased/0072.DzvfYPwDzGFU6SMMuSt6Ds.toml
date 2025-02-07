@@ -1,4 +1,4 @@
-highlights = "Fix A Bug in ``GitHubSectionChangeNot.get_thread_url``"
+bugfixes = "Fix Link Returned by ``GitHubSectionChangeNot.get_thread_url``"
 [[pull_requests]]
 uid = "72"
 author_uid = "Bibo-Joshi"
