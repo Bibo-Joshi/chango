@@ -1,0 +1,5 @@
+highlights = "Fix A Bug in ``GitHubSectionChangeNot.get_thread_url``"
+[[pull_requests]]
+uid = "72"
+author_uid = "Bibo-Joshi"
+closes_threads = ["71"]
