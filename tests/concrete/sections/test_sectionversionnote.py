@@ -101,8 +101,8 @@ Required Section
 
   (`#pr1 <https://github.com/my-username/my-repo/pull/pr1>`_ by `@author1 \
 <https://github.com/author1>`_ closes `#thread1 \
-<https://github.com/my-username/my-repo/issue/thread1>`_, `#thread2 \
-<https://github.com/my-username/my-repo/issue/thread2>`_; `#pr2 \
+<https://github.com/my-username/my-repo/issues/thread1>`_, `#thread2 \
+<https://github.com/my-username/my-repo/issues/thread2>`_; `#pr2 \
 <https://github.com/my-username/my-repo/pull/pr2>`_ by `@author2 <https://github.com/author2>`_)
 - change note 2 req.
 - change note 3 req. (`#pr_a <https://github.com/my-username/my-repo/pull/pr_a>`_ by \
