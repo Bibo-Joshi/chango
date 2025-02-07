@@ -65,7 +65,7 @@ class TestGitHubSectionChangeNote:
     def test_get_thread_url(self):
         assert (
             DummyChangNote.get_thread_url("123")
-            == "https://github.com/my-username/my-repo/issue/123"
+            == "https://github.com/my-username/my-repo/issues/123"
         )
 
     def test_get_thread_url_invalid(self):

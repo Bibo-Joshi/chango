@@ -65,7 +65,7 @@ class GitHubSectionChangeNote(SectionChangeNote):
         """Implementation of :meth:`SectionChangeNote.get_pull_request_url` based on
         :attr:`OWNER` and :attr:`REPOSITORY`.
         """
-        return f"https://github.com/{cls._get_owner()}/{cls._get_repository()}/issue/{thread_uid}"
+        return f"https://github.com/{cls._get_owner()}/{cls._get_repository()}/issues/{thread_uid}"
 
     @classmethod
     @override
