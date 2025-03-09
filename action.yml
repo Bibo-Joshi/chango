@@ -136,11 +136,11 @@ runs:
               text=True,
               check=True
             ).stdout.strip()
-            debug(f"Last committer: {last_commiter}")
+            warning(f"Last committer: {last_commiter}")
             if last_commiter != "github-actions[bot]":
               should_commit = True
           
-          debug(f"Should commit: {should_commit}")
+          warning(f"Should commit: {should_commit}")
           set_output("should_commit", "true" if should_commit else "false")
             
 
