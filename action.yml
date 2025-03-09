@@ -139,7 +139,7 @@ runs:
             if last_commiter != "github-actions[bot]":
               should_commit = True
           
-          set_output("should_commit", should_commit)
+          set_output("should_commit", "true" if should_commit else "false")
             
 
     - name: Commit and Push
