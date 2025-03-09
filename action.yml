@@ -147,7 +147,7 @@ runs:
           
           if should_commit:
             set_output("change_note_content", change_note.to_string())
-            set_output("change_note_path", path.relative_to(os.getcwd()))
+            set_output("change_note_path", path.relative_to(os.getcwd()).as_posix())
           else:
             set_output("change_note_content", "")
             set_output("change_note_path", "")
