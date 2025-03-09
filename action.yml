@@ -137,7 +137,9 @@ runs:
               check=True
             ).stdout.strip()
             warning(f"Last committer: {last_commiter}")
-            if last_commiter != "github-actions[bot]":
+          
+            # Do not override manual changes
+            if last_commiter == "github-actions[bot]":
               should_commit = True
           
           warning(f"Should commit: {should_commit}")
