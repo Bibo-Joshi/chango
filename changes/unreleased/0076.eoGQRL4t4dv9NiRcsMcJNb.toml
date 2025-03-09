@@ -1,4 +1,4 @@
-highlights = "Bump pypa/gh-action-pypi-publish from 1.12.3 to 1.12.4"
+internal = "Bump pypa/gh-action-pypi-publish from 1.12.3 to 1.12.4"
 [[pull_requests]]
 uid = "76"
 author_uid = "dependabot[bot]"
