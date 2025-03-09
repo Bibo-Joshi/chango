@@ -1,4 +1,4 @@
-highlights = "Check for Changes in ``DirectoryChanGo.build_github_event_change_note``!"
+highlights = "Test Change"
 [[pull_requests]]
 uid = "80"
 author_uid = "Bibo-Joshi"
