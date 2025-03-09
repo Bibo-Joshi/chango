@@ -1,0 +1,5 @@
+highlights = "Bump stefanzweifel/git-auto-commit-action from 5.0.1 to 5.1.0"
+[[pull_requests]]
+uid = "74"
+author_uid = "dependabot[bot]"
+closes_threads = []

@@ -163,21 +163,26 @@ class TestDirectoryChango:
             )
             assert note.req_0 == "example title"
 
-        def test_section_change_note_with_existing(self, section_chango):
+        @pytest.mark.parametrize("modifies", [True, False])
+        def test_section_change_note_with_existing(self, section_chango, modifies):
             event = {
                 "pull_request": {
                     "html_url": "https://example.com/pull/42",
-                    "number": 43,
-                    "title": "example title",
+                    "number": 101,
+                    "title": "example title" if modifies else "req_0",
                     "user": {"login": "author"},
                 }
             }
             note = section_chango.build_github_event_change_note(event, None)
+            if not modifies:
+                assert note is None
+                return
+
             assert isinstance(note, DummySectionChangeNote)
-            assert note.slug == "0043"
-            assert note.uid == "Zhpuc4HVWKycYccXAcM3xc"
+            assert note.slug == "0101"
+            assert note.uid == "abcuc4HVWKycYccXAcM3xc"
             assert note.pull_requests == (
-                PullRequest(uid="43", author_uid="author", closes_threads=()),
+                PullRequest(uid="101", author_uid="author", closes_threads=()),
             )
             assert note.req_0 == "example title"
 
@@ -206,6 +211,7 @@ class TestDirectoryChango:
                 linked_issues=None,
             )
             note = section_chango.build_github_event_change_note(event, data)
+
             assert isinstance(note, DummySectionChangeNote)
             assert note.slug == "0043"
             assert note.pull_requests == (
