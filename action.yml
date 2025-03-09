@@ -144,6 +144,13 @@ runs:
               should_commit = True
           
           set_output("should_commit", "true" if should_commit else "false")
+          
+          if should_commit:
+            set_output("change_note_content", change_note.to_string())
+            set_output("change_note_path", path.relative_to(os.getcwd()))
+          else:
+            set_output("change_note_content", "")
+            set_output("change_note_path", "")
 
     - name: Commit and Push
       id: commit-and-push
@@ -152,3 +159,26 @@ runs:
       with:
         commit_message: "Add chango fragment for PR #${{ github.event.pull_request.number }}"
         repository: ./target-repo
+
+    - name: Set Job Summary
+      id: job-summary
+      # Run only if the commit & push step failed.
+      # We use this for PRs coming from forks. Here we can't easily push back to the PR branch or
+      # create PR reviews, so we fail the job and set the job summary
+      if: ${{ failure() && steps.create-chango-fragment.outputs.should_commit == 'true' }}
+      env:
+        CHANGE_NOTE_PATH: ${{ steps.create-chango-fragment.outputs.change_note_path }}
+        CHANGE_NOTE_CONTENT: ${{ steps.create-chango-fragment.outputs.change_note_content }}
+      uses: jannekem/run-python-script-action@bbfca66c612a28f3eeca0ae40e1f810265e2ea68 # v1.7
+      with:
+        script: |
+          text = f"""
+          Please create a [chango]https://chango.readthedocs.io/stable/) fragment for this PR.
+          I suggest to add the following content to a file named `${{ env.CHANGE_NOTE_PATH}}` in the repository:
+          
+          ```
+          ${{ env.CHANGE_NOTE_CONTENT}}
+          ```
+          """
+          set_summary(text)
+          error("Chango fragment should be updated")
