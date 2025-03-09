@@ -98,6 +98,7 @@ runs:
         DEFAULT_OUTPUT: ${{ steps.fetch-linked-issues-default-token.outputs.data }}
       with:
         script: |
+          import subprocess
           import os
           from chango.config import get_chango_instance
           from chango.action import ChanGoActionData
@@ -124,11 +125,27 @@ runs:
               event=${{ toJson(github.event) }},
               data=data
           )
-          chango_instance.write_change_note(change_note, version=None)
+          
+          should_commit = False
+          if change_note is not None:
+            path = chango_instance.write_change_note(change_note, version=None)
+            
+            last_commiter = subprocess.run(
+              ["git", "log", "-1", "--format=%ce", "--", path],
+              capture_output=True,
+              text=True,
+              check=True
+            ).stdout.strip()
+          
+            # Do not override manual changes
+            if last_commiter == "github-actions[bot]":
+              should_commit = True
+          
+          set_output("should_commit", "true" if should_commit else "false")
 
     - name: Commit and Push
       id: commit-and-push
-      if: ${{ inputs.commit-and-push == 'true' }}
+      if: ${{ inputs.commit-and-push == 'true' && steps.create-chango-fragment.outputs.should_commit == 'true' }}
       uses: stefanzweifel/git-auto-commit-action@e348103e9026cc0eee72ae06630dbe30c8bf7a79 # v5.1.0
       with:
         commit_message: "Add chango fragment for PR #${{ github.event.pull_request.number }}"
