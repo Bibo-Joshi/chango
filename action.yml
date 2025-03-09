@@ -124,7 +124,7 @@ runs:
               event=${{ toJson(github.event) }},
               data=data
           )
-          if chango_note is not None:
+          if change_note is not None:
             chango_instance.write_change_note(change_note, version=None)
 
     - name: Commit and Push
