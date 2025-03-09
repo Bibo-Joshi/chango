@@ -140,7 +140,7 @@ runs:
             ).stdout.strip()
           
             # Do not override manual changes
-            if last_commiter == "github-actions[bot]":
+            if last_commiter in ("github-actions[bot]", ""):
               should_commit = True
           
           set_output("should_commit", "true" if should_commit else "false")
