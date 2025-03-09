@@ -1,9 +1,6 @@
 name: Create Chango Fragment
 on:
   pull_request:
-    types:
-      - opened
-      - reopened
 
 jobs:
   create-chango-fragment:
