@@ -100,6 +100,7 @@ runs:
         DEFAULT_OUTPUT: ${{ steps.fetch-linked-issues-default-token.outputs.data }}
       with:
         script: |
+          import base64
           import subprocess
           import os
           from chango.config import get_chango_instance
@@ -146,7 +147,9 @@ runs:
           set_output("should_commit", "true" if should_commit else "false")
           
           if should_commit:
-            set_output("change_note_content", change_note.to_string())
+            # b64 encoding avoits problems with new lines in the output
+            encoded_content = base64.b64encode(change_note.to_string().encode()).decode()
+            set_output("change_note_content", encoded_content)
             set_output("change_note_path", path.relative_to(os.getcwd()).as_posix())
           else:
             set_output("change_note_content", "")
@@ -172,12 +175,17 @@ runs:
       uses: jannekem/run-python-script-action@bbfca66c612a28f3eeca0ae40e1f810265e2ea68 # v1.7
       with:
         script: |
+          import base64
+
+          encoded_content = "${{ env.CHANGE_NOTE_CONTENT }}"
+          decoded_content = base64.b64decode(encoded_content).decode()
+          
           text = f"""
-          Please create a [chango]https://chango.readthedocs.io/stable/) fragment for this PR.
+          Please create a [chango](https://chango.readthedocs.io/stable/) fragment for this PR.
           I suggest to add the following content to a file named `${{ env.CHANGE_NOTE_PATH}}` in the repository:
           
           ```
-          ${{ env.CHANGE_NOTE_CONTENT}}
+          {decoded_content}
           ```
           """
           set_summary(text)
