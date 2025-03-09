@@ -1,6 +1,12 @@
 name: Create Chango Fragment
 on:
   pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - labeled
+      - unlabeled
 
 jobs:
   create-chango-fragment:
