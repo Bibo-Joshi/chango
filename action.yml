@@ -176,17 +176,19 @@ runs:
       with:
         script: |
           import base64
+          from pathlib import Path
 
+          file_path = Path("${{ env.CHANGE_NOTE_PATH }}")
           encoded_content = "${{ env.CHANGE_NOTE_CONTENT }}"
           decoded_content = base64.b64decode(encoded_content).decode()
           
           text = f"""
           Please create a [chango](https://chango.readthedocs.io/stable/) fragment for this PR.
-          I suggest to add the following content to a file named `${{ env.CHANGE_NOTE_PATH}}` in the repository:
+          I suggest adding the following content to `{file_path}` in the repository:
           
-          ```
+          ```{file_path.suffix[1:]}
           {decoded_content}
           ```
           """
           set_summary(text)
-          error("Chango fragment should be updated")
+          error("Chango fragment should be updated. See the job summary for details.")
