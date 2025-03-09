@@ -1,4 +1,4 @@
-highlights = "Bump Version to 0.4.0"
+internal = "Bump Version to 0.4.0"
 [[pull_requests]]
 uid = "82"
 author_uid = "Bibo-Joshi"
