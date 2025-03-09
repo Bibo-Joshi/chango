@@ -112,7 +112,7 @@ class DirectoryChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
     @override
     def build_github_event_change_note(
         self, event: dict[str, Any], data: dict[str, Any] | ChanGoActionData | None = None
-    ) -> CNT:
+    ) -> CNT | None:
         """Implementation of :meth:`~chango.abc.ChanGo.build_github_event_change_note`.
 
         Important:
@@ -122,7 +122,7 @@ class DirectoryChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
             of :class:`~chango.concrete.sections.SectionChangeNote`:
 
             * If there already is a change note for the current pull request, it is updated with
-              the new information.
+              the new information. If nothing changed, returns :obj:`None`.
             * If the ``data`` parameter is
               an instance of :class:`~chango.action.ChanGoActionData` with a parent pull request,
               then this method will try to find an existing *unreleased* change note for the
@@ -134,6 +134,8 @@ class DirectoryChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
             return change_note
 
         # Special handling for SectionChangeNote
+        orig_data = change_note.to_bytes()
+        was_modified = False
         existing_change_notes = self.load_version_note(None).values()
 
         # First check if we can override any existing change notes
@@ -145,9 +147,13 @@ class DirectoryChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
                 continue
 
             change_note.update_uid(existing_change_note.uid)
+            orig_data = existing_change_note.to_bytes()
+            was_modified = True
 
         # Handle Parent PRs
         if not isinstance(data, ChanGoActionData) or not data.parent_pull_request:
+            if was_modified and (orig_data == change_note.to_bytes()):
+                return None
             return change_note  # type: ignore[return-value]
 
         parent_pr = data.parent_pull_request
@@ -170,8 +176,11 @@ class DirectoryChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
                 else:
                     setattr(existing_change_note, section_name, f"{existing_value}\n{new_value}")
 
+            # change_note must have at least one section specified, so we now that here we have
+            # at least one change that we report
             return existing_change_note
 
-        # return unchanged change note if no parent pull request found
+        # If we get here, then we didn't find an existing change note for the parent PR
+        # This we need to return the new change note
         # mypy doesn't quite get that self.change_note_type is the same as CNT
         return change_note  # type: ignore[return-value]
