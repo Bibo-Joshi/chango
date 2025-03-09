@@ -136,15 +136,12 @@ runs:
               text=True,
               check=True
             ).stdout.strip()
-            warning(f"Last committer: {last_commiter}")
           
             # Do not override manual changes
             if last_commiter == "github-actions[bot]":
               should_commit = True
           
-          warning(f"Should commit: {should_commit}")
           set_output("should_commit", "true" if should_commit else "false")
-            
 
     - name: Commit and Push
       id: commit-and-push
