@@ -1,4 +1,4 @@
-highlights = "Bump actions/download-artifact from 4.1.8 to 4.2.1"
+internal = "Bump actions/download-artifact from 4.1.8 to 4.2.1"
 [[pull_requests]]
 uid = "86"
 author_uid = "dependabot[bot]"
