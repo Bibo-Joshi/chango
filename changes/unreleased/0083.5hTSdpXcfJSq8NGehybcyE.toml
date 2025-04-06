@@ -1,4 +1,4 @@
-highlights = "Bump actions/setup-python from 5.4.0 to 5.5.0"
+internal = "Bump actions/setup-python from 5.4.0 to 5.5.0"
 [[pull_requests]]
 uid = "83"
 author_uid = "dependabot[bot]"
