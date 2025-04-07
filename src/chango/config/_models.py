@@ -129,7 +129,7 @@ class ChanGoConfig(FrozenModel, TomlSettings):
         """
         with add_sys_path(self.sys_path):
             return cast(
-                ChanGo,
+                "ChanGo",
                 getattr(
                     importlib.import_module(
                         self.chango_instance.module, self.chango_instance.package

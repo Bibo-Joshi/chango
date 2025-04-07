@@ -50,7 +50,7 @@ class CommentVersionNote[V: (Version, None)](VersionNote[CommentChangeNote, V]):
                 return (
                     "<ul>\n"
                     + "\n".join(
-                        f"<li>{note.comment.replace("\n", "<br>")}</li>" for note in self.values()
+                        f"<li>{note.comment.replace('\n', '<br>')}</li>" for note in self.values()
                     )
                     + "\n</ul>"
                 )

@@ -169,5 +169,5 @@ class GitHubSectionChangeNote(SectionChangeNote):
                     closes_threads=tuple(map(str, closes_threads)),
                 ),
             ),
-            **{section: pr_title for section in sections},
+            **dict.fromkeys(sections, pr_title),
         )
