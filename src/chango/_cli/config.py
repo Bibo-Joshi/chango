@@ -19,7 +19,7 @@ from ..config import ChanGoConfig
 app = typer.Typer(help="Show or verify the configuration of the chango CLI.")
 
 _PATH_ANNOTATION = Annotated[
-    Optional[Path],  # noqa: UP007 - typer currently can't handle Path | None
+    Optional[Path],
     typer.Option(
         help=(
             "The path to the [code]pyproject.toml[/code] file. "
@@ -55,7 +55,7 @@ def callback(context: typer.Context, path: _PATH_ANNOTATION = None) -> None:
 def show(context: typer.Context) -> None:
     """Show the configuration."""
     string = f"""
-Showing the configuration of the chango CLI as configured in ``{context.obj['path']}``.
+Showing the configuration of the chango CLI as configured in ``{context.obj["path"]}``.
 ```toml
 {tomlkit.dumps(context.obj["data"])}
 ```

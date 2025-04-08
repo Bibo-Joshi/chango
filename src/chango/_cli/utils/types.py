@@ -37,7 +37,7 @@ MARKUP = Annotated[
     ),
 ]
 OUTPUT_FILE = Annotated[
-    Optional[Path],  # noqa: UP007 - typer currently can't handle Path | None
+    Optional[Path],
     typer.Option(
         ...,
         "-o",

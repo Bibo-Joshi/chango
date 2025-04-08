@@ -88,4 +88,4 @@ class CommentChangeNote(ChangeNote):
             case _:
                 raise ValueError(f"Unsupported markup language: {cls.MARKUP}")
 
-        return cls(slug=f"{pr_number:04}", comment=f'{pull_request["title"]} {link}')
+        return cls(slug=f"{pr_number:04}", comment=f"{pull_request['title']} {link}")
