@@ -1,0 +1,5 @@
+highlights = "Bump astral-sh/setup-uv from 5.3.0 to 6.0.1"
+[[pull_requests]]
+uid = "93"
+author_uid = "dependabot[bot]"
+closes_threads = []
