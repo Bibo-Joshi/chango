@@ -33,6 +33,24 @@ dependencies = [
   "typer~=0.12",
 ]
 
+[dependency-groups]
+docs = [
+  "furo~=2024.8",
+  "jinja2~=3.1",
+  "sphinx~=8.1",
+  "sphinx-click~=6.0",
+  "sphinx-copybutton~=0.5",
+  "sphinx-paramlinks~=0.6",
+]
+tests = [
+  "build",
+  "pre-commit",
+  "pytest~=8.3",
+  "pytest-cov",
+  "pytest-randomly",
+]
+all = ["pre-commit", { include-group = "docs" }, { include-group = "tests" }]
+
 [project.urls]
 Documentation = "https://chango.readthedocs.io/"
 Issues = "https://github.com/Bibo-Joshi/chango/issues"
