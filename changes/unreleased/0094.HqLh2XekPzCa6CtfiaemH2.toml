@@ -1,4 +1,4 @@
-highlights = "Bump codecov/codecov-action from 5.4.0 to 5.4.3"
+internal = "Bump codecov/codecov-action from 5.4.0 to 5.4.3"
 [[pull_requests]]
 uid = "94"
 author_uid = "dependabot[bot]"
