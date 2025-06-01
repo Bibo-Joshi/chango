@@ -42,5 +42,5 @@ class TestRelease:
     def test_release_invalid_date(self, cli: ReuseCliRunner, mock_chango_instance):
         result = cli.invoke(args=["release", "--uid", "1.0.0", "--date", "invalid"])
         assert result.check_exit_code(UsageError.exit_code)
-        assert "Invalid value for '--date':" in result.stdout
+        assert "Invalid value for '--date'" in result.stderr
         assert len(mock_chango_instance.release.call_args_list) == 0

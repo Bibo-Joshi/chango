@@ -37,18 +37,11 @@ class CLIResult:
 
 
 class ReuseCliRunner(CliRunner):
-    def __init__(
-        self,
-        app: Typer,
-        charset: str = "utf-8",
-        env: Mapping[str, str | None] | None = None,
-        echo_stdin: bool = False,
-        mix_stderr: bool = True,
-    ) -> None:
+    def __init__(self, app: Typer, *args: Any, **kwargs: Any) -> None:
         self.app = app
         # For easier testing, disable rich markup mode
         self.app.rich_markup_mode = None
-        super().__init__(charset=charset, env=env, echo_stdin=echo_stdin, mix_stderr=mix_stderr)
+        super().__init__(*args, **kwargs)
 
     def invoke(
         self,
