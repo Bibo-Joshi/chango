@@ -1,4 +1,4 @@
-highlights = "Bump astral-sh/setup-uv from 6.0.1 to 6.1.0"
+internal = "Bump astral-sh/setup-uv from 6.0.1 to 6.1.0"
 [[pull_requests]]
 uid = "95"
 author_uid = "dependabot[bot]"
