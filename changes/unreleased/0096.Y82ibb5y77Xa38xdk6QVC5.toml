@@ -1,4 +1,4 @@
-interal = "Bump github/codeql-action from 3.28.16 to 3.28.18"
+internal = "Bump github/codeql-action from 3.28.16 to 3.28.18"
 [[pull_requests]]
 uid = "96"
 author_uid = "dependabot"
