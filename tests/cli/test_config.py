@@ -40,7 +40,7 @@ class TestConfig:
         path = Path("nonexistent").absolute()
         result = cli.invoke(["config", "--path", str(path), "show"])
         assert result.check_exit_code(UsageError.exit_code)
-        assert f"File not found: {path!s}" in result.stdout
+        assert f"File not found: {path!s}" in result.stderr
 
     def test_show_invalid_toml(self, cli: ReuseCliRunner, tmp_path):
         path = tmp_path / "pyproject.toml"
@@ -49,7 +49,7 @@ class TestConfig:
         with temporary_chdir(tmp_path):
             result = cli.invoke(["config", "--path", str(path), "show"])
             assert result.check_exit_code(UsageError.exit_code)
-            assert "Failed to parse the configuration file" in result.stdout
+            assert "Failed to parse the configuration file" in result.stderr
 
     def test_show_no_chango_config(self, cli: ReuseCliRunner, tmp_path):
         path = tmp_path / "pyproject.toml"
@@ -58,7 +58,7 @@ class TestConfig:
         with temporary_chdir(tmp_path):
             result = cli.invoke(["config", "--path", str(path), "show"])
             assert result.check_exit_code(UsageError.exit_code)
-            assert "No configuration found for chango" in result.stdout
+            assert "No configuration found for chango" in result.stderr
 
     def test_validate_invalid_chango_config(self, cli: ReuseCliRunner, tmp_path):
         path = tmp_path / "pyproject.toml"
@@ -67,7 +67,7 @@ class TestConfig:
         with temporary_chdir(tmp_path):
             result = cli.invoke(["config", "--path", str(path), "validate"])
             assert result.check_exit_code(UsageError.exit_code)
-            assert f"Validation of config file at {path!s} failed:" in result.stdout
+            assert f"Validation of config file at {path!s} failed:" in result.stderr
 
     def test_validate_import_error(self, cli: ReuseCliRunner, tmp_path):
         path = tmp_path / "pyproject.toml"
@@ -79,7 +79,7 @@ class TestConfig:
         with temporary_chdir(tmp_path):
             result = cli.invoke(["config", "--path", str(path), "validate"])
             assert result.check_exit_code(UsageError.exit_code)
-            assert "importing the ChanGo instance failed" in result.stdout
+            assert "importing the ChanGo instance failed" in result.stderr
 
     def test_validate_success(self, cli: ReuseCliRunner):
         with temporary_chdir(PROJECT_ROOT_PATH):
