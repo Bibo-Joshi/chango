@@ -5,7 +5,7 @@
 __all__ = ["app"]
 
 from pathlib import Path
-from typing import Annotated, Optional
+from typing import Annotated
 
 import tomlkit
 import typer
@@ -19,7 +19,7 @@ from ..config import ChanGoConfig
 app = typer.Typer(help="Show or verify the configuration of the chango CLI.")
 
 _PATH_ANNOTATION = Annotated[
-    Optional[Path],
+    Path | None,
     typer.Option(
         help=(
             "The path to the [code]pyproject.toml[/code] file. "

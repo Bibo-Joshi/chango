@@ -1,0 +1,5 @@
+internal = "Bump `pre-commit` Dependency Versions"
+[[pull_requests]]
+uid = "101"
+author_uid = "pre-commit-ci"
+closes_threads = []

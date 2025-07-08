@@ -3,7 +3,7 @@
 #  SPDX-License-Identifier: MIT
 import datetime as dtm
 from pathlib import Path
-from typing import Annotated, Optional
+from typing import Annotated
 
 import typer
 
@@ -37,7 +37,7 @@ MARKUP = Annotated[
     ),
 ]
 OUTPUT_FILE = Annotated[
-    Optional[Path],
+    Path | None,
     typer.Option(
         ...,
         "-o",
