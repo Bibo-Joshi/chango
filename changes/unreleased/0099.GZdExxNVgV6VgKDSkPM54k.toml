@@ -2,4 +2,4 @@ internal = "Implement PEP 735 Dependency Groups"
 
 [[pull_requests]]
 uid = "99"
-author_uid = "Bibo-Joshi"
+author_uids = ["Bibo-Joshi"]

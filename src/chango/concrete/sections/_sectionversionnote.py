@@ -55,14 +55,18 @@ class SectionVersionNote[V: (Version, None), SCN: SectionChangeNote](VersionNote
 
     def _render_pr(self, pr: PullRequest) -> str:
         pr_url = self._section_change_note_type.get_pull_request_url(pr.uid)
-        author = self._section_change_note_type.get_author_url(pr.author_uid)
+
+        author_links = [
+            f"`@{author_uid} <{self._section_change_note_type.get_author_url(author_uid)}>`_"
+            for author_uid in pr.author_uids
+        ]
 
         thread_links = [
             f"`#{thread_uid} <{self._section_change_note_type.get_thread_url(thread_uid)}>`_"
             for thread_uid in pr.closes_threads
         ]
 
-        base = f"`#{pr.uid} <{pr_url}>`_ by `@{pr.author_uid} <{author}>`_"
+        base = f"`#{pr.uid} <{pr_url}>`_ by {', '.join(author_links)}"
         if not thread_links:
             return base
         return f"{base} closes {', '.join(thread_links)}"

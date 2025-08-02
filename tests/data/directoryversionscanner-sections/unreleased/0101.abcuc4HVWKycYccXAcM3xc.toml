@@ -1,4 +1,4 @@
 req_0 = "req_0"
 [[pull_requests]]
 uid = "101"
-author_uid = "author"
+author_uids = ["author"]

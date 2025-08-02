@@ -159,7 +159,7 @@ class TestDirectoryChango:
             assert isinstance(note, DummySectionChangeNote)
             assert note.slug == "0033"
             assert note.pull_requests == (
-                PullRequest(uid="33", author_uid="author", closes_threads=()),
+                PullRequest(uid="33", author_uids=("author",), closes_threads=()),
             )
             assert note.req_0 == "example title"
 
@@ -182,7 +182,7 @@ class TestDirectoryChango:
             assert note.slug == "0101"
             assert note.uid == "abcuc4HVWKycYccXAcM3xc"
             assert note.pull_requests == (
-                PullRequest(uid="101", author_uid="author", closes_threads=()),
+                PullRequest(uid="101", author_uids=("author",), closes_threads=()),
             )
             assert note.req_0 == "example title"
 
@@ -217,10 +217,10 @@ class TestDirectoryChango:
             assert note.pull_requests == (
                 PullRequest(
                     uid="43",
-                    author_uid="parent_author",
+                    author_uids=("parent_author",),
                     closes_threads=("existing_thread1", "existing_thread2"),
                 ),
-                PullRequest(uid="45", author_uid="author", closes_threads=()),
+                PullRequest(uid="45", author_uids=("author",), closes_threads=()),
             )
             assert note.req_0 == "existing_req_0\nexample title"
             assert note.opt_0 == "example title"

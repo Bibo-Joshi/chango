@@ -70,11 +70,11 @@ class GitHubSectionChangeNote(SectionChangeNote):
     @classmethod
     @override
     def get_author_url(cls, author_uid: str) -> str:
-        """Get the URL of the author with the given UID.
+        """Get the URL of an author with the given UID.
 
         Args:
-            author_uid (:obj:`str`): The UID of the author as defined in
-                :attr:`chango.concrete.sections.PullRequest.author_uid`.
+            author_uid (:obj:`str`): The UID of an author as defined in
+                :attr:`chango.concrete.sections.PullRequest.author_uids`.
 
         Returns:
             :obj:`str`: The URL of the author.
@@ -165,7 +165,7 @@ class GitHubSectionChangeNote(SectionChangeNote):
             pull_requests=(
                 PullRequest(
                     uid=str(pr_number),
-                    author_uid=author_uid,
+                    author_uids=(author_uid,),
                     closes_threads=tuple(map(str, closes_threads)),
                 ),
             ),

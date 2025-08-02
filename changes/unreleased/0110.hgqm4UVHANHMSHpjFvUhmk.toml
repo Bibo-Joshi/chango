@@ -1,0 +1,5 @@
+features = "Allow Several ``author_uids`` in ``sections.PullRequest``"
+[[pull_requests]]
+uid = "110"
+author_uids = ["Bibo-Joshi"]
+closes_threads = ["107"]

@@ -1,5 +1,5 @@
 internal = "Bump actions/download-artifact from 4.2.1 to 4.3.0"
 [[pull_requests]]
 uid = "90"
-author_uid = "dependabot[bot]"
+author_uids = ["dependabot[bot]"]
 closes_threads = []
