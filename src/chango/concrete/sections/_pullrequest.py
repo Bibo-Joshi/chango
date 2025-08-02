@@ -41,7 +41,9 @@ class PullRequest(pydt.BaseModel):
     def unify_author_ids(cls, data: Any) -> Any:
         # for backwards compatibility, we allow both `author_uid` and `author_uids`
         if not isinstance(data, dict):
-            return data
+            # This cause is here only due to pydantics documentation example.
+            # in practice, this should never happen.
+            return data  # pragma: no cover
 
         author_uid = data.pop("author_uid", None)
         author_uids = data.pop("author_uids", None)
