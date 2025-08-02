@@ -1,4 +1,4 @@
-highlights = "Bump sigstore/gh-action-sigstore-python from 3.0.0 to 3.0.1"
+internal = "Bump sigstore/gh-action-sigstore-python from 3.0.0 to 3.0.1"
 [[pull_requests]]
 uid = "105"
 author_uid = "dependabot"
