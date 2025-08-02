@@ -33,8 +33,8 @@ def section_change_note():
         req_section="req 𝛙𝌢𑁍",
         opt_section="opt 𝛙𝌢𑁍",
         pull_requests=(
-            PullRequest(uid="uid1", closes_threads=("thread1",), author_uid="author1"),
-            PullRequest(uid="uid2", closes_threads=("thread2",), author_uid="author2"),
+            PullRequest(uid="uid1", closes_threads=("thread1",), author_uids=("author1",)),
+            PullRequest(uid="uid2", closes_threads=("thread2",), author_uids=("author2",)),
         ),
     )
 
@@ -104,12 +104,12 @@ opt_section = "Optional Section."
 [[pull_requests]]
 uid = "uid1"
 closes_threads = ["thread1", "thread2"]
-author_uid = "author1"
+author_uids = ["author1"]
 
 [[pull_requests]]
 uid = "uid2"
 closes_threads = ["thread3"]
-author_uid = "author2"
+author_uid = ["author2"]
 """
 
         change_note = section_change_note.from_string("slug", "uid", string)
@@ -121,10 +121,10 @@ author_uid = "author2"
             assert len(change_note.pull_requests) == 2  # noqa: PLR2004
             assert change_note.pull_requests[0].uid == "uid1"
             assert change_note.pull_requests[0].closes_threads == ("thread1", "thread2")
-            assert change_note.pull_requests[0].author_uid == "author1"
+            assert change_note.pull_requests[0].author_uids == ("author1",)
             assert change_note.pull_requests[1].uid == "uid2"
             assert change_note.pull_requests[1].closes_threads == ("thread3",)
-            assert change_note.pull_requests[1].author_uid == "author2"
+            assert change_note.pull_requests[1].author_uids == ("author2",)
         else:
             assert change_note.pull_requests == ()
 
@@ -141,12 +141,12 @@ author_uid = "author2"
 opt_section = "opt 𝛙𝌢𑁍"
 [[pull_requests]]
 uid = "uid1"
-author_uid = "author1"
+author_uids = ["author1"]
 closes_threads = ["thread1"]
 
 [[pull_requests]]
 uid = "uid2"
-author_uid = "author2"
+author_uids = ["author2"]
 closes_threads = ["thread2"]
 """
         )
@@ -158,9 +158,9 @@ closes_threads = ["thread2"]
         assert change_note.opt_section == "Optional Section Content"
         assert change_note.pull_requests == (
             PullRequest(
-                uid="pr-number-1", closes_threads=("thread1", "thread2"), author_uid="author1"
+                uid="pr-number-1", closes_threads=("thread1", "thread2"), author_uids=("author1",)
             ),
-            PullRequest(uid="pr-number-2", closes_threads=("thread3",), author_uid="author2"),
+            PullRequest(uid="pr-number-2", closes_threads=("thread3",), author_uids=("author2",)),
         )
 
         assert change_note.slug == "slug"

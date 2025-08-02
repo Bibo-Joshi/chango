@@ -1,5 +1,5 @@
 internal = "Update furo requirement from ~=2024.8 to >=2024.8,<2026.0"
 [[pull_requests]]
 uid = "102"
-author_uid = "dependabot"
+author_uids = ["dependabot"]
 closes_threads = []

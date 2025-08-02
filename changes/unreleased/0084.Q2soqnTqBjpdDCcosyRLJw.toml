@@ -1,5 +1,5 @@
 internal = "Bump codecov/test-results-action from 1.0.2 to 1.1.0"
 [[pull_requests]]
 uid = "84"
-author_uid = "dependabot[bot]"
+author_uids = ["dependabot[bot]"]
 closes_threads = []

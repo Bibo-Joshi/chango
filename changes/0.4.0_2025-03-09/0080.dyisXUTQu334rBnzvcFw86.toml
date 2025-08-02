@@ -1,5 +1,5 @@
 features = "Check for Changes in ``DirectoryChanGo.build_github_event_change_note``"
 [[pull_requests]]
 uid = "80"
-author_uid = "Bibo-Joshi"
+author_uids = ["Bibo-Joshi"]
 closes_threads = []

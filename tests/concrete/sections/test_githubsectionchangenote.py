@@ -108,7 +108,7 @@ class TestGitHubSectionChangeNote:
         change_note = FromGitHubEvent.build_from_github_event(event_data)
         assert change_note.req_0 == "example title"
         assert change_note.pull_requests == (
-            PullRequest(uid="42", author_uid="author_uid", closes_threads=()),
+            PullRequest(uid="42", author_uids=("author_uid",), closes_threads=()),
         )
         assert change_note.slug == "0042"
 
@@ -133,7 +133,7 @@ class TestGitHubSectionChangeNote:
         assert change_note.req_1 == "example title"
         assert change_note.opt_0 == "example title"
         assert change_note.pull_requests == (
-            PullRequest(uid="42", author_uid="author_uid", closes_threads=()),
+            PullRequest(uid="42", author_uids=("author_uid",), closes_threads=()),
         )
         assert change_note.slug == "0042"
 

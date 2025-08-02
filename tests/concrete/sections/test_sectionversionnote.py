@@ -67,9 +67,9 @@ class TestSectionVersionNote:
                 opt_section="change note 1 opt.",
                 pull_requests=[
                     PullRequest(
-                        uid="pr1", closes_threads=("thread1", "thread2"), author_uid="author1"
+                        uid="pr1", closes_threads=("thread1", "thread2"), author_uids=("author1",)
                     ),
-                    PullRequest(uid="pr2", author_uid="author2"),
+                    PullRequest(uid="pr2", author_uids=("author2",)),
                 ],
             )
         )
@@ -81,7 +81,7 @@ class TestSectionVersionNote:
                 slug="slug3",
                 uid="uid3",
                 req_section="change note 3 req.",
-                pull_requests=[PullRequest(uid="pr_a", author_uid="author_b")],
+                pull_requests=[PullRequest(uid="pr_a", author_uids=("author_b",))],
             )
         )
         assert (

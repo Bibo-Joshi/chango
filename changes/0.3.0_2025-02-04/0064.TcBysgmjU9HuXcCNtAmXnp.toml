@@ -3,5 +3,5 @@ breaking = "Adapt expected exceptions in :class:`~chango.abc.ChanGo` and :class:
 internal = "Switch to using :class:`~chango.concrete.sections.GitHubSectionChangeNote`"
 [[pull_requests]]
 uid = "64"
-author_uid = "Bibo-Joshi"
+author_uids = ["Bibo-Joshi"]
 closes_threads = []

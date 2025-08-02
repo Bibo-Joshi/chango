@@ -169,9 +169,9 @@ class SectionChangeNote(pydt.BaseModel, ChangeNote, abc.ABC):
         }
         pull_requests = (
             PullRequest(
-                uid="pr-number-1", closes_threads=("thread1", "thread2"), author_uid="author1"
+                uid="pr-number-1", closes_threads=("thread1", "thread2"), author_uids=("author1",)
             ),
-            PullRequest(uid="pr-number-2", closes_threads=("thread3",), author_uid="author2"),
+            PullRequest(uid="pr-number-2", closes_threads=("thread3",), author_uids=("author2",)),
         )
         return cls(slug=slug, uid=uid, pull_requests=pull_requests, **required_sections)
 
@@ -206,11 +206,11 @@ class SectionChangeNote(pydt.BaseModel, ChangeNote, abc.ABC):
     @classmethod
     @abc.abstractmethod
     def get_author_url(cls, author_uid: str) -> str:
-        """Get the URL of the author with the given UID.
+        """Get the URL of an author with the given UID.
 
         Args:
-            author_uid (:obj:`str`): The UID of the author as defined in
-                :attr:`chango.concrete.sections.PullRequest.author_uid`.
+            author_uid (:obj:`str`): The UID of an author as defined in
+                :attr:`chango.concrete.sections.PullRequest.author_uids`.
 
         Returns:
             :obj:`str`: The URL of the author.
