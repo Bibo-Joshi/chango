@@ -19,14 +19,14 @@ class PullRequest(pydt.BaseModel):
     Args:
         uid (:obj:`str`): The unique identifier for the pull request. For example, the pull request
             number.
-        author_uids (:obj:`str` | tuple[:obj:`str, ...]): The unique identifier of the author(s) of
-            the pull request. For example, the author's username.
+        author_uids (:obj:`str` | tuple[:obj:`str`, ...]): The unique identifier of the author(s)
+            of the pull request. For example, the author's username.
         closes_threads (tuple[:obj:`str`], optional): The threads that are closed by this pull
             request.
 
     Attributes:
         uid (:obj:`str`): The unique identifier for the pull request.
-        author_uids (tuple[:obj:`str, ...]): The unique identifier of the author(s) of the pull
+        author_uids (tuple[:obj:`str`, ...]): The unique identifier of the author(s) of the pull
             request.
         closes_threads (tuple[:obj:`str`]): The threads that are closed by this pull request.
             May be empty.
