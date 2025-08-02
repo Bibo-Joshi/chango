@@ -1,5 +1,0 @@
-highlights = "Use ``git add`` in ``Chango.write_change_note`` if available"
-[[pull_requests]]
-uid = "108"
-author_uid = "Bibo-Joshi"
-closes_threads = []
