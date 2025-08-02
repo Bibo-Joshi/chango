@@ -5,7 +5,7 @@ import abc
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Optional
 
-from .._utils.files import UTF8, move_file
+from .._utils.files import UTF8, move_file, try_git_add
 from .._utils.types import VUIDInput
 from ..action import ChanGoActionData
 from ._changenote import ChangeNote
@@ -168,6 +168,7 @@ class ChanGo[VST: VersionScanner, VHT: VersionHistory, VNT: VersionNote, CNT: Ch
             directory=self.get_write_directory(change_note=change_note, version=version),
             encoding=encoding,
         )
+        try_git_add(path)
         self.scanner.invalidate_caches()
         return path
 
