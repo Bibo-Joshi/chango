@@ -136,12 +136,14 @@ class TestChanGo:
         monkeypatch.setattr(note, "to_file", to_file)
         monkeypatch.setattr(chango.scanner, "invalidate_caches", cache_invalidation_tracker)
 
-        try:
-            chango.write_change_note(note, version, encoding=encoding)
-            assert cache_invalidation_tracker.was_called
-        finally:
-            if not existed and expected_path.is_dir():
-                shutil.rmtree(expected_path)
+        for _ in range(3):
+            # run multiple times to cover all paths in _GIT_HELPER
+            try:
+                chango.write_change_note(note, version, encoding=encoding)
+                assert cache_invalidation_tracker.was_called
+            finally:
+                if not existed and expected_path.is_dir():
+                    shutil.rmtree(expected_path)
 
     def test_write_change_note_new_string_version(self, chango):
         note = chango.build_template_change_note("this-is-a-new-slug")
