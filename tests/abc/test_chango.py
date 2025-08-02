@@ -94,9 +94,28 @@ class TestChanGo:
         ],
     )
     @pytest.mark.parametrize("encoding", ["utf-8", "utf-16"])
+    @pytest.mark.parametrize(
+        "has_git", [pytest.param(True, id="with-git"), pytest.param(False, id="without-git")]
+    )
     def test_write_change_note(
-        self, chango, version, monkeypatch, encoding, cache_invalidation_tracker
+        self, chango, version, monkeypatch, encoding, cache_invalidation_tracker, has_git
     ):
+        # Unfortunately, testing the git-available part is not easily possible without using
+        # some of the internal utils and also not with directly running git. This is because
+        # a) the availability of git is cached and there is no public interface to reset it
+        # b) mocking subprocess before the module is imported is not easily possible
+        # c) actually running `git add` is hard to reset
+        # Since `chango._utils.files` is not part of the public API, we settle for testing
+        # with the private interfaces.
+        chango_module._utils.files._GIT_HELPER.git_available = None
+
+        def check_call(args, *_, **__):
+            assert args[:2] == ["git", "add"]
+            if not has_git:
+                raise subprocess.CalledProcessError(1, "git add")
+
+        monkeypatch.setattr("chango._utils.files.subprocess.check_call", check_call)
+
         if version is None:
             expected_path = chango.scanner.unreleased_directory
         else:
@@ -117,12 +136,14 @@ class TestChanGo:
         monkeypatch.setattr(note, "to_file", to_file)
         monkeypatch.setattr(chango.scanner, "invalidate_caches", cache_invalidation_tracker)
 
-        try:
-            chango.write_change_note(note, version, encoding=encoding)
-            assert cache_invalidation_tracker.was_called
-        finally:
-            if not existed and expected_path.is_dir():
-                shutil.rmtree(expected_path)
+        for _ in range(3):
+            # run multiple times to cover all paths in _GIT_HELPER
+            try:
+                chango.write_change_note(note, version, encoding=encoding)
+                assert cache_invalidation_tracker.was_called
+            finally:
+                if not existed and expected_path.is_dir():
+                    shutil.rmtree(expected_path)
 
     def test_write_change_note_new_string_version(self, chango):
         note = chango.build_template_change_note("this-is-a-new-slug")
@@ -200,7 +221,7 @@ class TestChanGo:
         # c) actually running `git mv` is harder to reset than just using the pathlib move
         # Since `chango._utils.files` is not part of the public API, we settle for testing
         # with the private interfaces.
-        chango_module._utils.files._GIT_MOVER.git_available = None
+        chango_module._utils.files._GIT_HELPER.git_available = None
 
         def check_call(args, *_, **__):
             assert args[:2] == ["git", "mv"]
