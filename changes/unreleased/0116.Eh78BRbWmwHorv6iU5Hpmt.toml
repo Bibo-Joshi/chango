@@ -1,0 +1,5 @@
+highlights = "Bump actions/download-artifact from 4.3.0 to 5.0.0"
+[[pull_requests]]
+uid = "116"
+author_uids = ["dependabot[bot]"]
+closes_threads = []
