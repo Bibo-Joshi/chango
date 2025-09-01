@@ -1,0 +1,5 @@
+highlights = "Bump codecov/codecov-action from 5.4.3 to 5.5.0"
+[[pull_requests]]
+uid = "113"
+author_uids = ["dependabot[bot]"]
+closes_threads = []
