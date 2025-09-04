@@ -1,0 +1,5 @@
+internal = "Bump actions/checkout from 4.2.2 to 5.0.0"
+[[pull_requests]]
+uid = "112"
+author_uids = ["dependabot[bot]"]
+closes_threads = []
