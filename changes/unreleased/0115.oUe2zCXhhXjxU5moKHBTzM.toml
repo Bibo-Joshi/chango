@@ -1,4 +1,4 @@
-highlights = "Bump github/codeql-action from 3.29.7 to 3.29.11"
+internal = "Bump github/codeql-action from 3.29.7 to 3.29.11"
 [[pull_requests]]
 uid = "115"
 author_uids = ["dependabot[bot]"]
