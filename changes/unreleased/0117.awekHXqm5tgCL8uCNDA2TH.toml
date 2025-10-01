@@ -1,0 +1,5 @@
+internal = "Bump pypa/gh-action-pypi-publish from 1.12.4 to 1.13.0"
+[[pull_requests]]
+uid = "117"
+author_uids = ["dependabot[bot]"]
+closes_threads = []
