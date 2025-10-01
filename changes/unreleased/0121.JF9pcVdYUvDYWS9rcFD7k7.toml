@@ -1,0 +1,5 @@
+internal = "Bump actions/github-script from 7.0.1 to 8.0.0"
+[[pull_requests]]
+uid = "121"
+author_uids = ["dependabot[bot]"]
+closes_threads = []
