@@ -57,9 +57,9 @@ class TestGitHubSectionChangeNote:
         )
 
     def test_get_pull_request_url_invalid(self):
-        with pytest.raises(ValueError, match="OWNER must be set as class variable."):
+        with pytest.raises(ValueError, match=r"OWNER must be set as class variable."):
             DummyChangNoteNoOwner.get_pull_request_url("123")
-        with pytest.raises(ValueError, match="REPOSITORY must be set as class variable."):
+        with pytest.raises(ValueError, match=r"REPOSITORY must be set as class variable."):
             DummyChangNoteNoRepository.get_pull_request_url("123")
 
     def test_get_thread_url(self):
@@ -69,9 +69,9 @@ class TestGitHubSectionChangeNote:
         )
 
     def test_get_thread_url_invalid(self):
-        with pytest.raises(ValueError, match="OWNER must be set as class variable."):
+        with pytest.raises(ValueError, match=r"OWNER must be set as class variable."):
             DummyChangNoteNoOwner.get_thread_url("123")
-        with pytest.raises(ValueError, match="REPOSITORY must be set as class variable."):
+        with pytest.raises(ValueError, match=r"REPOSITORY must be set as class variable."):
             DummyChangNoteNoRepository.get_thread_url("123")
 
     def test_get_author_url(self):

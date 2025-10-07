@@ -73,7 +73,7 @@ class DirectoryChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
         :paramref:`~chango.concrete.sections.SectionVersionNote.section_change_note_type`.
         """
         if issubclass(self.version_note_type, SectionVersionNote):
-            return self.version_note_type(  # type: ignore[return-value]
+            return self.version_note_type(
                 section_change_note_type=self.change_note_type, version=version
             )
         return self.version_note_type(version=version)
@@ -154,7 +154,7 @@ class DirectoryChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
         if not isinstance(data, ChanGoActionData) or not data.parent_pull_request:
             if was_modified and (orig_data == change_note.to_bytes()):
                 return None
-            return change_note  # type: ignore[return-value]
+            return change_note
 
         parent_pr = data.parent_pull_request
 
@@ -182,5 +182,4 @@ class DirectoryChanGo[VHT: VersionHistory, VNT: VersionNote, CNT: ChangeNote](
 
         # If we get here, then we didn't find an existing change note for the parent PR
         # This we need to return the new change note
-        # mypy doesn't quite get that self.change_note_type is the same as CNT
-        return change_note  # type: ignore[return-value]
+        return change_note

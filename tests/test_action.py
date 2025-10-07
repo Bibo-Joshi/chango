@@ -33,7 +33,7 @@ class TestParentPullRequest:
             parent_pull_request.number = 2
 
     def test_invalid_url(self):
-        with pytest.raises(ValidationError, match="input_value='example.com'"):
+        with pytest.raises(ValidationError, match=r"input_value='example.com'"):
             ParentPullRequest(
                 number=1, author_login="author", title="title", url="example.com", state="open"
             )

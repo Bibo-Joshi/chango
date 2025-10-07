@@ -307,5 +307,5 @@ class TestDirectoryChango:
         "change_note", ["str_change_note", CommentChangeNote.build_template("slug", "uid")]
     )
     def test_get_write_directory_new_str_version(self, chango, change_note):
-        with pytest.raises(ChanGoError, match="'new-version' not available."):
+        with pytest.raises(ChanGoError, match=r"'new-version' not available."):
             chango.get_write_directory(change_note, "new-version")
