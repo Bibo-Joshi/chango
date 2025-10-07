@@ -151,7 +151,7 @@ class TestChanGo:
             chango.write_change_note(note, "new-version-uid")
 
     def test_load_version_note_unavailable(self, chango):
-        with pytest.raises(ChanGoError, match="Version '1.4' not available."):
+        with pytest.raises(ChanGoError, match=r"Version '1.4' not available."):
             chango.load_version_note("1.4")
 
     @pytest.mark.parametrize(

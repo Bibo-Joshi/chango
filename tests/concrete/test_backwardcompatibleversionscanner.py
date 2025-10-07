@@ -102,7 +102,7 @@ class TestBackwardCompatibleVersionScanner:
         scanners = self.build_mock_scanners("get_latest_version", results)
         scanner = BackwardCompatibleVersionScanner(scanners)
         if isinstance(expected, ChanGoError):
-            with pytest.raises(ChanGoError, match="No versions available."):
+            with pytest.raises(ChanGoError, match=r"No versions available."):
                 scanner.get_latest_version()
         else:
             assert scanner.get_latest_version() == expected
@@ -176,7 +176,7 @@ class TestBackwardCompatibleVersionScanner:
         method_object = getattr(scanner, method_name)
         uid = object()
         if isinstance(expected, ChanGoError):
-            with pytest.raises(ChanGoError, match="not available."):
+            with pytest.raises(ChanGoError, match=r"not available."):
                 method_object(uid)
         else:
             assert method_object(uid) == expected
