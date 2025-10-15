@@ -49,6 +49,7 @@ runs:
         repository: ${{ github.event.pull_request.head.repo.full_name }}
         ref: ${{ github.head_ref }}
         path: ./target-repo
+        token: ${{ inputs.github-token || github.token }}
 
     - name: Set up Python
       id: setup-python
