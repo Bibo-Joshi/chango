@@ -3,4 +3,4 @@ config
 
 .. automodule:: chango.config
    :members:
-   :inherited-members: TomlSettings, FrozenModel
+   :inherited-members: TomlSettings, FrozenModel, BaseModel
