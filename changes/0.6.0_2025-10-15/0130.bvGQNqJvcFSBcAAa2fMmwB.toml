@@ -1,0 +1,4 @@
+internal = "Bump Version to 0.6.0"
+[[pull_requests]]
+uid = "130"
+author_uids = ["Bibo-Joshi"]
