@@ -1,0 +1,5 @@
+documentation = "Skip Inherited Members for ``chango.config.ChanGoConfig``"
+[[pull_requests]]
+uid = "129"
+author_uids = ["Bibo-Joshi"]
+closes_threads = []
