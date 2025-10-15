@@ -1,0 +1,5 @@
+internal = "Update Dependabot Schedule to Quarterly"
+[[pull_requests]]
+uid = "128"
+author_uids = ["Bibo-Joshi"]
+closes_threads = []
