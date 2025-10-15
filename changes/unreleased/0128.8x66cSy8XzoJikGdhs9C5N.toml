@@ -1,4 +1,4 @@
-highlights = "Update Dependabot Schedule to Quarterly"
+internal = "Update Dependabot Schedule to Quarterly"
 [[pull_requests]]
 uid = "128"
 author_uids = ["Bibo-Joshi"]
