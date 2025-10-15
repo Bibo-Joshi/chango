@@ -44,12 +44,14 @@ runs:
 
     - name: Checkout target repository
       uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      env:
+        github_token: ${{ inputs.github-token }}
       with:
         # setting repo is required for PRs coming from forks
         repository: ${{ github.event.pull_request.head.repo.full_name }}
         ref: ${{ github.head_ref }}
         path: ./target-repo
-        token: ${{ inputs.github-token }}
+        token: ${{ env.github_token }}
 
     - name: Set up Python
       id: setup-python
