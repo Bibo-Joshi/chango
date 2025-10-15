@@ -1,4 +1,4 @@
-highlights = "Add token input for GitHub actions"
+features = "Use ``github-token`` also for target repository checkout"
 [[pull_requests]]
 uid = "123"
 author_uids = ["Bibo-Joshi"]
