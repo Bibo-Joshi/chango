@@ -45,7 +45,7 @@ docs = [
 tests = [
   "build",
   "pre-commit",
-  "pytest~=8.3",
+  "pytest>=8.3,<10.0",
   "pytest-cov",
   "pytest-randomly",
 ]
