@@ -1,0 +1,5 @@
+highlights = "Update pytest requirement from ~=8.3 to >=8.3,<10.0"
+[[pull_requests]]
+uid = "134"
+author_uids = ["dependabot[bot]"]
+closes_threads = []
