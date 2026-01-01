@@ -1,0 +1,5 @@
+highlights = "Update sphinx requirement from ~=8.1 to >=8.1,<10.0"
+[[pull_requests]]
+uid = "137"
+author_uids = ["dependabot[bot]"]
+closes_threads = []
