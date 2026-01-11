@@ -68,14 +68,14 @@ module.exports = async ({github, context, core, query_issue_types}) => {
                         author {
                             login
                         }
-                        base {
-                            repo {
-                                owner
+                        baseRepository {
+                            owner {
+                                login
                             }
                         }
-                        head {
-                            repo {
-                                owner
+                        headRepository {
+                            owner {
+                                login
                             }
                         }
                     }
@@ -90,10 +90,10 @@ module.exports = async ({github, context, core, query_issue_types}) => {
         delete parentPR.author;
     }
 
-    if (parentPR.base.repo.owner.login === parentPR.head.repo.owner.login) {
+    if (parentPR.baseRepository.owner.login === parentPR.headRepository.owner.login) {
         // The parent PR is from the same owner as the base repo, so it is not a fork
-        delete parentPR.base;
-        delete parentPR.head;
+        delete parentPR.baseRepository;
+        delete parentPR.headRepository;
     } else {
         // Parent PR is from a fork, discard it
         parentPR = null;
