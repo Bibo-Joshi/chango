@@ -68,16 +68,35 @@ module.exports = async ({github, context, core, query_issue_types}) => {
                         author {
                             login
                         }
+                        base {
+                            repo {
+                                owner
+                            }
+                        }
+                        head {
+                            repo {
+                                owner
+                            }
+                        }
                     }
                 }
             }
         }
     `);
     const prs = response.search.nodes;
-    const parentPR = prs.length > 0 ? prs[0] : null;
+    let parentPR = prs.length > 0 ? prs[0] : null;
     if (parentPR) {
         parentPR.author_login = parentPR.author.login;
         delete parentPR.author;
+    }
+
+    if (parentPR.base.repo.owner.login === parentPR.head.repo.owner.login) {
+        // The parent PR is from the same owner as the base repo, so it is not a fork
+        delete parentPR.base;
+        delete parentPR.head;
+    } else {
+        // Parent PR is from a fork, discard it
+        parentPR = null;
     }
 
     // Combine the linked issues and the parent PR to a single JSON object
