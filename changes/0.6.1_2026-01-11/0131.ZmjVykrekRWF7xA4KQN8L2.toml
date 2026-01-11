@@ -1,4 +1,4 @@
-highlights = "Bump stefanzweifel/git-auto-commit-action from 6.0.1 to 7.1.0"
+internal = "Bump stefanzweifel/git-auto-commit-action from 6.0.1 to 7.1.0"
 [[pull_requests]]
 uid = "131"
 author_uids = ["dependabot[bot]"]
