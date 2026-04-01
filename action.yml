@@ -33,7 +33,7 @@ runs:
   using: composite
   steps:
     - name: Checkout action repository
-      uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       env:
         ACTION_REPO: ${{ github.action_repository }}
         ACTION_REF: ${{ github.action_ref }}
@@ -43,7 +43,7 @@ runs:
         path: ./.chango-action
 
     - name: Checkout target repository
-      uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         # setting repo is required for PRs coming from forks
         repository: ${{ github.event.pull_request.head.repo.full_name }}
