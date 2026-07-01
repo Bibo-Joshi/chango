@@ -7,9 +7,8 @@ from collections.abc import Mapping, Sequence
 from typing import IO, Any, Literal
 
 import pytest
-from click.testing import Result
 from typer import Typer
-from typer.testing import CliRunner
+from typer.testing import CliRunner, Result
 
 import chango
 from chango._cli import app as chango_app
