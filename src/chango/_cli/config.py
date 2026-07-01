@@ -44,7 +44,7 @@ def callback(context: typer.Context, path: _PATH_ANNOTATION = None) -> None:
         raise typer.BadParameter(f"Failed to parse the configuration file: {exc}") from exc
 
     try:
-        context.obj["data"] = toml_data["tool"]["chango"]  # type: ignore[index]
+        context.obj["data"] = toml_data["tool"]["chango"]
     except KeyError as exc:
         raise typer.BadParameter(
             "No configuration found for chango in the configuration file."

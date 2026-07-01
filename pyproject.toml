@@ -30,7 +30,9 @@ dependencies = [
   "shortuuid~=1.0",
   "sphinx>=8.1,<10.0",
   "tomlkit~=0.13",
-  "typer~=0.12",
+  # typer 0.26.0 vendors click, and doesn't expose click itself. Updating will require
+  # larger efforts, also as sphinx-click doesn't support that.
+  "typer~=0.12,<0.26.0",
 ]
 
 [dependency-groups]
