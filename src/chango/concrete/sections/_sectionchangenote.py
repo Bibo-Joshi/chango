@@ -48,7 +48,7 @@ class SectionChangeNote(pydt.BaseModel, ChangeNote, abc.ABC):
     """:obj:`str`: The markup language used in the sections.
     """
 
-    SECTIONS: Final[dict[str, Section]] = pydt.Field(default_factory=dict)
+    SECTIONS: ClassVar[dict[str, Section]] = pydt.Field(default_factory=dict)
     """dict[:obj:`str`, :class:`Section`]: The sections of the change note. Maps the UID of the
     section to the :class:`Section` object containing the configuration for the section
     """
