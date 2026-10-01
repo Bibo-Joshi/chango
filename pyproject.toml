@@ -32,7 +32,7 @@ dependencies = [
   "tomlkit~=0.13",
   # typer 0.26.0 vendors click, and doesn't expose click itself. Updating will require
   # larger efforts, also as sphinx-click doesn't support that.
-  "typer~=0.12,<0.26.0",
+  "typer>=0.12,<1.0",
 ]
 
 [dependency-groups]
