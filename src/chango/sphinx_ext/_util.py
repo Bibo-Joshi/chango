@@ -89,9 +89,7 @@ def directive_factory(app: Sphinx) -> type[SphinxDirective]:
 
     class ChangoDirective(SphinxDirective):
         has_content = True
-        option_spec = parse_function(  # type: ignore[assignment]
-            chango_instance.load_version_history
-        )
+        option_spec = parse_function(chango_instance.load_version_history)
 
         def run(self) -> list[Node]:
             title = " ".join(self.content)
