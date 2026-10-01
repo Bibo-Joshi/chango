@@ -1,0 +1,5 @@
+highlights = "Bump test-summary/action from 2.4 to 2.6"
+[[pull_requests]]
+uid = "157"
+author_uids = ["dependabot[bot]"]
+closes_threads = []
