@@ -1,0 +1,5 @@
+highlights = "Bump github/codeql-action/upload-sarif from 4.35.1 to 4.38.2"
+[[pull_requests]]
+uid = "156"
+author_uids = ["dependabot[bot]"]
+closes_threads = []
