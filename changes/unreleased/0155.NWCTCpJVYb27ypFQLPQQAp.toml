@@ -1,0 +1,5 @@
+highlights = "Update typer requirement from <0.26.0,~=0.12 to >=0.12,<1.0"
+[[pull_requests]]
+uid = "155"
+author_uids = ["dependabot[bot]"]
+closes_threads = []
