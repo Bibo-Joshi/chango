@@ -122,7 +122,7 @@ _TYPE_VAR_PATTERN = re.compile(r"typing\.([A-Z][a-zA-Z]*)")
 
 def missing_reference(
     _: Sphinx, __: BuildEnvironment, node: pending_xref, contnode: Node
-) -> None | Node:
+) -> Node | None:
     """Here we redirect links to type variables. Sphinx tries to link TypeVar T to typing.T which
     does not exist. We instead link to typing.TypeVar.
     """
